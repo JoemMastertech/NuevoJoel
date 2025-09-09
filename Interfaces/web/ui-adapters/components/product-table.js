@@ -1180,9 +1180,9 @@ const ProductRenderer = {
   renderLiquorCategory: async function(container, subcategory, title) {
     const productRepository = getProductRepository();
     
-    // Add view toggle button
-    const toggleElement = this.createViewToggle(container);
-    container.appendChild(toggleElement);
+    // Add view toggle button - DISABLED: Using top nav button instead
+    // const toggleElement = this.createViewToggle(container);
+    // container.appendChild(toggleElement);
     
     const liquorFields = ['nombre', 'imagen', 'precioBotella', 'precioLitro', 'precioCopa'];
     const liquorHeaders = ['NOMBRE', 'IMAGEN', 'PRECIO BOTELLA', 'PRECIO LITRO', 'PRECIO COPA'];
@@ -1247,9 +1247,9 @@ const ProductRenderer = {
   renderDigestivos: async function(container, title = 'Digestivos') {
     const productRepository = getProductRepository();
     
-    // Add view toggle button
-    const toggleElement = this.createViewToggle(container);
-    container.appendChild(toggleElement);
+    // Add view toggle button - DISABLED: Using top nav button instead
+    // const toggleElement = this.createViewToggle(container);
+    // container.appendChild(toggleElement);
     
     try {
       const data = await productRepository.getLiquorSubcategory('digestivos');
@@ -1282,9 +1282,9 @@ const ProductRenderer = {
   renderCervezas: async function(container) {
     const productRepository = getProductRepository();
     
-    // Add view toggle button
-    const toggleElement = this.createViewToggle(container);
-    container.appendChild(toggleElement);
+    // Add view toggle button - DISABLED: Using top nav button instead
+    // const toggleElement = this.createViewToggle(container);
+    // container.appendChild(toggleElement);
     
     try {
       const data = await productRepository.getCervezas();
@@ -1315,9 +1315,9 @@ const ProductRenderer = {
   renderPizzas: async function(container) {
     const productRepository = getProductRepository();
     
-    // Add view toggle button
-    const toggleElement = this.createViewToggle(container);
-    container.appendChild(toggleElement);
+    // Add view toggle button - DISABLED: Using top nav button instead
+    // const toggleElement = this.createViewToggle(container);
+    // container.appendChild(toggleElement);
     
     try {
       const data = await productRepository.getPizzas();
@@ -1349,9 +1349,9 @@ const ProductRenderer = {
   renderFoodCategory: async function(container, methodName, title, fields = null, headers = null) {
     const productRepository = getProductRepository();
     
-    // Add view toggle button
-    const toggleElement = this.createViewToggle(container);
-    container.appendChild(toggleElement);
+    // Add view toggle button - DISABLED: Using top nav button instead
+    // const toggleElement = this.createViewToggle(container);
+    // container.appendChild(toggleElement);
     
     // Default fields and headers for food items
     const defaultFields = ['nombre', 'ingredientes', 'video', 'precio'];

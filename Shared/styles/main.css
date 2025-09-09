@@ -50,6 +50,12 @@ body { font-family: 'Montserrat', sans-serif; color: var(--text); background: va
   margin: 0 auto;
   transition: margin-left 0.3s ease-in-out;
 }
+
+/* Adjust main content when top nav is visible */
+.top-nav-visible ~ #app .main-content-screen,
+.main-content-screen.with-top-nav {
+  padding-top: 90px;
+}
 .screen { position: absolute; top: 0; left: 0; width: 100%; height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 1; }
 
 /* =================================================================
@@ -2070,8 +2076,29 @@ textarea:focus {
   }
   
   /* Hamburger and back button positioning - solo para tablets */
-  @media (min-width: 481px) {
-    .hamburger-btn { left: calc((100vw - var(--table-width)) / 2 + 10px); }
+  @media (max-width: 768px) {
+  .top-nav-content {
+    padding: 0 15px;
+  }
+  
+  .nav-buttons-container {
+    gap: 10px;
+  }
+  
+  .top-nav-btn {
+    min-width: 40px;
+    height: 40px;
+    font-size: 1rem;
+    padding: 6px 10px;
+  }
+  
+  .top-nav-bar .hamburger-btn {
+    width: 45px;
+    height: 45px;
+    font-size: 1.3rem;
+  }
+  
+  .hamburger-btn { left: calc((100vw - var(--table-width)) / 2 + 15px); }
     .back-button-container {
       left: calc((100vw - var(--table-width)) / 2 + 10px);
       top: 80px;
@@ -2135,6 +2162,37 @@ textarea:focus {
 /* =================================================================
    RESPONSIVE DESIGN - MOBILE LANDSCAPE (max-width: 480px)
    ================================================================= */
+@media (max-width: 480px) {
+  .top-nav-content {
+    padding: 0 10px;
+  }
+  
+  .nav-buttons-container {
+    gap: 8px;
+  }
+  
+  .top-nav-btn {
+    min-width: 35px;
+    height: 35px;
+    font-size: 0.9rem;
+    padding: 4px 8px;
+  }
+  
+  .top-nav-bar .hamburger-btn {
+    width: 40px;
+    height: 40px;
+    font-size: 1.2rem;
+  }
+  
+  .top-nav-bar {
+    height: 60px;
+  }
+  
+  .main-content-screen.with-top-nav {
+    padding-top: 80px;
+  }
+}
+
 @media (max-width: 480px) and (orientation: landscape) {
   /* Replicar comportamiento de escritorio en móviles landscape */
   .content-wrapper { 
@@ -2533,8 +2591,96 @@ textarea:focus {
 }
 
 /* =================================================================
+   TOP NAVIGATION BAR
+   ================================================================= */
+.top-nav-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 70px;
+  background: linear-gradient(135deg, var(--card-bg) 0%, rgba(0,0,0,0.9) 100%);
+  backdrop-filter: blur(15px);
+  border-bottom: 2px solid var(--border-color);
+  box-shadow: 0 4px 20px rgba(0, 247, 255, 0.1);
+  z-index: 1001;
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: translateY(-100%);
+  opacity: 0;
+}
+
+.top-nav-bar.top-nav-visible {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.top-nav-bar.top-nav-hidden {
+  transform: translateY(-100%);
+  opacity: 0;
+}
+
+.top-nav-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 100%;
+  max-width: var(--table-max-width);
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.nav-buttons-container {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+}
+
+.top-nav-btn {
+  background: rgba(0, 247, 255, 0.1);
+  border: 1px solid var(--border-color);
+  color: var(--text-color);
+  padding: 8px 12px;
+  font-size: 1.2rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all var(--transition-time) ease;
+  backdrop-filter: blur(10px);
+  min-width: 45px;
+  height: 45px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.top-nav-btn:hover {
+  background: var(--primary-color);
+  color: var(--background-color);
+  transform: translateY(-2px);
+  box-shadow: var(--glow-shadow-hover);
+}
+
+/* =================================================================
    NAVIGATION DRAWER & HAMBURGER MENU
    ================================================================= */
+.top-nav-bar .hamburger-btn {
+  position: relative;
+  top: unset;
+  left: unset;
+  background: var(--card-bg);
+  border: 2px solid var(--primary-color);
+  color: var(--text-color);
+  font-size: 1.5rem;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  z-index: 1000;
+  transition: all var(--transition-time) ease;
+  border-radius: 8px;
+}
+
 .hamburger-btn {
   position: fixed;
   top: 20px; 

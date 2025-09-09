@@ -37,6 +37,7 @@ const ScreenManager = {
     if (fromScreen && fromScreen.classList) {
       fromScreen.classList.add('fade-out');
     }
+    
     await this.delay(DURATIONS.FADE);
     
     // Switch screens
@@ -174,9 +175,126 @@ const ScreenManager = {
       // Step 6: Load initial content
       await this.loadInitialContent();
       
+      // Step 7: Show top navigation bar after transitions complete
+      await this.showTopNavigationBar();
+      
+      Logger.info('Welcome sequence completed - Top navigation bar displayed');
+      
     } catch (error) {
       Logger.error('Error in welcome sequence:', error);
       this.showErrorFallback(error);
+    }
+  },
+
+  /**
+   * Show top navigation bar after transitions complete
+   */
+  async showTopNavigationBar() {
+    Logger.info('Showing top navigation bar...');
+    
+    try {
+      const topNavBar = document.getElementById('top-nav-bar');
+      const mainContentScreen = document.querySelector('.main-content-screen');
+      
+      if (topNavBar) {
+        // Add visible class to trigger animation
+        topNavBar.classList.remove('top-nav-hidden');
+        topNavBar.classList.add('top-nav-visible');
+        
+        // Add padding to main content
+        if (mainContentScreen) {
+          mainContentScreen.classList.add('with-top-nav');
+        }
+        
+        // Add event listeners for navigation buttons
+        this.attachTopNavEventListeners();
+        
+        Logger.info('Top navigation bar displayed successfully');
+      } else {
+        Logger.warn('Top navigation bar element not found');
+      }
+    } catch (error) {
+      Logger.error('Error showing top navigation bar:', error);
+    }
+  },
+
+  /**
+   * Attach event listeners to top navigation buttons
+   */
+  attachTopNavEventListeners() {
+    const homeBtn = document.getElementById('home-btn');
+    const menuBtn = document.getElementById('menu-btn');
+    const viewToggleBtn = document.getElementById('view-toggle-btn');
+    const cartBtn = document.getElementById('cart-btn');
+    const settingsBtn = document.getElementById('settings-btn');
+    
+    if (homeBtn) {
+      homeBtn.addEventListener('click', () => {
+        Logger.info('Home button clicked');
+        // Add home functionality here
+      });
+    }
+    
+    if (menuBtn) {
+      menuBtn.addEventListener('click', () => {
+        Logger.info('Menu button clicked');
+        // Add menu functionality here
+      });
+    }
+    
+    if (cartBtn) {
+      cartBtn.addEventListener('click', () => {
+        Logger.info('Cart button clicked');
+        // Add cart functionality here
+      });
+    }
+    
+    if (viewToggleBtn) {
+      viewToggleBtn.addEventListener('click', () => {
+        Logger.info('View toggle button clicked');
+        this.handleViewToggle();
+      });
+    }
+    
+    if (settingsBtn) {
+      settingsBtn.addEventListener('click', () => {
+        Logger.info('Settings button clicked');
+        // Add settings functionality here
+      });
+    }
+  },
+
+  /**
+   * Handle view toggle button click
+   */
+  handleViewToggle() {
+    try {
+      // Import ProductRenderer dynamically to avoid circular dependencies
+      import('../components/product-table.js').then(module => {
+        const ProductRenderer = module.default;
+        
+        // Toggle the view mode
+        const newMode = ProductRenderer.toggleViewMode();
+        
+        // Update button appearance
+        const viewToggleBtn = document.getElementById('view-toggle-btn');
+        if (viewToggleBtn) {
+          viewToggleBtn.textContent = newMode === 'table' ? '🔲' : '📋';
+          viewToggleBtn.classList.toggle('active', newMode === 'grid');
+        }
+        
+        // Refresh the current view if there's content displayed
+        const contentContainer = document.getElementById('content-container');
+        if (contentContainer && contentContainer.children.length > 0) {
+          ProductRenderer.refreshCurrentView(contentContainer);
+        }
+        
+        Logger.info(`View toggled to: ${newMode}`);
+      }).catch(error => {
+        Logger.error('Error importing ProductRenderer:', error);
+      });
+    } catch (error) {
+      Logger.error('Error handling view toggle:', error);
     }
   },
 
@@ -210,6 +328,9 @@ const ScreenManager = {
     if (hamburgerBtn) {
       hamburgerBtn.className = 'hamburger-btn hamburger-visible';
     }
+
+    // Show top navigation bar immediately when skipping
+    this.showTopNavigationBar();
 
     // Load content immediately
     this.loadInitialContent();
