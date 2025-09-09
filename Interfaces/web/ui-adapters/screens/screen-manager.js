@@ -222,32 +222,8 @@ const ScreenManager = {
    * Attach event listeners to top navigation buttons
    */
   attachTopNavEventListeners() {
-    const homeBtn = document.getElementById('home-btn');
-    const menuBtn = document.getElementById('menu-btn');
     const viewToggleBtn = document.getElementById('view-toggle-btn');
-    const cartBtn = document.getElementById('cart-btn');
     const settingsBtn = document.getElementById('settings-btn');
-    
-    if (homeBtn) {
-      homeBtn.addEventListener('click', () => {
-        Logger.info('Home button clicked');
-        // Add home functionality here
-      });
-    }
-    
-    if (menuBtn) {
-      menuBtn.addEventListener('click', () => {
-        Logger.info('Menu button clicked');
-        // Add menu functionality here
-      });
-    }
-    
-    if (cartBtn) {
-      cartBtn.addEventListener('click', () => {
-        Logger.info('Cart button clicked');
-        // Add cart functionality here
-      });
-    }
     
     if (viewToggleBtn) {
       viewToggleBtn.addEventListener('click', () => {

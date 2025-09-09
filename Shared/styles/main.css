@@ -2636,8 +2636,8 @@ textarea:focus {
 }
 
 .top-nav-btn {
-  background: rgba(0, 247, 255, 0.1);
-  border: 1px solid var(--border-color);
+  background: var(--card-bg);
+  border: 2px solid var(--primary-color);
   color: var(--text-color);
   padding: 8px 12px;
   font-size: 1.2rem;
@@ -2653,10 +2653,11 @@ textarea:focus {
 }
 
 .top-nav-btn:hover {
-  background: var(--primary-color);
-  color: var(--background-color);
-  transform: translateY(-2px);
-  box-shadow: var(--glow-shadow-hover);
+  background-color: transparent;
+  transform: scale(1.02);
+  border-color: var(--price-color);
+  color: var(--price-color);
+  box-shadow: 0 0 15px var(--price-color);
 }
 
 /* =================================================================
@@ -2681,6 +2682,14 @@ textarea:focus {
   border-radius: 8px;
 }
 
+.top-nav-bar .hamburger-btn:hover {
+  background-color: transparent;
+  transform: scale(1.02);
+  border-color: var(--price-color);
+  color: var(--price-color);
+  box-shadow: 0 0 15px var(--price-color);
+}
+
 .hamburger-btn {
   position: fixed;
   top: 20px; 
@@ -2700,8 +2709,11 @@ textarea:focus {
 }
 
 .hamburger-btn:hover {
-  background-color: var(--primary-color);
-  color: var(--background-color);
+  background-color: transparent;
+  transform: scale(1.02);
+  border-color: var(--price-color);
+  color: var(--price-color);
+  box-shadow: 0 0 15px var(--price-color);
 }
 
 /* Back button container - positioned fixed below hamburger */
