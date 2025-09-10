@@ -1948,21 +1948,23 @@ textarea:focus {
 
 /* Consolidated mobile responsive styles */
 @media (max-width: 480px) {
-  :root { --table-width: 98%; --table-margin: 10px; }
+  :root { --table-width: 96%; --table-margin: 8px; }
   body { font-size: 13px; }
   .welcome-text, .title-text, .category-title { font-size: 1.8rem; }
   .nav-row { flex-direction: column; gap: 5px; }
   .nav-button { font-size: 0.9rem; padding: 10px 12px; }
   .product-table th, .product-table td { padding: 8px 5px; }
-  #content-container { padding: 0 5px; }
+  #content-container { padding: 0 3px; }
   
   #app {
-    padding: 0 max(10px, calc((100vw - var(--table-max-width)) / 2));
+    padding: 0 2vw;
+    max-width: 100vw;
+    box-sizing: border-box;
   }
   
   /* En móviles, sidebar va abajo - resetear padding */
   body.order-mode-active #app {
-    padding: 0 max(10px, calc((100vw - var(--table-max-width)) / 2));
+    padding: 0 2vw;
   }
   
   /* ORDER SIDEBAR - MOBILE RESPONSIVE */
@@ -2357,41 +2359,124 @@ textarea:focus {
    RESPONSIVE DESIGN - MOBILE PORTRAIT (max-width: 480px)
    ================================================================= */
 @media (max-width: 480px) and (orientation: portrait) {
-  /* Maximizar ancho disponible en portrait */
+  /* Optimizar viewport para móvil portrait - centrado perfecto */
   :root { 
-    --table-width: 100%; 
+    --table-width: 96%; 
     --table-margin: 0px; 
+    --table-max-width: 100vw;
+  }
+  
+  /* Contenedor principal optimizado para centrado */
+  #app {
+    padding: 0 2vw;
+    max-width: 100vw;
+    box-sizing: border-box;
   }
   
   #content-container {
-    padding: 0 2px;
+    padding: 0 1px;
+    width: 100%;
+    box-sizing: border-box;
   }
   
-  /* Grid con 2 columnas en portrait - ancho completo */
+  /* Grid con 2 columnas en portrait - ligeramente más ancho */
   .product-grid { 
     grid-template-columns: repeat(2, 1fr); 
-    gap: 8px; 
-    padding: 8px 4px; 
-    width: 100%;
-    max-width: 100%;
+    gap: 6px; 
+    padding: 6px 2px; 
+    width: 98%;
+    max-width: 98%;
+    margin: 0 auto;
   }
   
   .category-grid { 
     grid-template-columns: repeat(2, 1fr); 
-    gap: 8px; 
+    gap: 6px; 
+    padding: 6px 2px;
+    width: 98%;
+    max-width: 98%;
+    margin: 0 auto;
+  }
+  
+  /* Tablas de productos - optimizadas para portrait */
+  .product-table, .liquor-table {
+    width: 92%;
+    max-width: 92%;
+    margin: 0 auto;
+    padding: 12px 8px;
+    font-size: 0.85rem;
+  }
+  
+  /* Ajustar celdas de tabla para portrait */
+  .product-table th, .liquor-table th {
     padding: 8px 4px;
-    width: 100%;
-    max-width: 100%;
+    font-size: 0.75rem;
+    letter-spacing: 0.3px;
   }
   
-  /* Tablas de productos - ancho completo */
-  .product-table {
-    width: 100%;
-    max-width: 100%;
-    margin: 0;
+  .product-table td, .liquor-table td {
+    padding: 8px 4px;
+    font-size: 0.8rem;
   }
   
-  /* Botones hamburguesa y volver superpuestos */
+  .product-table th:first-child, .liquor-table th:first-child,
+  .product-table td:first-child, .liquor-table td:first-child {
+    padding-left: 8px;
+  }
+  
+  /* Ajustar nombres de productos para que no se corten */
+  .product-table td.product-name, .liquor-table td.product-name {
+    font-size: 0.75rem;
+    word-break: break-word;
+    white-space: normal;
+    line-height: 1.2;
+  }
+  
+  /* Ajustar ingredientes para que se adapten */
+  .product-table td.product-ingredients {
+    font-size: 0.7rem;
+    line-height: 1.1;
+    word-break: break-word;
+    white-space: normal;
+  }
+  
+  /* Barra superior optimizada para móvil portrait */
+  .top-nav-bar {
+    height: 60px;
+    padding: 0;
+  }
+  
+  .top-nav-content {
+    padding: 0 8px;
+    gap: 8px;
+  }
+  
+  .top-nav-btn {
+    padding: 6px 8px;
+    font-size: 1rem;
+    min-width: 38px;
+    height: 38px;
+    border-radius: 6px;
+  }
+  
+  .top-nav-bar .hamburger-btn {
+    width: 42px;
+    height: 42px;
+    font-size: 1.3rem;
+    border-radius: 6px;
+  }
+  
+  .nav-center {
+    font-size: 1rem;
+  }
+  
+  /* Ajustar contenido principal para barra más compacta */
+  .top-nav-visible ~ #app .main-content-screen,
+  .main-content-screen.with-top-nav {
+    padding-top: 70px;
+  }
+  
+  /* Botones hamburguesa y volver superpuestos - ajustados */
   .hamburger-btn,
   .back-button-container {
     position: fixed;
@@ -2400,12 +2485,15 @@ textarea:focus {
   
   .hamburger-btn {
     left: 8px;
-    top: 78px;
+    top: 70px;
+    width: 42px;
+    height: 42px;
+    font-size: 1.3rem;
   }
   
   .back-button-container {
     left: 8px;
-    top: 138px;
+    top: 120px;
   }
   
   /* ORDER SIDEBAR - MOBILE PORTRAIT (parte inferior) */
@@ -2419,6 +2507,61 @@ textarea:focus {
     max-height: 60vh;
     overflow-x: hidden;
     box-sizing: border-box;
+  }
+}
+
+/* =================================================================
+   REGLAS ESPECÍFICAS PARA PORTRAIT - TABLAS COMPLETAS
+   ================================================================= */
+@media (orientation: portrait) and (max-width: 480px) {
+  /* Asegurar que las tablas se vean completas en portrait */
+  .product-table, .liquor-table {
+    width: 98% !important;
+    max-width: 98% !important;
+    margin: 0 auto;
+    padding: 10px 6px;
+    font-size: 0.8rem;
+    table-layout: fixed;
+  }
+  
+  /* Celdas más compactas para portrait */
+  .product-table th, .liquor-table th {
+    padding: 6px 3px !important;
+    font-size: 0.7rem !important;
+    letter-spacing: 0.2px;
+  }
+  
+  .product-table td, .liquor-table td {
+    padding: 6px 3px !important;
+    font-size: 0.75rem !important;
+  }
+  
+  /* Nombres de productos más compactos */
+  .product-table td.product-name, .liquor-table td.product-name {
+    font-size: 0.7rem !important;
+    word-break: break-word;
+    white-space: normal;
+    line-height: 1.1;
+  }
+  
+  /* Ingredientes más compactos */
+  .product-table td.product-ingredients {
+    font-size: 0.65rem !important;
+    line-height: 1.0;
+    word-break: break-word;
+    white-space: normal;
+  }
+  
+  /* Ajustar imágenes en tablas */
+  .product-table td.image-icon img, .liquor-table td.image-icon img {
+    width: 30px !important;
+    height: 30px !important;
+  }
+  
+  /* Precios más compactos */
+  .product-table td.product-price, .liquor-table td.product-price {
+    font-size: 0.7rem !important;
+    padding: 6px 2px !important;
   }
 }
 
