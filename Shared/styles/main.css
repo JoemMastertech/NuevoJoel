@@ -2516,8 +2516,8 @@ textarea:focus {
 @media (orientation: portrait) and (max-width: 480px) {
   /* Asegurar que las tablas se vean completas en portrait */
   .product-table, .liquor-table {
-    width: 98% !important;
-    max-width: 98% !important;
+    width: 99.5% !important;
+    max-width: 99.5% !important;
     margin: 0 auto;
     padding: 10px 6px;
     font-size: 0.8rem;
@@ -2626,7 +2626,12 @@ textarea:focus {
   .price-button {
     min-height: 44px;
     min-width: 44px;
-    padding: 8px 12px;
+    max-width: 80px;
+    padding: 8px 6px;
+    font-size: 0.8rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
   .view-toggle-btn {
     min-height: 50px;
