@@ -44,11 +44,14 @@
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body { font-family: 'Montserrat', sans-serif; color: var(--text); background: var(--background-color); min-height: 100vh; overflow-y: auto; }
 #app { 
-  width: 70%; 
+  width: 100%; 
+  max-width: var(--table-max-width);
   min-height: 100vh; 
   position: relative; 
   margin: 0 auto;
-  transition: margin-left 0.3s ease-in-out;
+  padding: 0 max(20px, calc((100vw - var(--table-max-width)) / 2));
+  transition: all 0.3s ease-in-out;
+  box-sizing: border-box;
 }
 
 /* Adjust main content when top nav is visible */
@@ -323,7 +326,7 @@ body { font-family: 'Montserrat', sans-serif; color: var(--text); background: va
    ================================================================= */
 .container, .product-table, .liquor-table, .category-grid, .product-grid {
   width: var(--table-width);
-  max-width: var(--table-max-width);
+  max-width: 100%;
   margin: var(--table-margin) auto;
   background: var(--card-bg);
   border-radius: 15px;
@@ -1781,9 +1784,13 @@ textarea:focus {
   body { font-size: 14px; }
   .content-wrapper { flex-direction: column; gap: 5px; }
   
-  /* En tablets y móviles, no desplazar el contenedor maestro */
+  #app {
+    padding: 0 max(15px, calc((100vw - var(--table-max-width)) / 2));
+  }
+  
+  /* En tablets y móviles, sidebar va abajo - resetear padding */
   body.order-mode-active #app {
-    margin-left: auto;
+    padding: 0 max(15px, calc((100vw - var(--table-max-width)) / 2));
   }
   
   /* ORDER SIDEBAR - TABLET RESPONSIVE */
@@ -1949,9 +1956,13 @@ textarea:focus {
   .product-table th, .product-table td { padding: 8px 5px; }
   #content-container { padding: 0 5px; }
   
-  /* En móviles, no desplazar el contenedor maestro */
+  #app {
+    padding: 0 max(10px, calc((100vw - var(--table-max-width)) / 2));
+  }
+  
+  /* En móviles, sidebar va abajo - resetear padding */
   body.order-mode-active #app {
-    margin-left: auto;
+    padding: 0 max(10px, calc((100vw - var(--table-max-width)) / 2));
   }
   
   /* ORDER SIDEBAR - MOBILE RESPONSIVE */
@@ -2145,6 +2156,16 @@ textarea:focus {
    ================================================================= */
 @media (min-width: 768px) and (max-width: 1024px) and (orientation: portrait) {
   .content-wrapper { flex-direction: column; gap: 10px; }
+  
+  #app {
+    padding: 0 max(15px, calc((100vw - var(--table-max-width)) / 2));
+  }
+  
+  /* En portrait tablet, sidebar va abajo - resetear padding */
+  body.order-mode-active #app {
+    padding: 0 max(15px, calc((100vw - var(--table-max-width)) / 2));
+  }
+  
   /* ORDER SIDEBAR - PORTRAIT TABLET RESPONSIVE */
   #order-sidebar { 
     width: 100%;
@@ -2251,12 +2272,11 @@ textarea:focus {
   
   /* ORDER SIDEBAR - MOBILE LANDSCAPE (pegado al borde derecho) */
   body.order-mode-active #app {
-    margin-left: 0;
-    margin-right: 0;
+    padding-right: calc(max(10px, calc((100vw - var(--table-max-width)) / 2)) + 160px);
   }
   
   .content-wrapper {
-    width: calc(100% - 140px);
+    width: 100%;
   }
   
   #order-sidebar {
@@ -2408,6 +2428,16 @@ textarea:focus {
 @media (min-width: 768px) and (max-width: 1024px) and (orientation: landscape) {
   /* Layout adjustments for landscape */
   .content-wrapper { flex-direction: row; }
+  
+  #app {
+    padding: 0 max(15px, calc((100vw - var(--table-max-width)) / 2));
+  }
+  
+  /* Ajustar padding para sidebar lateral en landscape tablet */
+  body.order-mode-active #app {
+    padding-right: calc(max(15px, calc((100vw - var(--table-max-width)) / 2)) + 260px);
+  }
+  
   /* ORDER SIDEBAR - LANDSCAPE TABLET RESPONSIVE */
   #order-sidebar { 
     width: 240px;
@@ -2789,9 +2819,9 @@ textarea:focus {
   background: transparent;
 }
 
-/* Cuando el modo orden está activo, desplazar el contenedor maestro hacia la izquierda */
+/* Cuando el modo orden está activo en desktop, ajustar padding para el sidebar */
 body.order-mode-active #app {
-  margin-left: calc(50% - 35% - 110px); /* Desplaza hacia la izquierda para hacer espacio al sidebar */
+  padding-right: calc(max(20px, calc((100vw - var(--table-max-width)) / 2)) + 260px);
 }
 
 .content-wrapper.order-active {
