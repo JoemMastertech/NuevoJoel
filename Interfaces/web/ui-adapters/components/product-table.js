@@ -14,15 +14,21 @@ const ProductRenderer = {
   boundDelegatedHandler: null,
   
   // Toggle between table and grid view
-  toggleViewMode: function() {
+  toggleViewMode: async function() {
     this.currentViewMode = this.currentViewMode === 'table' ? 'grid' : 'table';
     Logger.info('View mode toggled to:', this.currentViewMode);
     
     // Update toggle button text
     const toggleBtn = document.querySelector('.view-toggle-btn');
     if (toggleBtn) {
-      toggleBtn.textContent = this.currentViewMode === 'table' ? '📋' : '🔲';
+      toggleBtn.textContent = this.currentViewMode === 'table' ? '🔲' : '📋';
       toggleBtn.classList.toggle('active', this.currentViewMode === 'grid');
+    }
+    
+    // Refresh the current view to apply the new mode
+    const container = document.getElementById('content-container');
+    if (container) {
+      await this.refreshCurrentView(container);
     }
     
     return this.currentViewMode;
@@ -46,9 +52,15 @@ const ProductRenderer = {
     // Handle view toggle buttons
     if (target.classList && target.classList.contains('view-toggle-btn')) {
       e.preventDefault();
-      this.toggleViewMode();
-      // Note: refreshCurrentView removed to prevent infinite loop
-      // The view will be refreshed when user navigates to a new category
+      this.toggleViewMode().then(() => {
+        // Refresh the current view to apply the new mode
+        const container = document.getElementById('content-container');
+        if (container) {
+          return this.refreshCurrentView(container);
+        }
+      }).catch(err => {
+        Logger.error('Error in view toggle:', err);
+      });
       return;
     }
     
@@ -1155,11 +1167,12 @@ const ProductRenderer = {
       topBackBtn.addEventListener('click', this._topBackBtnHandler);
     }
     
-    // Actualizar el título en la barra superior
-    if (navTitle) {
-      const categoryTitle = category.charAt(0).toUpperCase() + category.slice(1);
-      navTitle.textContent = categoryTitle;
-    }
+    // ELIMINADO: No mostrar el título de la subcategoría en la barra superior
+    // ya que el título aparece en el contenedor padre
+    // if (navTitle) {
+    //   const categoryTitle = category.charAt(0).toUpperCase() + category.slice(1);
+    //   navTitle.textContent = categoryTitle;
+    // }
 
     // Update the title for all subcategory renderings
     const categoryTitle = category.charAt(0).toUpperCase() + category.slice(1);
