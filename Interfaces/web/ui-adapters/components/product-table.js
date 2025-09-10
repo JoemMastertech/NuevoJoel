@@ -47,16 +47,16 @@ const ProductRenderer = {
     if (target.classList && target.classList.contains('view-toggle-btn')) {
       e.preventDefault();
       this.toggleViewMode();
-      const container = target.closest('.content-wrapper') || document.querySelector('.content-wrapper');
-      if (container) this.refreshCurrentView(container);
+      // Note: refreshCurrentView removed to prevent infinite loop
+      // The view will be refreshed when user navigates to a new category
       return;
     }
     
-    // Handle back buttons
-    if (target.classList && target.classList.contains('back-button')) {
+    // Handle back buttons (both floating and top nav)
+    if (target.classList && (target.classList.contains('back-button') || target.classList.contains('top-back-btn'))) {
       e.preventDefault();
       const container = target.closest('.content-wrapper') || document.querySelector('.content-wrapper');
-      if (container) this.renderLicores(container);
+      if (container) this.handleBackButton(target);
       return;
     }
     
@@ -359,6 +359,26 @@ const ProductRenderer = {
         
         Logger.info('🍷 Renderizando vista de Licores');
         this.renderLicores(container);
+        
+        // Ocultar botón de back en la barra superior y limpiar título
+        const topBackBtn = document.getElementById('top-back-btn');
+        const navTitle = document.getElementById('nav-title');
+        
+        if (topBackBtn) {
+          topBackBtn.classList.add('back-btn-hidden');
+          topBackBtn.removeAttribute('data-action');
+          topBackBtn.removeAttribute('title');
+          
+          // Limpiar event listener específico
+          if (this._topBackBtnHandler) {
+            topBackBtn.removeEventListener('click', this._topBackBtnHandler);
+            this._topBackBtnHandler = null;
+          }
+        }
+        
+        if (navTitle) {
+          navTitle.textContent = '';
+        }
         
         // Log DOM state after rendering
         setTimeout(() => {
@@ -1101,21 +1121,45 @@ const ProductRenderer = {
       }
     }
     
-    // Back button container for positioning below hamburger
-    const backButtonContainer = document.createElement('div');
-    backButtonContainer.className = 'back-button-container';
-
-    // Back button with icon
-    const backButton = document.createElement('button');
-    backButton.className = 'back-button';
-    // Asignación segura: cadena estática (símbolo de flecha), sin riesgo XSS
-    backButton.innerHTML = '←';
-    backButton.title = 'Volver a Licores';
+    // Mostrar barra superior y botón de back
+    const topNavBar = document.getElementById('top-nav-bar');
+    const topBackBtn = document.getElementById('top-back-btn');
+    const navTitle = document.getElementById('nav-title');
     
-    // No individual event listener - handled by delegation
+    // Mostrar la barra superior
+    if (topNavBar) {
+      topNavBar.classList.remove('top-nav-hidden');
+      topNavBar.classList.add('top-nav-visible');
+    }
     
-    backButtonContainer.appendChild(backButton);
-    targetContainer.appendChild(backButtonContainer);
+    // Mostrar botón de back
+    if (topBackBtn) {
+      topBackBtn.classList.remove('back-btn-hidden');
+      topBackBtn.dataset.action = 'back-to-licores';
+      topBackBtn.title = 'Volver a Licores';
+      
+      // Agregar event listener específico para el botón de back
+      // Remover listener anterior si existe
+      if (this._topBackBtnHandler) {
+        topBackBtn.removeEventListener('click', this._topBackBtnHandler);
+      }
+      
+      // Crear y agregar nuevo listener
+      this._topBackBtnHandler = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        Logger.info('🔙 Botón de back clickeado - navegando a licores');
+        this.handleBackButton(topBackBtn);
+      };
+      
+      topBackBtn.addEventListener('click', this._topBackBtnHandler);
+    }
+    
+    // Actualizar el título en la barra superior
+    if (navTitle) {
+      const categoryTitle = category.charAt(0).toUpperCase() + category.slice(1);
+      navTitle.textContent = categoryTitle;
+    }
 
     // Update the title for all subcategory renderings
     const categoryTitle = category.charAt(0).toUpperCase() + category.slice(1);

@@ -2632,6 +2632,24 @@ textarea:focus {
   padding: 0 20px;
 }
 
+.nav-left {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.nav-center {
+  flex: 1;
+  text-align: center;
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: var(--text-color);
+}
+
+.back-btn-hidden {
+  display: none !important;
+}
+
 .nav-buttons-container {
   display: flex;
   gap: 15px;
@@ -2719,12 +2737,9 @@ textarea:focus {
   box-shadow: 0 0 15px var(--price-color);
 }
 
-/* Back button container - positioned fixed below hamburger */
+/* Back button container - OCULTO: ahora está en la barra superior */
 .back-button-container {
-  position: fixed;
-  top: 150px;
-  left: calc((100vw - var(--table-width)) / 2 + 20px);
-  z-index: 900;
+  display: none !important;
 }
 
 /* Styles consolidated into main 768px media query above */
