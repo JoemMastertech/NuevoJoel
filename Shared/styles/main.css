@@ -101,9 +101,9 @@ body { font-family: 'Montserrat', sans-serif; color: var(--text); background: va
 }
 
 .main-content-screen {
-  padding: 20px;
-  justify-content: flex-start;
-  background-color: transparent;
+    padding: 20px;
+    justify-content: flex-start;
+    background-color: transparent;
 }
 
 /* =================================================================
@@ -484,6 +484,9 @@ body { font-family: 'Montserrat', sans-serif; color: var(--text); background: va
   max-width: var(--table-max-width);
   margin: 0 auto;
   width: var(--table-width);
+  /* Fondo integrado que se adapta al contenido */
+  background: linear-gradient(135deg, var(--card-bg) 0%, rgba(0,0,0,0.95) 100%);
+  border-radius: 8px;
 }
 
 .category-grid .page-title, .product-grid .page-title {
