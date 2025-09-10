@@ -2514,14 +2514,33 @@ textarea:focus {
    REGLAS ESPECÍFICAS PARA PORTRAIT - TABLAS COMPLETAS
    ================================================================= */
 @media (orientation: portrait) and (max-width: 480px) {
-  /* Asegurar que las tablas se vean completas en portrait */
-  .product-table, .liquor-table {
-    width: 99.5% !important;
-    max-width: 99.5% !important;
+  /* Contenedor principal optimizado */
+  #app {
+    width: 100%;
+    max-width: none;
+    padding: 0 8px !important;
     margin: 0 auto;
-    padding: 10px 6px;
+    box-sizing: border-box;
+  }
+  
+  /* Contenedor de contenido optimizado */
+  #content-container {
+    width: 100%;
+    max-width: none;
+    padding: 0 !important;
+    margin: 0;
+    box-sizing: border-box;
+  }
+  
+  /* Tablas con distribución optimizada */
+  .product-table, .liquor-table {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0;
+    padding: 8px 4px;
     font-size: 0.8rem;
     table-layout: fixed;
+    box-sizing: border-box;
   }
   
   /* Celdas más compactas para portrait */
@@ -2562,6 +2581,44 @@ textarea:focus {
   .product-table td.product-price, .liquor-table td.product-price {
     font-size: 0.7rem !important;
     padding: 6px 2px !important;
+  }
+  
+  /* Botones de precio optimizados para portrait */
+  .price-button {
+    width: auto;
+    max-width: 80px !important;
+    min-width: 44px !important;
+    padding: 4px 8px !important;
+    font-size: 0.7rem !important;
+    margin: 0;
+    box-sizing: border-box;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  
+  /* Filas de tabla con flexbox para mejor distribución */
+  .product-table tr, .liquor-table tr {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: nowrap;
+  }
+  
+  /* Celdas con distribución flexible */
+  .product-table td, .liquor-table td {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    min-width: 0;
+  }
+  
+  /* Celda de precio con ancho fijo */
+  .product-table td.product-price, .liquor-table td.product-price {
+    flex: 0 0 auto;
+    width: auto;
+    min-width: 60px;
   }
 }
 
