@@ -2030,8 +2030,8 @@ textarea:focus {
   .order-item-header {
     display: flex;
     justify-content: space-between;
-    align-items: flex-start;
-    flex-wrap: wrap;
+    align-items: center;
+    flex-wrap: nowrap;
     gap: 5px;
     width: 100%;
     box-sizing: border-box;
@@ -2354,6 +2354,10 @@ textarea:focus {
   .order-item-name {
     font-size: 0.75rem;
     line-height: 1.1;
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
   
   .order-item-price {
