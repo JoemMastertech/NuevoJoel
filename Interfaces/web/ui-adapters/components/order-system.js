@@ -100,6 +100,9 @@ class OrderSystem {
     
     // Phase 3: Initialize centralized event delegation
     this.initEventDelegation();
+    
+    // Initialize mobile orientation listener
+    this._initOrientationListener();
   }
   
   // Phase 3: Centralized event delegation system
@@ -416,13 +419,64 @@ class OrderSystem {
       sidebar.classList.toggle('sidebar-visible', shouldBeVisible);
       sidebar.classList.toggle('sidebar-hidden', !shouldBeVisible);
       
+      // Mobile orientation control
+      if (shouldBeVisible) {
+        this._handleMobileOrientation(sidebar);
+      }
+      
       // Add/remove 'with-sidebar' class to content wrapper for mobile landscape mode
       const contentWrapper = document.querySelector('.content-wrapper');
       if (contentWrapper) {
-        contentWrapper.classList.toggle('with-sidebar', shouldBeVisible);
+        contentWrapper.classList.toggle('with-sidebar', shouldBeVisible && this._isLandscape());
       }
     }
   }
+  
+  _handleMobileOrientation(sidebar) {
+    const isLandscape = this._isLandscape();
+    
+    // Remove all mobile orientation classes first
+    sidebar.classList.remove('sidebar-mobile-portrait', 'sidebar-mobile-landscape', 
+                            'sidebar-mobile-hidden', 'sidebar-landscape-hidden', 'active');
+    
+    if (isLandscape) {
+      // Landscape: sidebar lateral deslizable
+      sidebar.classList.add('sidebar-mobile-landscape', 'active');
+    } else {
+      // Portrait: sidebar inferior fijo
+      sidebar.classList.add('sidebar-mobile-portrait');
+    }
+  }
+  
+  _isLandscape() {
+     return window.innerWidth > window.innerHeight;
+   }
+   
+   _initOrientationListener() {
+     // Listen for orientation changes
+     window.addEventListener('orientationchange', () => {
+       setTimeout(() => this._handleOrientationChange(), 100);
+     });
+     
+     // Listen for resize events (covers desktop and mobile)
+     window.addEventListener('resize', () => {
+       clearTimeout(this.resizeTimeout);
+       this.resizeTimeout = setTimeout(() => this._handleOrientationChange(), 150);
+     });
+   }
+   
+   _handleOrientationChange() {
+     const sidebar = document.getElementById(CONSTANTS.SELECTORS.SIDEBAR);
+     if (sidebar && sidebar.classList.contains('sidebar-visible')) {
+       this._handleMobileOrientation(sidebar);
+       
+       // Update content wrapper class for landscape mode
+       const contentWrapper = document.querySelector('.content-wrapper');
+       if (contentWrapper) {
+         contentWrapper.classList.toggle('with-sidebar', this._isLandscape());
+       }
+     }
+   }
 
   _updateTablesMode(tables, isActive) {
     if (tables) {
