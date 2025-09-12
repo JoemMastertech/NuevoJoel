@@ -2422,25 +2422,30 @@ textarea:focus {
     font-size: 0.85rem;
   }
   
-  /* REGLAS ESPECÍFICAS PARA PORTRAIT TABLET */
-  @media (orientation: portrait) {
-    /* En portrait tablet, sidebar va abajo - resetear padding */
-    body.order-mode-active #app {
-      padding: 0 max(15px, calc((100vw - var(--table-max-width)) / 2));
-    }
-    
-    /* ORDER SIDEBAR - PORTRAIT TABLET RESPONSIVE */
-    #order-sidebar { 
-      width: 100%;
-      position: relative;
-      top: auto;
-      right: auto;
-      margin: 15px 0 0 0; 
-      padding: 20px;
-      max-height: 60vh;
-      overflow-x: hidden;
-      box-sizing: border-box;
-    }
+  /* REGLAS ESPECÍFICAS PARA PORTRAIT TABLET - SOLO EN PORTRAIT */
+  /* En portrait tablet, sidebar va abajo - resetear padding */
+  body.order-mode-active #app {
+    padding: 0 max(15px, calc((100vw - var(--table-max-width)) / 2)) !important;
+  }
+  
+  /* ORDER SIDEBAR - PORTRAIT TABLET RESPONSIVE */
+  #order-sidebar { 
+    width: 100% !important;
+    position: relative !important;
+    top: auto !important;
+    right: auto !important;
+    margin: 15px 0 0 0 !important; 
+    padding: 20px !important;
+    max-height: 60vh !important;
+    overflow-x: hidden;
+    box-sizing: border-box;
+    transform: none !important;
+    height: auto !important;
+  }
+  
+  /* Sidebar visible cuando está activo en portrait tablet */
+  #order-sidebar.active {
+    transform: translateY(0) !important;
   }
   .product-grid { grid-template-columns: repeat(3, 1fr); gap: 18px; padding: 18px; }
   .category-grid { grid-template-columns: repeat(3, 1fr); gap: 18px; padding: 18px; }
@@ -3154,21 +3159,33 @@ textarea:focus {
   
   /* Ajustar padding para sidebar lateral en landscape tablet */
   body.order-mode-active #app {
-    padding-right: calc(max(15px, calc((100vw - var(--table-max-width)) / 2)) + 260px);
+    padding-right: calc(max(15px, calc((100vw - var(--table-max-width)) / 2)) + 260px) !important;
+  }
+  
+  /* Contenedor con sidebar activo en landscape tablet */
+  .content-wrapper.with-sidebar {
+    width: calc(100vw - 260px) !important;
   }
   
   /* ORDER SIDEBAR - LANDSCAPE TABLET RESPONSIVE */
   #order-sidebar { 
-    width: 240px;
-    position: fixed;
-    top: 80px;
-    right: 15px;
-    margin: 0;
-    padding: 15px;
-    max-height: 75vh;
+    width: 240px !important;
+    position: fixed !important;
+    top: 80px !important;
+    right: 15px !important;
+    margin: 0 !important;
+    padding: 15px !important;
+    max-height: 75vh !important;
     overflow-x: hidden;
     box-sizing: border-box;
     z-index: 900;
+    transform: none !important;
+    height: auto !important;
+  }
+  
+  /* Sidebar visible cuando está activo en landscape tablet */
+  #order-sidebar.active {
+    transform: translateX(0) !important;
   }
   #order-sidebar h3 {
     font-size: 1.4rem;
