@@ -1324,8 +1324,8 @@ body { font-family: 'Montserrat', sans-serif; color: var(--text); background: va
     margin-right: 8px;
   }
 
-/* Portrait Orientation Modals */
-@media (max-width: 768px) and (orientation: portrait) {
+/* Portrait Orientation Modals - Unified for Mobile and Tablet */
+@media (max-width: 1024px) and (orientation: portrait) {
   .modal-content {
     max-height: 92vh;
     display: flex;
@@ -1340,77 +1340,7 @@ body { font-family: 'Montserrat', sans-serif; color: var(--text); background: va
     max-height: 40vh;
   }
   
-  /* Drink options modal specific adjustments for portrait */
-  #drink-options-modal .modal-content {
-    max-height: 85vh;
-    padding: 15px 12px;
-    display: flex;
-    flex-direction: column;
-  }
-  
-  #drink-options-modal .modal-content h3 {
-    font-size: 0.95rem;
-    margin-bottom: 10px;
-    flex-shrink: 0;
-  }
-  
-  #drink-options-modal .options-grid {
-    max-height: 45vh;
-    overflow-y: auto;
-    flex: 1;
-    margin-bottom: 10px;
-  }
-  
-  #drink-options-modal .total-count-container {
-    flex-shrink: 0;
-    margin: 8px 0;
-    padding: 8px;
-    font-size: 0.85rem;
-  }
-  
-  #drink-options-modal .modal-actions {
-    flex-shrink: 0;
-    margin-top: 10px;
-    gap: 10px;
-  }
-  
-  #drink-options-modal .drink-option-container {
-    min-height: 65px;
-    padding: 8px;
-  }
-  
-  #drink-options-modal .counter-container {
-    gap: 6px;
-  }
-  
-  #drink-options-modal .counter-btn {
-    width: 26px;
-    height: 26px;
-    font-size: 1rem;
-  }
-  
-  #drink-options-modal .count-display {
-    width: 25px;
-    font-size: 0.95rem;
-  }
-}
-
-@media (max-width: 480px) and (orientation: portrait) {
-  .modal-content {
-    max-height: 97.75vh;
-    display: flex;
-    flex-direction: column;
-  }
-  
-  .options-grid {
-    max-height: 35vh;
-  }
-  
-  .modal-content img {
-    max-height: 35vh;
-  }
-  
-  /* Drink options modal specific adjustments for small portrait screens */
+  /* Drink options modal specific adjustments for portrait - Mobile & Tablet */
   #drink-options-modal .modal-content {
     max-height: 90vh;
     padding: 12px 10px;
@@ -1478,6 +1408,8 @@ body { font-family: 'Montserrat', sans-serif; color: var(--text); background: va
     font-size: 0.85rem;
   }
 }
+
+/* Removed - Now using unified portrait styles above */
 
 /* Optimized animations */
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
