@@ -61,6 +61,11 @@ body { font-family: 'Montserrat', sans-serif; color: var(--text); background: va
   box-sizing: border-box;
 }
 
+/* Ajustar padding cuando el sidebar está activo en escritorio */
+body.order-mode-active #app {
+  padding-right: calc(max(20px, calc((100vw - var(--table-max-width)) / 2)) + 260px);
+}
+
 /* Adjust main content when top nav is visible */
 .top-nav-visible ~ #app .main-content-screen,
 .main-content-screen.with-top-nav {
@@ -2008,7 +2013,7 @@ textarea:focus {
   
   /* En tablets y móviles, sidebar va abajo - resetear padding */
   body.order-mode-active #app {
-    padding: 0 max(15px, calc((100vw - var(--table-max-width)) / 2));
+    padding: 0 max(15px, calc((100vw - var(--table-max-width)) / 2)) !important;
   }
   
   /* ORDER SIDEBAR - TABLET RESPONSIVE */
@@ -2483,9 +2488,10 @@ textarea:focus {
     gap: 6px;
   }
   
-  /* Ajustar padding para sidebar lateral en landscape móvil */
+  /* Ajustar padding para sidebar lateral en landscape móvil - comportamiento de escritorio */
   body.order-mode-active #app {
     padding-right: calc(max(10px, calc((100vw - var(--table-max-width)) / 2)) + 220px) !important;
+    padding-left: max(10px, calc((100vw - var(--table-max-width)) / 2)) !important;
   }
   
   /* ORDER SIDEBAR - LANDSCAPE MOBILE RESPONSIVE */
