@@ -2485,21 +2485,23 @@ textarea:focus {
   
   /* Ajustar padding para sidebar lateral en landscape móvil */
   body.order-mode-active #app {
-    padding-right: calc(max(10px, calc((100vw - var(--table-max-width)) / 2)) + 220px);
+    padding-right: calc(max(10px, calc((100vw - var(--table-max-width)) / 2)) + 220px) !important;
   }
   
   /* ORDER SIDEBAR - LANDSCAPE MOBILE RESPONSIVE */
   #order-sidebar { 
-    width: 200px;
-    position: fixed;
-    top: 70px;
-    right: 10px;
-    margin: 0;
-    padding: 12px;
-    max-height: 70vh;
+    width: 200px !important;
+    position: fixed !important;
+    top: 70px !important;
+    right: 10px !important;
+    margin: 0 !important;
+    padding: 12px !important;
+    max-height: 70vh !important;
     overflow-x: hidden;
     box-sizing: border-box;
     z-index: 900;
+    transform: none !important;
+    height: auto !important;
   }
   
   #order-sidebar h3 {
