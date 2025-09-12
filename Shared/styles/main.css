@@ -111,6 +111,7 @@ body { font-family: 'Montserrat', sans-serif; color: var(--text); background: va
 }
 
 .main-content-screen {
+    position: relative;
     padding: 20px;
     justify-content: flex-start;
     background-color: transparent;
@@ -208,10 +209,17 @@ body { font-family: 'Montserrat', sans-serif; color: var(--text); background: va
 }
 
 .orders-screen {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
-  max-width: 1200px;
-  margin: 0 auto;
+  height: 100%;
+  max-width: none;
+  margin: 0;
   padding: 20px;
+  background-color: var(--background-color);
+  z-index: 1000;
+  overflow-y: auto;
 }
 
 .orders-screen-header {
@@ -243,6 +251,72 @@ body { font-family: 'Montserrat', sans-serif; color: var(--text); background: va
 
 .history-btn {
   margin-left: auto;
+}
+
+/* Media queries para evitar sobreposición en pantallas pequeñas */
+@media (max-width: 768px) {
+  .orders-screen-header {
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    min-height: 120px;
+  }
+  
+  .orders-screen-title {
+    position: static;
+    transform: none;
+    left: auto;
+    font-size: 1.5rem;
+    margin: 0;
+    order: 1;
+    width: 100%;
+  }
+  
+  .orders-back-btn {
+    position: absolute;
+    top: 60px;
+    left: 0;
+    order: 2;
+    min-width: 100px;
+    padding: 8px 12px;
+    font-size: 0.85rem;
+  }
+  
+  .history-btn {
+    position: absolute;
+    top: 60px;
+    right: 0;
+    order: 3;
+    margin-left: 0;
+    min-width: 100px;
+    padding: 8px 12px;
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .orders-screen-header {
+    min-height: 100px;
+    gap: 15px;
+  }
+  
+  .orders-screen-title {
+    font-size: 1.2rem;
+  }
+  
+  .orders-back-btn {
+    top: 45px;
+    min-width: 80px;
+    padding: 6px 10px;
+    font-size: 0.8rem;
+  }
+  
+  .history-btn {
+    top: 45px;
+    min-width: 80px;
+    padding: 6px 10px;
+    font-size: 0.8rem;
+  }
 }
 
 .content-wrapper {
@@ -1254,6 +1328,8 @@ body { font-family: 'Montserrat', sans-serif; color: var(--text); background: va
 @media (max-width: 768px) and (orientation: portrait) {
   .modal-content {
     max-height: 92vh;
+    display: flex;
+    flex-direction: column;
   }
   
   .options-grid {
@@ -1263,11 +1339,67 @@ body { font-family: 'Montserrat', sans-serif; color: var(--text); background: va
   .modal-content img {
     max-height: 40vh;
   }
+  
+  /* Drink options modal specific adjustments for portrait */
+  #drink-options-modal .modal-content {
+    max-height: 85vh;
+    padding: 15px 12px;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  #drink-options-modal .modal-content h3 {
+    font-size: 0.95rem;
+    margin-bottom: 10px;
+    flex-shrink: 0;
+  }
+  
+  #drink-options-modal .options-grid {
+    max-height: 45vh;
+    overflow-y: auto;
+    flex: 1;
+    margin-bottom: 10px;
+  }
+  
+  #drink-options-modal .total-count-container {
+    flex-shrink: 0;
+    margin: 8px 0;
+    padding: 8px;
+    font-size: 0.85rem;
+  }
+  
+  #drink-options-modal .modal-actions {
+    flex-shrink: 0;
+    margin-top: 10px;
+    gap: 10px;
+  }
+  
+  #drink-options-modal .drink-option-container {
+    min-height: 65px;
+    padding: 8px;
+  }
+  
+  #drink-options-modal .counter-container {
+    gap: 6px;
+  }
+  
+  #drink-options-modal .counter-btn {
+    width: 26px;
+    height: 26px;
+    font-size: 1rem;
+  }
+  
+  #drink-options-modal .count-display {
+    width: 25px;
+    font-size: 0.95rem;
+  }
 }
 
 @media (max-width: 480px) and (orientation: portrait) {
   .modal-content {
     max-height: 97.75vh;
+    display: flex;
+    flex-direction: column;
   }
   
   .options-grid {
@@ -1276,6 +1408,74 @@ body { font-family: 'Montserrat', sans-serif; color: var(--text); background: va
   
   .modal-content img {
     max-height: 35vh;
+  }
+  
+  /* Drink options modal specific adjustments for small portrait screens */
+  #drink-options-modal .modal-content {
+    max-height: 90vh;
+    padding: 12px 10px;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  #drink-options-modal .modal-content h3 {
+    font-size: 0.9rem;
+    margin-bottom: 8px;
+    flex-shrink: 0;
+    line-height: 1.2;
+  }
+  
+  #drink-options-modal .options-grid {
+    max-height: 50vh;
+    overflow-y: auto;
+    flex: 1;
+    margin-bottom: 8px;
+    padding: 10px;
+    gap: 10px;
+  }
+  
+  #drink-options-modal .total-count-container {
+    flex-shrink: 0;
+    margin: 6px 0;
+    padding: 6px;
+    font-size: 0.8rem;
+  }
+  
+  #drink-options-modal .modal-actions {
+    flex-shrink: 0;
+    margin-top: 8px;
+    gap: 8px;
+  }
+  
+  #drink-options-modal .modal-actions .nav-button {
+    padding: 10px 15px;
+    font-size: 0.85rem;
+    min-width: 80px;
+  }
+  
+  #drink-options-modal .drink-option-container {
+    min-height: 60px;
+    padding: 6px;
+  }
+  
+  #drink-options-modal .drink-option-name {
+    font-size: 0.8rem;
+    margin-bottom: 6px;
+  }
+  
+  #drink-options-modal .counter-container {
+    gap: 5px;
+  }
+  
+  #drink-options-modal .counter-btn {
+    width: 24px;
+    height: 24px;
+    font-size: 0.9rem;
+  }
+  
+  #drink-options-modal .count-display {
+    width: 22px;
+    font-size: 0.85rem;
   }
 }
 
@@ -1743,6 +1943,56 @@ textarea:focus {
   margin-bottom: 20px;
 }
 
+/* Contenedores de órdenes con scroll vertical */
+.orders-list-container {
+  max-height: 70vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-right: 10px;
+  margin-top: 20px;
+}
+
+.orders-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.order-history-container {
+  max-height: 70vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-right: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+/* Estilos para la barra de scroll */
+.orders-list-container::-webkit-scrollbar,
+.order-history-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.orders-list-container::-webkit-scrollbar-track,
+.order-history-container::-webkit-scrollbar-track {
+  background: rgba(0, 247, 255, 0.1);
+  border-radius: 4px;
+}
+
+.orders-list-container::-webkit-scrollbar-thumb,
+.order-history-container::-webkit-scrollbar-thumb {
+  background: var(--primary-color);
+  border-radius: 4px;
+  opacity: 0.7;
+}
+
+.orders-list-container::-webkit-scrollbar-thumb:hover,
+.order-history-container::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-color);
+  opacity: 1;
+}
+
 .saved-order {
   background: var(--card-bg);
   border: 1px solid var(--border-color);
@@ -1930,6 +2180,28 @@ textarea:focus {
   .product-table[data-category="cervezas"] th:nth-child(2), 
   .product-table[data-category="cervezas"] td:nth-child(2) { 
     width: 30%; 
+  }
+  
+  /* Ajustes responsivos para contenedores de órdenes en móviles */
+  .orders-list-container,
+  .order-history-container {
+    max-height: 60vh;
+    padding-right: 5px;
+    margin-top: 15px;
+  }
+  
+  .orders-list-container::-webkit-scrollbar,
+  .order-history-container::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  .saved-order {
+    padding: 12px;
+    margin-bottom: 12px;
+  }
+  
+  .saved-order h3 {
+    font-size: 1.1rem;
   }
 }
 
@@ -2615,7 +2887,7 @@ textarea:focus {
     display: block !important;
     width: 100% !important;
     position: relative !important;
-    padding-bottom: 200px !important;
+    padding-bottom: 300px !important;
   }
 }
 
@@ -2654,7 +2926,7 @@ textarea:focus {
   .content-container-flex {
     width: 100vw !important;
     max-width: 100vw !important;
-    padding: 0 !important;
+    padding: 0 0 300px 0 !important;
     margin: 0 !important;
     box-sizing: border-box;
   }
