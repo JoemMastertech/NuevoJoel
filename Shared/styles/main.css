@@ -64,7 +64,7 @@ body { font-family: 'Montserrat', sans-serif; color: var(--text); background: va
 /* Adjust main content when top nav is visible */
 .top-nav-visible ~ #app .main-content-screen,
 .main-content-screen.with-top-nav {
-  padding-top: 90px;
+  padding-top: 72px;
 }
 .screen { position: absolute; top: 0; left: 0; width: 100%; height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 1; }
 
@@ -146,8 +146,8 @@ body { font-family: 'Montserrat', sans-serif; color: var(--text); background: va
 
 .view-toggle-btn {
   font-size: 1.2rem;
-  width: 50px;
-  height: 50px;
+  width: 40px;
+  height: 40px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -302,7 +302,7 @@ body { font-family: 'Montserrat', sans-serif; color: var(--text); background: va
 
 [data-category="carnes"] .video-thumb {
   width: 100px;
-  height: 70px;
+  height: 56px;
   border-radius: 6px;
 }
 
@@ -2016,8 +2016,8 @@ textarea:focus {
     box-sizing: border-box;
   }
   #order-sidebar h3 {
-    font-size: 1.2rem;
-    margin-bottom: 10px;
+    font-size: 0.96rem;
+    margin-bottom: 8px;
   }
   .order-item {
     padding: 6px 0;
@@ -2138,15 +2138,15 @@ textarea:focus {
   }
   
   .top-nav-btn {
-    min-width: 40px;
+    width: 40px;
     height: 40px;
     font-size: 1rem;
-    padding: 6px 10px;
+    padding: 6px;
   }
-  
+
   .top-nav-bar .hamburger-btn {
-    width: 45px;
-    height: 45px;
+    width: 40px;
+    height: 40px;
     font-size: 1.3rem;
   }
   
@@ -2241,8 +2241,8 @@ textarea:focus {
   }
   
   .top-nav-bar .hamburger-btn {
-    width: 40px;
-    height: 40px;
+    width: 36px;
+    height: 36px;
     font-size: 1.2rem;
   }
   
@@ -2251,7 +2251,7 @@ textarea:focus {
   }
   
   .main-content-screen.with-top-nav {
-    padding-top: 80px;
+    padding-top: 64px;
   }
 }
 
@@ -2527,26 +2527,26 @@ textarea:focus {
   
   /* Barra superior optimizada para móvil portrait */
   .top-nav-bar {
-    height: 60px;
+    height: 48px;
     padding: 0;
   }
-  
+
   .top-nav-content {
     padding: 0 8px;
     gap: 8px;
   }
-  
+
   .top-nav-btn {
-    padding: 6px 8px;
+    padding: 6px;
     font-size: 1rem;
-    min-width: 38px;
-    height: 38px;
+    width: 34px;
+    height: 34px;
     border-radius: 6px;
   }
-  
+
   .top-nav-bar .hamburger-btn {
-    width: 42px;
-    height: 42px;
+    width: 36px;
+    height: 36px;
     font-size: 1.3rem;
     border-radius: 6px;
   }
@@ -2558,7 +2558,7 @@ textarea:focus {
   /* Ajustar contenido principal para barra más compacta */
   .top-nav-visible ~ #app .main-content-screen,
   .main-content-screen.with-top-nav {
-    padding-top: 70px;
+    padding-top: 56px;
   }
   
   /* Botones hamburguesa y volver superpuestos - ajustados */
@@ -2570,15 +2570,15 @@ textarea:focus {
   
   .hamburger-btn {
     left: 8px;
-    top: 70px;
-    width: 42px;
-    height: 42px;
+    top: 56px;
+    width: 36px;
+    height: 36px;
     font-size: 1.3rem;
   }
   
   .back-button-container {
     left: 8px;
-    top: 120px;
+    top: 96px;
   }
   
   /* ORDER SIDEBAR - MOBILE PORTRAIT (parte inferior) */
@@ -2825,7 +2825,7 @@ textarea:focus {
    ================================================================= */
 @media (max-width: 1024px) {
   .nav-button {
-    min-height: 44px;
+    min-height: 40px;
     padding: 12px 18px;
   }
   .price-button {
@@ -2842,7 +2842,11 @@ textarea:focus {
     min-height: 50px;
     min-width: 50px;
   }
-  .hamburger-btn, .back-button {
+  .hamburger-btn {
+    min-height: 40px;
+    min-width: 40px;
+  }
+  .back-button {
     min-height: 50px;
     min-width: 50px;
   }
@@ -2984,7 +2988,7 @@ textarea:focus {
   top: 0;
   left: 0;
   width: 100%;
-  height: 70px;
+  height: 56px;
   background: linear-gradient(135deg, var(--card-bg) 0%, rgba(0,0,0,0.92) 100%);
   backdrop-filter: blur(15px);
   border-bottom: 2px solid var(--border-color);
@@ -3043,14 +3047,14 @@ textarea:focus {
   background: var(--card-bg);
   border: 2px solid var(--primary-color);
   color: var(--text-color);
-  padding: 8px 12px;
+  padding: 8px;
   font-size: 1.2rem;
   border-radius: 8px;
   cursor: pointer;
   transition: all var(--transition-time) ease;
   backdrop-filter: blur(10px);
-  min-width: 45px;
-  height: 45px;
+  width: 40px;
+  height: 40px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -3075,8 +3079,8 @@ textarea:focus {
   border: 2px solid var(--primary-color);
   color: var(--text-color);
   font-size: 1.5rem;
-  width: 50px;
-  height: 50px;
+  width: 40px;
+  height: 40px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -3096,14 +3100,14 @@ textarea:focus {
 
 .hamburger-btn {
   position: fixed;
-  top: 90px; 
+  top: 72px; 
   left: calc((100vw - var(--table-width)) / 2 + 20px);
   background: var(--card-bg);
   border: 2px solid var(--primary-color);
   color: var(--text-color);
   font-size: 1.5rem;
-  width: 50px;
-  height: 50px;
+  width: 40px;
+  height: 40px;
   display: flex;
   justify-content: center;
   align-items: center;
