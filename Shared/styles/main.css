@@ -2494,6 +2494,11 @@ textarea:focus {
     padding-left: max(10px, calc((100vw - var(--table-max-width)) / 2)) !important;
   }
   
+  /* Contenedor con sidebar activo en landscape */
+  .content-wrapper.with-sidebar {
+    width: calc(100vw - 220px) !important;
+  }
+  
   /* ORDER SIDEBAR - LANDSCAPE MOBILE RESPONSIVE */
   #order-sidebar { 
     width: 200px !important;
@@ -2508,6 +2513,11 @@ textarea:focus {
     z-index: 900;
     transform: none !important;
     height: auto !important;
+  }
+  
+  /* Sidebar visible cuando está activo en landscape */
+  #order-sidebar.active {
+    transform: translateX(0) !important;
   }
   
   #order-sidebar h3 {
@@ -2680,37 +2690,7 @@ textarea:focus {
     transition: width 0.3s ease;
   }
   
-  /* Contenedor con sidebar activo */
-  .content-wrapper.with-sidebar {
-    width: calc(100vw - 140px) !important;
-  }
-  
-  /* Sidebar lateral deslizable */
-  #order-sidebar {
-    width: 140px !important;
-    position: fixed !important;
-    top: 0 !important;
-    right: 0 !important;
-    height: 100vh !important;
-    max-height: 100vh !important;
-    margin: 0 !important;
-    padding: 12px !important;
-    overflow-y: auto;
-    overflow-x: hidden;
-    border-radius: 0 !important;
-    z-index: 1000;
-    box-sizing: border-box;
-    background: var(--card-bg);
-    border-left: 2px solid var(--border-color);
-    transform: translateX(100%);
-    transition: transform 0.3s ease;
-    font-size: 0.8rem;
-  }
-  
-  /* Sidebar visible cuando está activo */
-  #order-sidebar.active {
-    transform: translateX(0);
-  }
+  /* ESTAS REGLAS AHORA ESTÁN EN @media (orientation: portrait) MÁS ABAJO */
 }
   
   #order-sidebar h3 {
