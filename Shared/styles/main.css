@@ -2660,12 +2660,13 @@ textarea:focus {
     margin: 4px 0;
   }
   
-  /* ORDER SIDEBAR - MOBILE LANDSCAPE (pegado al borde derecho) */
+@media (orientation: portrait) {
+  /* ORDER SIDEBAR - MOBILE PORTRAIT (pegado al borde derecho) */
   body.order-mode-active #app {
     padding-right: calc(max(10px, calc((100vw - var(--table-max-width)) / 2)) + 160px);
   }
   
-  /* Contenedor principal para landscape */
+  /* Contenedor principal para portrait */
   .content-wrapper {
     display: flex !important;
     flex-direction: row !important;
@@ -2710,6 +2711,7 @@ textarea:focus {
   #order-sidebar.active {
     transform: translateX(0);
   }
+}
   
   #order-sidebar h3 {
     font-size: 1rem;
