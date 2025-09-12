@@ -2400,7 +2400,21 @@ textarea:focus {
   .content-wrapper { flex-direction: column; gap: 10px; }
   
   #app {
-    padding: 0 max(15px, calc((100vw - var(--table-max-width)) / 2));
+    padding: 0 max(12px, calc((100vw - var(--table-max-width)) / 2));
+  }
+  
+  /* Optimización de espacios para landscape tablet */
+  .top-nav {
+    padding: 10px 15px;
+  }
+  
+  .nav-buttons-container {
+    gap: 8px;
+  }
+  
+  .top-nav-btn {
+    padding: 8px 12px;
+    font-size: 0.85rem;
   }
   
   /* En portrait tablet, sidebar va abajo - resetear padding */
@@ -2463,7 +2477,53 @@ textarea:focus {
   /* Replicar comportamiento de escritorio en móviles landscape */
   .content-wrapper { 
     flex-direction: row;
-    gap: 8px;
+    gap: 6px;
+  }
+  
+  /* Ajustar padding para sidebar lateral en landscape móvil */
+  body.order-mode-active #app {
+    padding-right: calc(max(10px, calc((100vw - var(--table-max-width)) / 2)) + 220px);
+  }
+  
+  /* ORDER SIDEBAR - LANDSCAPE MOBILE RESPONSIVE */
+  #order-sidebar { 
+    width: 200px;
+    position: fixed;
+    top: 70px;
+    right: 10px;
+    margin: 0;
+    padding: 12px;
+    max-height: 70vh;
+    overflow-x: hidden;
+    box-sizing: border-box;
+    z-index: 900;
+  }
+  
+  #order-sidebar h3 {
+    font-size: 1.2rem;
+    margin-bottom: 12px;
+  }
+  
+  .order-item {
+    padding: 8px 0;
+  }
+  
+  .order-item-name {
+    font-size: 0.85rem;
+  }
+  
+  .order-item-price {
+    font-size: 0.8rem;
+  }
+  
+  .order-total h4 {
+    font-size: 1rem;
+  }
+  
+  .content-wrapper.order-active {
+    gap: 4px;
+    justify-content: flex-start;
+    transition: gap 0.2s ease-in-out;
   }
   
   /* Drink options modal specific adjustments for small landscape screens */
@@ -2498,21 +2558,58 @@ textarea:focus {
     font-size: 0.9rem;
   }
   
+  /* Optimización de espacios para landscape móvil */
+  #app {
+    padding: 0 max(8px, calc((100vw - var(--table-max-width)) / 2));
+  }
+  
+  .top-nav {
+    padding: 8px 12px;
+  }
+  
+  .nav-buttons-container {
+    gap: 6px;
+  }
+  
+  .top-nav-btn {
+    padding: 6px 10px;
+    font-size: 0.8rem;
+  }
+  
   /* Grid con 3 columnas en landscape - ancho completo */
   .product-grid { 
     grid-template-columns: repeat(3, 1fr); 
-    gap: 8px; 
-    padding: 8px;
+    gap: 6px; 
+    padding: 6px;
     width: 100%;
     max-width: 100%;
   }
   
   .category-grid { 
     grid-template-columns: repeat(3, 1fr); 
-    gap: 8px; 
-    padding: 8px;
+    gap: 6px; 
+    padding: 6px;
     width: 100%;
     max-width: 100%;
+  }
+  
+  .product-card {
+    min-height: 200px;
+    padding: 8px;
+  }
+  
+  .product-card .product-name {
+    font-size: 0.75rem;
+    margin-bottom: 4px;
+  }
+  
+  .product-card .product-ingredients {
+    font-size: 0.7rem;
+  }
+  
+  .category-image {
+    width: clamp(50px, 8vw, 80px);
+    height: clamp(50px, 8vw, 80px);
   }
   
   /* Tabla de productos - ancho completo */
@@ -3011,10 +3108,19 @@ textarea:focus {
    ================================================================= */
 @media (min-width: 768px) and (max-width: 1024px) and (orientation: landscape) {
   /* Layout adjustments for landscape */
-  .content-wrapper { flex-direction: row; }
+  .content-wrapper { 
+    flex-direction: row;
+    gap: 8px;
+  }
   
   #app {
     padding: 0 max(15px, calc((100vw - var(--table-max-width)) / 2));
+  }
+  
+  .content-wrapper.order-active {
+    gap: 6px;
+    justify-content: flex-start;
+    transition: gap 0.2s ease-in-out;
   }
   
   /* Drink options modal specific adjustments for tablet landscape */
@@ -3057,12 +3163,15 @@ textarea:focus {
   /* ORDER SIDEBAR - LANDSCAPE TABLET RESPONSIVE */
   #order-sidebar { 
     width: 240px;
-    margin-left: auto;
-    margin-right: 0;
+    position: fixed;
+    top: 80px;
+    right: 15px;
+    margin: 0;
     padding: 15px;
     max-height: 75vh;
     overflow-x: hidden;
     box-sizing: border-box;
+    z-index: 900;
   }
   #order-sidebar h3 {
     font-size: 1.4rem;
@@ -3080,12 +3189,12 @@ textarea:focus {
     font-size: 1.15rem;
   }
   
-  .product-grid { grid-template-columns: repeat(3, 1fr); gap: 18px; padding: 18px; }
-  .category-grid { grid-template-columns: repeat(4, 1fr); gap: 18px; padding: 18px; }
-  .category-image { width: clamp(90px, 11vw, 120px); height: clamp(90px, 11vw, 120px); }
-  .product-card { min-height: 280px; height: auto; /* max-height removido */ }
-  .product-card .product-name { font-size: 0.81rem; height: clamp(1.386rem, 2.07vw + 0.576rem, 1.845rem); -webkit-line-clamp: unset; line-clamp: unset; overflow: visible; text-overflow: unset; display: block; }
-  .product-card .product-ingredients { font-size: 0.8rem; }
+  .product-grid { grid-template-columns: repeat(3, 1fr); gap: 12px; padding: 12px; }
+  .category-grid { grid-template-columns: repeat(4, 1fr); gap: 12px; padding: 12px; }
+  .category-image { width: clamp(70px, 9vw, 100px); height: clamp(70px, 9vw, 100px); }
+  .product-card { min-height: 240px; height: auto; padding: 10px; }
+  .product-card .product-name { font-size: 0.78rem; height: clamp(1.2rem, 1.8vw + 0.5rem, 1.6rem); -webkit-line-clamp: unset; line-clamp: unset; overflow: visible; text-overflow: unset; display: block; margin-bottom: 6px; }
+  .product-card .product-ingredients { font-size: 0.75rem; }
 }
 
 /* =================================================================
