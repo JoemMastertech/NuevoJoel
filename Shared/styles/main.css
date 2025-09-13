@@ -2486,70 +2486,87 @@ textarea:focus {
   }
 }
 
-@media (max-width: 480px) and (orientation: landscape) {
-  /* Replicar comportamiento de escritorio en móviles landscape */
-  .content-wrapper { 
-    flex-direction: row;
-    gap: 6px;
-  }
-  
-  /* Ajustar padding para sidebar lateral en landscape móvil - comportamiento de escritorio */
-  body.order-mode-active #app {
-    padding-right: calc(max(10px, calc((100vw - var(--table-max-width)) / 2)) + 220px) !important;
-    padding-left: max(10px, calc((100vw - var(--table-max-width)) / 2)) !important;
-  }
-  
-  /* Contenedor con sidebar activo en landscape */
-  .content-wrapper.with-sidebar {
-    width: calc(100vw - 220px) !important;
-  }
-  
-  /* ORDER SIDEBAR - LANDSCAPE MOBILE RESPONSIVE */
-  #order-sidebar { 
-    width: 200px !important;
-    position: fixed !important;
-    top: 70px !important;
-    right: 10px !important;
+@media (max-width: 900px) and (orientation: landscape) {
+  /* Eliminar paddings del body y app para aprovechar toda la pantalla */
+  body {
     margin: 0 !important;
-    padding: 12px !important;
-    max-height: 70vh !important;
+    padding: 0 !important;
+  }
+  
+  #app {
+    padding: 0 !important;
+    margin: 0 !important;
+    width: 100vw !important;
+  }
+  
+  /* Configuración flex para contenedor padre y sidebar en landscape */
+  .content-wrapper { 
+    display: flex;
+    flex-direction: row;
+    gap: 0; /* Sin gap para aprovechar toda la pantalla */
+    width: 100vw;
+    margin: 0;
+    padding: 0;
+    align-items: flex-start;
+  }
+  
+  /* Contenedor principal ocupa el espacio restante */
+  #content-container {
+    flex: 1;
+    min-width: 0; /* Permite que el contenido se reduzca */
+    padding: 8px; /* Padding interno mínimo */
+  }
+  
+  /* ORDER SIDEBAR - LANDSCAPE RESPONSIVE - Mismo nivel jerárquico */
+  #order-sidebar { 
+    width: clamp(200px, 25vw, 280px); /* Ancho responsivo basado en viewport */
+    position: relative !important; /* Cambio clave: de fixed a relative */
+    top: auto !important;
+    right: auto !important;
+    margin: 0 !important;
+    padding: 8px !important; /* Padding interno reducido */
+    max-height: 100vh !important; /* Altura completa de viewport */
     overflow-x: hidden;
+    overflow-y: auto;
     box-sizing: border-box;
-    z-index: 900;
+    z-index: auto; /* Ya no necesita z-index alto */
     transform: none !important;
     height: auto !important;
+    flex-shrink: 0; /* No se reduce */
   }
   
   /* Sidebar visible cuando está activo en landscape */
   #order-sidebar.active {
-    transform: translateX(0) !important;
+    display: block !important;
+    transform: none !important;
   }
   
+  /* Estilos internos del sidebar optimizados para landscape */
   #order-sidebar h3 {
-    font-size: 1.2rem;
-    margin-bottom: 12px;
+    font-size: 1.1rem;
+    margin-bottom: 10px;
   }
   
   .order-item {
-    padding: 8px 0;
+    padding: 6px 0;
   }
   
   .order-item-name {
-    font-size: 0.85rem;
+    font-size: 0.8rem;
+    line-height: 1.2;
   }
   
   .order-item-price {
-    font-size: 0.8rem;
+    font-size: 0.75rem;
   }
   
   .order-total h4 {
-    font-size: 1rem;
+    font-size: 0.95rem;
   }
   
+  /* Sin gap cuando el sidebar está activo - pantalla completa */
   .content-wrapper.order-active {
-    gap: 4px;
-    justify-content: flex-start;
-    transition: gap 0.2s ease-in-out;
+    gap: 0; /* Sin espacios para aprovechar toda la pantalla */
   }
   
   /* Drink options modal specific adjustments for small landscape screens */
@@ -2638,11 +2655,46 @@ textarea:focus {
     height: clamp(50px, 8vw, 80px);
   }
   
-  /* Tabla de productos - ancho completo */
+  /* Tabla de productos - ancho completo para coincidir con grid */
   .product-table {
-    width: 100%;
+    width: 100%; /* Ancho completo para coincidir con grid */
     max-width: 100%;
-    margin: 0;
+    margin: 0 auto; /* Centrado */
+    box-sizing: border-box; /* Incluir padding y border en el ancho */
+  }
+  
+  .liquor-table {
+    width: 100%; /* Mismo ancho que product-table */
+    max-width: 100%;
+    margin: 0 auto;
+    box-sizing: border-box; /* Incluir padding y border en el ancho */
+  }
+  
+  /* Ajuste específico cuando el sidebar está visible */
+  #content-container .product-table,
+  #content-container .liquor-table {
+    width: 100% !important;
+    max-width: 100% !important;
+    table-layout: fixed !important; /* Forzar que la tabla respete el ancho del contenedor */
+    overflow: hidden !important; /* Evitar desbordamiento */
+  }
+  
+  /* Asegurar que las celdas de la tabla también respeten el ancho */
+  #content-container .product-table td,
+  #content-container .product-table th,
+  #content-container .liquor-table td,
+  #content-container .liquor-table th {
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+  }
+  
+  /* Sobrescribir reglas específicas de categorías cuando el sidebar está visible */
+  #content-container .product-table[data-category="refrescos"],
+  #content-container .product-table[data-category="cervezas"] {
+    width: 100% !important;
+    max-width: 100% !important;
+    table-layout: fixed !important;
   }
 
   #content-container {
@@ -2650,13 +2702,7 @@ textarea:focus {
     width: 100%;
   }
 
-  /* Restaurar configuración original de #app para landscape */
-  #app {
-    padding: 0 max(20px, calc((100vw - var(--table-max-width)) / 2)) !important;
-    margin: 0 auto !important;
-    width: 85% !important;
-    max-width: var(--table-max-width) !important;
-  }
+  /* Configuración de #app ya manejada en la media query principal */
   
   /* Modales más pequeños para landscape móvil */
   .modal-content.image-modal {
@@ -2694,8 +2740,67 @@ textarea:focus {
     box-sizing: border-box;
     transition: width 0.3s ease;
   }
+
+/* Ajustes para pantallas landscape grandes - tablas con 90% de ancho */
+@media (min-width: 1200px) and (orientation: landscape) {
+  .product-table,
+  .liquor-table {
+    width: 90% !important;
+    max-width: 90% !important;
+  }
+}
+
+/* Ajustes para pantallas landscape medianas - tablas a ancho completo */
+@media (max-width: 750px) and (orientation: landscape) {
+  /* Eliminar padding de #app que limita el ancho */
+  #app {
+    padding: 0 !important;
+    width: 100vw !important;
+    max-width: 100vw !important;
+  }
   
-  /* ESTAS REGLAS AHORA ESTÁN EN @media (orientation: portrait) MÁS ABAJO */
+  .product-table,
+  .liquor-table {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+}
+
+/* Ajustes específicos para pantallas landscape muy pequeñas */
+@media (max-width: 480px) and (orientation: landscape) {
+  /* Eliminar padding de #app que limita el ancho */
+  #app {
+    padding: 0 !important;
+    width: 100vw !important;
+    max-width: 100vw !important;
+  }
+  
+  #order-sidebar {
+    width: clamp(160px, 22vw, 200px) !important; /* Más compacto en pantallas pequeñas */
+    padding: 6px !important; /* Padding aún más reducido */
+  }
+  
+  .content-wrapper {
+    gap: 0 !important; /* Sin gap para aprovechar toda la pantalla */
+  }
+  
+  .content-wrapper.order-active {
+    gap: 0 !important; /* Sin gap */
+  }
+  
+  #content-container {
+    padding: 6px !important; /* Padding reducido para pantallas pequeñas */
+  }
+  
+  /* Tablas a ancho completo en pantallas muy pequeñas para coincidir con grid */
+  .product-table,
+  .liquor-table {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+}
+
+/* ESTAS REGLAS AHORA ESTÁN EN @media (orientation: portrait) MÁS ABAJO */
 }
   
   #order-sidebar h3 {
