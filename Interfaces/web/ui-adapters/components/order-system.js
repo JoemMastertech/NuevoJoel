@@ -367,6 +367,15 @@ class OrderSystem {
   }
 
   toggleOrderMode(skipClear = false) {
+    // If we're turning off order mode and there are items, just clear them but keep buttons active
+    if (this.isOrderMode && this.core && this.core.getItems && this.core.getItems().length > 0 && !skipClear) {
+      this.core.clearItems();
+      this.updateOrderDisplay();
+      // Keep order mode active so buttons remain enabled
+      return;
+    }
+    
+    // If we're turning off order mode and there are no items, actually toggle off
     this.isOrderMode = !this.isOrderMode;
     const elements = this._getOrderModeElements();
     
