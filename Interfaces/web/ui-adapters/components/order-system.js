@@ -422,6 +422,9 @@ class OrderSystem {
       // Mobile orientation control
       if (shouldBeVisible) {
         this._handleMobileOrientation(sidebar);
+      } else {
+        // Handle hiding for mobile orientations
+        this._handleMobileHiding(sidebar);
       }
       
       // Add/remove 'with-sidebar' class to content wrapper for mobile landscape mode
@@ -450,6 +453,22 @@ class OrderSystem {
   
   _isLandscape() {
      return window.innerWidth > window.innerHeight;
+   }
+   
+   _handleMobileHiding(sidebar) {
+     const isLandscape = this._isLandscape();
+     
+     // Remove all mobile orientation classes first
+     sidebar.classList.remove('sidebar-mobile-portrait', 'sidebar-mobile-landscape', 
+                             'sidebar-mobile-hidden', 'sidebar-landscape-hidden', 'active');
+     
+     if (isLandscape) {
+       // Landscape: hide sidebar by sliding it to the right
+       sidebar.classList.add('sidebar-landscape-hidden');
+     } else {
+       // Portrait: hide sidebar by sliding it down
+       sidebar.classList.add('sidebar-mobile-hidden');
+     }
    }
    
    _initOrientationListener() {
