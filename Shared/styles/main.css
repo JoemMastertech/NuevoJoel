@@ -2499,37 +2499,39 @@ textarea:focus {
     width: 100vw !important;
   }
   
-  /* Configuración flex para contenedor padre y sidebar en landscape */
+  /* Configuración para contenedor padre en landscape - sidebar fixed */
   .content-wrapper { 
-    display: flex;
-    flex-direction: row;
-    gap: 0; /* Sin gap para aprovechar toda la pantalla */
+    display: block; /* Cambiar a block ya que sidebar es fixed */
     width: 100vw;
     margin: 0;
     padding: 0;
-    align-items: flex-start;
   }
   
-  /* Contenedor principal ocupa el espacio restante */
+  /* Contenedor principal ocupa todo el ancho disponible */
   #content-container {
-    flex: 1;
-    min-width: 0; /* Permite que el contenido se reduzca */
+    width: 100%;
     padding: 8px; /* Padding interno mínimo */
+    margin-right: 0; /* Sin margen ya que sidebar es fixed */
+  }
+  
+  /* Ajustar margen derecho cuando sidebar está activo para evitar solapamiento */
+  .content-wrapper.order-active #content-container {
+    margin-right: clamp(220px, 27vw, 300px); /* Espacio para el sidebar */
   }
   
   /* ORDER SIDEBAR - LANDSCAPE RESPONSIVE - Mismo nivel jerárquico */
   #order-sidebar { 
     width: clamp(200px, 25vw, 280px); /* Ancho responsivo basado en viewport */
-    position: relative !important; /* Cambio clave: de fixed a relative */
-    top: auto !important;
-    right: auto !important;
+    position: fixed !important; /* Mantener fijo para que no se desplace con scroll */
+    top: 90px !important; /* Posición desde arriba */
+    right: 20px !important; /* Posición desde la derecha */
     margin: 0 !important;
     padding: 8px !important; /* Padding interno reducido */
-    max-height: 100vh !important; /* Altura completa de viewport */
+    max-height: calc(100vh - 110px) !important; /* Altura ajustada considerando top */
     overflow-x: hidden;
     overflow-y: auto;
     box-sizing: border-box;
-    z-index: auto; /* Ya no necesita z-index alto */
+    z-index: 900 !important; /* Z-index alto para mantenerlo visible */
     transform: none !important;
     height: auto !important;
     flex-shrink: 0; /* No se reduce */
