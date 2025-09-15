@@ -1,0 +1,307 @@
+/* === MODAL DRINK OPTIONS - SOLUCIÓN ÚNICA Y LIMPIA === */
+/* Archivo CSS dedicado exclusivamente al modal de opciones de bebidas */
+/* Elimina TODOS los conflictos CSS previos */
+
+/* Reset completo del modal */
+#drink-options-modal {
+  /* Posicionamiento fijo */
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  
+  /* Fondo y z-index */
+  background: rgba(0, 0, 0, 0.6) !important;
+  z-index: 1000 !important;
+  
+  /* Flexbox para centrado */
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  
+  /* Reset de cualquier padding/margin */
+  padding: 0 !important;
+  margin: 0 !important;
+  box-sizing: border-box !important;
+}
+
+#drink-options-modal .modal-content {
+  /* Dimensiones responsivas */
+  width: min(90vw, 600px) !important;
+  max-height: 80vh !important;
+  min-height: 400px !important;
+  
+  /* Estilo visual */
+  background: var(--card-bg) !important;
+  border-radius: 8px !important;
+  padding: 20px !important;
+  
+  /* Layout interno */
+  display: flex !important;
+  flex-direction: column !important;
+  
+  /* Sombra */
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3) !important;
+  
+  /* Reset completo */
+  margin: 0 !important;
+  position: relative !important;
+  overflow: visible !important;
+  box-sizing: border-box !important;
+}
+
+#drink-options-modal h3 {
+  margin: 0 0 15px 0 !important;
+  padding: 0 !important;
+  text-align: center !important;
+  font-size: 1.2rem !important;
+  color: var(--text-color) !important;
+  flex-shrink: 0 !important;
+}
+
+#drink-options-modal .options-grid {
+  /* Grid responsivo */
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)) !important;
+  gap: 15px !important;
+  
+  /* Espaciado */
+  padding: 15px 0 !important;
+  margin: 0 !important;
+  
+  /* Scroll */
+  max-height: 50vh !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  
+  /* Flex */
+  flex: 1 1 auto !important;
+  
+  /* Reset */
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+#drink-options-modal .modal-actions {
+  /* Layout */
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  gap: 15px !important;
+  
+  /* Espaciado */
+  margin-top: 20px !important;
+  padding: 0 !important;
+  
+  /* Flex */
+  flex-shrink: 0 !important;
+  
+  /* Reset */
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+#drink-options-modal .modal-actions .nav-button {
+  /* Dimensiones */
+  padding: 12px 24px !important;
+  min-width: 120px !important;
+  min-height: 44px !important;
+  
+  /* Estilo */
+  font-size: 16px !important;
+  border-radius: 6px !important;
+  
+  /* Reset */
+  margin: 0 !important;
+  box-sizing: border-box !important;
+  white-space: nowrap !important;
+}
+
+/* === RESPONSIVE BREAKPOINTS === */
+
+/* Landscape móvil - el problema principal */
+@media (max-width: 768px) and (orientation: landscape) {
+  #drink-options-modal .modal-content {
+    width: min(95vw, 800px) !important;
+    max-height: 85vh !important;
+    padding: 16px !important;
+    min-height: 350px !important;
+  }
+  
+  #drink-options-modal .options-grid {
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)) !important;
+    gap: 12px !important;
+    max-height: 55vh !important;
+    padding: 10px 0 !important;
+  }
+  
+  #drink-options-modal .modal-actions .nav-button {
+    padding: 10px 20px !important;
+    font-size: 14px !important;
+    min-width: 100px !important;
+    min-height: 40px !important;
+  }
+  
+  #drink-options-modal h3 {
+    font-size: 1.1rem !important;
+    margin-bottom: 10px !important;
+  }
+}
+
+/* Portrait móvil */
+@media (max-width: 480px) and (orientation: portrait) {
+  #drink-options-modal .modal-content {
+    width: 95vw !important;
+    max-height: 85vh !important;
+    padding: 16px !important;
+  }
+  
+  #drink-options-modal .options-grid {
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)) !important;
+    gap: 10px !important;
+    max-height: 60vh !important;
+  }
+  
+  #drink-options-modal .modal-actions .nav-button {
+    padding: 10px 18px !important;
+    font-size: 14px !important;
+    min-width: 100px !important;
+  }
+}
+
+/* Pantallas muy pequeñas landscape */
+@media (max-width: 480px) and (orientation: landscape) {
+  #drink-options-modal .modal-content {
+    width: 98vw !important;
+    max-height: 90vh !important;
+    padding: 12px !important;
+    min-height: 300px !important;
+  }
+  
+  #drink-options-modal .options-grid {
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)) !important;
+    gap: 8px !important;
+    max-height: 65vh !important;
+    padding: 8px 0 !important;
+  }
+  
+  #drink-options-modal .modal-actions {
+    margin-top: 15px !important;
+    gap: 10px !important;
+  }
+  
+  #drink-options-modal .modal-actions .nav-button {
+    padding: 8px 16px !important;
+    font-size: 13px !important;
+    min-width: 90px !important;
+    min-height: 36px !important;
+  }
+  
+  #drink-options-modal h3 {
+    font-size: 1rem !important;
+    margin-bottom: 8px !important;
+  }
+}
+
+/* === ELEMENTOS INTERNOS DEL MODAL === */
+
+/* Contenedores de opciones de bebida */
+#drink-options-modal .drink-option-container {
+  background: rgba(0, 247, 255, 0.1) !important;
+  border: 2px solid var(--price-color) !important;
+  border-radius: 6px !important;
+  padding: 12px 8px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  min-height: 80px !important;
+  transition: all 0.3s ease !important;
+  box-sizing: border-box !important;
+}
+
+#drink-options-modal .drink-option-container:hover {
+  background: rgba(0, 247, 255, 0.2) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 4px 12px rgba(0, 247, 255, 0.3) !important;
+}
+
+#drink-options-modal .drink-option-name {
+  font-size: 0.9rem !important;
+  text-align: center !important;
+  margin-bottom: 8px !important;
+  color: var(--text-color) !important;
+  font-weight: 500 !important;
+  line-height: 1.2 !important;
+}
+
+#drink-options-modal .counter-container {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  margin-top: auto !important;
+}
+
+#drink-options-modal .counter-btn {
+  width: 32px !important;
+  height: 32px !important;
+  border-radius: 50% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 1.1rem !important;
+  font-weight: bold !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+}
+
+#drink-options-modal .count-display {
+  width: 40px !important;
+  text-align: center !important;
+  font-size: 1rem !important;
+  font-weight: bold !important;
+  color: var(--text-color) !important;
+}
+
+#drink-options-modal .total-count-container {
+  text-align: center !important;
+  margin: 10px 0 !important;
+  padding: 8px !important;
+  background: rgba(0, 247, 255, 0.1) !important;
+  border-radius: 6px !important;
+  font-weight: bold !important;
+  color: var(--text-color) !important;
+  flex-shrink: 0 !important;
+}
+
+/* === ESTADOS ESPECIALES === */
+
+/* Modal visible */
+#drink-options-modal.modal-flex {
+  display: flex !important;
+}
+
+/* Modal oculto */
+#drink-options-modal.modal-hidden {
+  display: none !important;
+}
+
+/* Scrollbar personalizado para el grid */
+#drink-options-modal .options-grid::-webkit-scrollbar {
+  width: 6px !important;
+}
+
+#drink-options-modal .options-grid::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1) !important;
+  border-radius: 3px !important;
+}
+
+#drink-options-modal .options-grid::-webkit-scrollbar-thumb {
+  background: var(--price-color) !important;
+  border-radius: 3px !important;
+}
+
+#drink-options-modal .options-grid::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 247, 255, 0.8) !important;
+}

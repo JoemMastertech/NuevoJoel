@@ -971,10 +971,7 @@ body.order-mode-active #app {
 /* Modal backdrop */
 .modal-backdrop, .modal {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
+  inset: 0;
   background: rgba(0, 0, 0, 0.8);
   display: flex;
   justify-content: center;
@@ -1009,7 +1006,27 @@ body.order-mode-active #app {
   overflow: hidden;
 }
 
-/* Drink options modal - ELIMINADO - Ver estilos consolidados al final del archivo */
+/* Drink options modal specific sizing - Horizontal layout */
+/* ===================================================================
+   MODAL DE ACOMPAÑAMIENTOS - ESTRUCTURA CONSOLIDADA DEFINITIVA
+   =================================================================== */
+
+/* BASE - Desktop por defecto */
+#drink-options-modal .modal-content {
+  width: 90vw;
+  max-width: 1000px;
+  max-height: 85vh;
+  min-width: 500px;
+  padding: 20px;
+  border-radius: 12px;
+  height: auto;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  background: var(--card-bg);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+  overflow-y: auto;
+}
 
 /* Meat customization modal specific sizing */
 #meat-customization-modal .modal-content {
@@ -1028,7 +1045,15 @@ body.order-mode-active #app {
     padding: 20px 15px;
   }
   
-  /* TABLET PORTRAIT - ELIMINADO - Ver estilos consolidados al final del archivo */
+  /* TABLET PORTRAIT - Consolidado */
+  #drink-options-modal .modal-content {
+    width: 90vw;
+    max-width: 600px;
+    max-height: 80vh;
+    min-width: 350px;
+    padding: 15px;
+    border-radius: 10px;
+  }
   
   #meat-customization-modal .modal-content {
     width: 72%;
@@ -1055,7 +1080,15 @@ body.order-mode-active #app {
     font-size: 1.1rem;
   }
   
-  /* MOBILE PORTRAIT - ELIMINADO - Ver estilos consolidados al final del archivo */
+  /* MOBILE PORTRAIT - Consolidado */
+  #drink-options-modal .modal-content {
+    width: 95vw;
+    max-width: 450px;
+    max-height: 75vh;
+    min-width: 300px;
+    padding: 12px;
+    border-radius: 8px;
+  }
   
   #meat-customization-modal .modal-content {
     width: 75%;
@@ -1092,7 +1125,12 @@ body.order-mode-active #app {
   font-weight: 600;
 }
 
-/* Drink options modal specific title - ELIMINADO - Ver estilos consolidados al final del archivo */
+/* Drink options modal specific title */
+#drink-options-modal .modal-content h3 {
+  font-size: 1rem;
+  margin-bottom: 12px;
+  line-height: 1.3;
+}
 
 /* Meat modal specific title sizing */
 #meat-customization-modal .modal-content h3 {
@@ -1361,7 +1399,30 @@ body.order-mode-active #app {
     min-width: 80px;
   }
   
-  /* Drink options modal elements - ELIMINADO - Ver estilos consolidados al final del archivo */
+  #drink-options-modal .drink-option-container {
+    min-height: 60px;
+    padding: 6px;
+  }
+  
+  #drink-options-modal .drink-option-name {
+    font-size: 0.8rem;
+    margin-bottom: 6px;
+  }
+  
+  #drink-options-modal .counter-container {
+    gap: 5px;
+  }
+  
+  #drink-options-modal .counter-btn {
+    width: clamp(20px, 3vw, 28px);
+    height: clamp(20px, 3vw, 28px);
+    font-size: 0.9rem;
+  }
+  
+  #drink-options-modal .count-display {
+    width: clamp(18px, 2.5vw, 26px);
+    font-size: 0.85rem;
+  }
 }
 
 /* Removed - Now using unified portrait styles above */
@@ -2046,7 +2107,7 @@ textarea:focus {
   .product-card .product-media { min-height: 140px; }
   .product-card .video-thumbnail { height: 120px; }
   .product-card:has(.video-thumbnail) .product-media { min-height: 120px; }
-  .modal { padding: 5px; padding-top: 20px; }
+  .modal { padding: 5px; align-items: flex-start; padding-top: 20px; }
   .content-wrapper.order-active { gap: 2px; }
   
   /* Hamburger and back button positioning */
@@ -2474,7 +2535,7 @@ textarea:focus {
     z-index: 900 !important; /* Z-index alto para mantenerlo visible */
     transform: none !important;
     height: auto !important;
-    flex: 0 1 auto; /* Permite reducirse si es necesario */
+    flex-shrink: 0; /* No se reduce */
   }
   
   /* Sidebar visible cuando está activo en landscape */
@@ -2526,25 +2587,22 @@ textarea:focus {
   
   /* MOBILE LANDSCAPE - Consolidado */
   #drink-options-modal .modal-content {
-    width: 90vw;
-    max-width: 750px;
-    max-height: 80vh;
+    width: 85vw;
+    max-width: 600px;
+    max-height: 70vh;
     min-width: 400px;
-    padding: 18px;
+    padding: 15px;
     border-radius: 8px;
-    display: flex;
-    flex-direction: column;
   }
   
   #drink-options-modal .options-grid {
-    max-height: 55vh;
+    max-height: 45vh;
     overflow-y: auto;
-    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-    gap: 12px;
-    flex: 1 1 auto;
     display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 8px;
+    flex: 1;
     justify-content: center;
-    padding: 8px;
   }
   
   #drink-options-modal .drink-option-container {
@@ -2854,11 +2912,10 @@ textarea:focus {
   }
   
   #drink-options-modal .modal-content {
-    width: 96vw;
-    max-width: 850px;
-    max-height: calc(var(--vh, 1vh) * 85);
-    min-height: 400px;
-    padding: 16px;
+    width: 92vw;
+    max-width: 650px;
+    max-height: 75vh;
+    padding: 14px;
     min-width: 400px;
     border-radius: 8px;
     height: auto;
@@ -2870,11 +2927,10 @@ textarea:focus {
   }
   
   #drink-options-modal .options-grid {
-    max-height: calc(var(--vh, 1vh) * 60);
+    max-height: 45vh;
     overflow-y: auto;
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-    gap: 15px;
-    padding: 10px;
+    grid-template-columns: repeat(auto-fit, minmax(115px, 1fr));
+    gap: 8px;
   }
   
   /* Acciones del modal - sin !important */
@@ -3348,16 +3404,14 @@ textarea:focus {
     min-width: 500px;
     padding: 18px;
     border-radius: 10px;
-    display: flex;
-    flex-direction: column;
   }
   
   #drink-options-modal .options-grid {
     max-height: 60vh;
     overflow-y: auto;
-    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
     gap: 12px;
-    flex: 1 1 auto;
+    flex: 1;
     display: grid;
   }
   
@@ -3367,7 +3421,6 @@ textarea:focus {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    flex: none;
   }
   
   #drink-options-modal .drink-option-name {
@@ -3388,7 +3441,7 @@ textarea:focus {
   }
   
   #drink-options-modal .modal-actions {
-    flex: 0 0 auto;
+    flex-shrink: 0;
     margin-top: 10px;
     gap: 12px;
     padding: 8px 0;

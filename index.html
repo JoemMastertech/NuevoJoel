@@ -1,7 +1,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Master Technology Bar - Coctelería Premium</title>
   
   <!-- Favicon -->
@@ -30,6 +30,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Montserrat:wght@400;500;600;700&family=Playfair+Display:wght@400;600;700;900&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="Shared/styles/main.css">
+  <link rel="stylesheet" href="Shared/styles/modal-clean.css">
   <script type="importmap">
     {
       "imports": {
@@ -177,6 +178,9 @@
   <!-- Load order system -->
   <script type="module" src="./Interfaces/web/ui-adapters/components/order-system.js"></script>
   <!-- Initialize app -->
+  <!-- Viewport Handler for mobile landscape issues -->
+  <script src="./Shared/utils/viewportHandler.js"></script>
+  
   <script type="module">
     import AppInit from './Shared/config/app-init.js';
     
