@@ -1006,16 +1006,7 @@ body.order-mode-active #app {
   overflow: hidden;
 }
 
-/* Drink options modal specific sizing - Horizontal layout */
-#drink-options-modal .modal-content {
-  width: 60%;
-  max-width: 700px;
-  max-height: 92vh;
-  padding: 20px;
-  min-width: 450px;
-  border-radius: 12px;
-  height: auto;
-}
+/* Drink options modal specific sizing - Horizontal layout - ELIMINADO PARA CONSOLIDACIÓN */
 
 /* Meat customization modal specific sizing */
 #meat-customization-modal .modal-content {
@@ -1034,14 +1025,7 @@ body.order-mode-active #app {
     padding: 20px 15px;
   }
   
-  #drink-options-modal .modal-content {
-    width: auto;
-    max-width: 400px;
-    max-height: none;
-    padding: 12px;
-    min-width: 300px;
-    border-radius: 10px;
-  }
+  /* #drink-options-modal .modal-content - ELIMINADO PARA CONSOLIDACIÓN */
   
   #meat-customization-modal .modal-content {
     width: 72%;
@@ -1068,14 +1052,7 @@ body.order-mode-active #app {
     font-size: 1.1rem;
   }
   
-  #drink-options-modal .modal-content {
-    width: auto;
-    max-width: 350px;
-    max-height: none;
-    padding: 10px;
-    min-width: 280px;
-    border-radius: 8px;
-  }
+  /* #drink-options-modal .modal-content - ELIMINADO PARA CONSOLIDACIÓN */
   
   #meat-customization-modal .modal-content {
     width: 75%;
@@ -1112,12 +1089,7 @@ body.order-mode-active #app {
   font-weight: 600;
 }
 
-/* Drink options modal specific title */
-#drink-options-modal .modal-content h3 {
-  font-size: 1rem;
-  margin-bottom: 12px;
-  line-height: 1.3;
-}
+/* Drink options modal specific title - ELIMINADO PARA CONSOLIDACIÓN */
 
 /* Meat modal specific title sizing */
 #meat-customization-modal .modal-content h3 {
@@ -1206,18 +1178,7 @@ body.order-mode-active #app {
     font-size: 0.9rem;
   }
   
-  /* Drink options modal specific button actions */
-  #drink-options-modal .modal-actions {
-    margin-top: 10px;
-    gap: 8px;
-    flex-shrink: 0;
-  }
-  
-  #drink-options-modal .modal-actions .nav-button {
-    min-width: 70px;
-    padding: 8px 12px;
-    font-size: 0.85rem;
-  }
+  /* Drink options modal specific button actions - ELIMINADO PARA CONSOLIDACIÓN */
   
   .cooking-options {
     display: flex;
@@ -1346,72 +1307,13 @@ body.order-mode-active #app {
   }
   
   /* Drink options modal specific adjustments for portrait - Mobile & Tablet */
-  #drink-options-modal .modal-content {
-    max-height: 90vh;
-    padding: 12px 10px;
-    display: flex;
-    flex-direction: column;
-  }
+  /* #drink-options-modal .modal-content - ELIMINADO PARA CONSOLIDACIÓN */
   
-  #drink-options-modal .modal-content h3 {
-    font-size: 0.9rem;
-    margin-bottom: 8px;
-    flex-shrink: 0;
-    line-height: 1.2;
-  }
+  /* #drink-options-modal .modal-content h3 - ELIMINADO PARA CONSOLIDACIÓN */
   
-  #drink-options-modal .options-grid {
-    max-height: 50vh;
-    overflow-y: auto;
-    flex: 1;
-    margin-bottom: 8px;
-    padding: 10px;
-    gap: 10px;
-  }
+  /* #drink-options-modal .options-grid - ELIMINADO PARA CONSOLIDACIÓN */
   
-  #drink-options-modal .total-count-container {
-    flex-shrink: 0;
-    margin: 6px 0;
-    padding: 6px;
-    font-size: 0.8rem;
-  }
-  
-  #drink-options-modal .modal-actions {
-    flex-shrink: 0;
-    margin-top: 8px;
-    gap: 8px;
-  }
-  
-  #drink-options-modal .modal-actions .nav-button {
-    padding: 10px 15px;
-    font-size: 0.85rem;
-    min-width: 80px;
-  }
-  
-  #drink-options-modal .drink-option-container {
-    min-height: 60px;
-    padding: 6px;
-  }
-  
-  #drink-options-modal .drink-option-name {
-    font-size: 0.8rem;
-    margin-bottom: 6px;
-  }
-  
-  #drink-options-modal .counter-container {
-    gap: 5px;
-  }
-  
-  #drink-options-modal .counter-btn {
-    width: 24px;
-    height: 24px;
-    font-size: 0.9rem;
-  }
-  
-  #drink-options-modal .count-display {
-    width: 22px;
-    font-size: 0.85rem;
-  }
+  /* RESTO DE REGLAS #drink-options-modal - ELIMINADO PARA CONSOLIDACIÓN */
 }
 
 /* Removed - Now using unified portrait styles above */
@@ -1643,16 +1545,7 @@ body.order-mode-active #order-sidebar {
   box-sizing: border-box;
 }
 
-/* Drink options modal specific grid adjustments */
-#drink-options-modal .options-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 20px;
-  padding: 20px;
-  width: 100%;
-  align-content: start;
-  justify-content: center;
-}
+/* #drink-options-modal .options-grid - ELIMINADO PARA CONSOLIDACIÓN */
 
 .drink-option {
   background: rgba(0, 247, 255, 0.1);
@@ -1672,20 +1565,7 @@ body.order-mode-active #order-sidebar {
   font-size: 0.9rem;
 }
 
-/* Drink options modal specific button styling */
-#drink-options-modal .drink-option {
-  min-height: 50px;
-  padding: 10px 8px;
-  font-size: 1rem;
-  border-radius: 8px;
-  flex-direction: column;
-  justify-content: center;
-  text-align: center;
-  align-items: center;
-  flex-shrink: 0;
-  font-weight: 500;
-  word-wrap: break-word;
-  hyphens: auto;
+/* #drink-options-modal .drink-option - ELIMINADO PARA CONSOLIDACIÓN */
   line-height: 1.3;
   width: 100%;
 }
@@ -2060,37 +1940,7 @@ textarea:focus {
     font-size: 0.85rem;
   }
   
-  /* Drink options modal responsive adjustments for tablet */
-  #drink-options-modal .modal-content {
-    width: 85%;
-    max-width: 750px;
-    min-width: 450px;
-    max-height: 80vh;
-  }
-  
-  #drink-options-modal .options-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(135px, 1fr));
-    gap: 18px;
-    padding: 18px;
-    align-content: start;
-    justify-content: center;
-  }
-  
-  #drink-options-modal .drink-option {
-    min-height: 45px;
-    padding: 9px 7px;
-    font-size: 0.95rem;
-    flex-direction: column;
-    justify-content: center;
-    text-align: center;
-    align-items: center;
-    font-weight: 500;
-    word-wrap: break-word;
-    hyphens: auto;
-    line-height: 1.3;
-    width: 100%;
-  }
+  /* REGLAS #drink-options-modal TABLET - ELIMINADO PARA CONSOLIDACIÓN */
   .product-grid { grid-template-columns: repeat(3, 1fr); gap: 12px; padding: 12px; }
   .category-grid { grid-template-columns: repeat(3, 1fr); gap: 12px; padding: 12px; }
   .category-image { width: clamp(70px, 10vw, 110px); height: clamp(70px, 10vw, 110px); }
@@ -2304,37 +2154,7 @@ textarea:focus {
   .drink-option { min-height: 40px; padding: 10px 8px; }
   .drink-option-container { padding: 10px; min-height: 70px; flex-direction: column; justify-content: center; text-align: center; border-radius: 6px; }
   
-  /* Drink options modal responsive adjustments for mobile */
-  #drink-options-modal .modal-content {
-    width: 95%;
-    max-width: 550px;
-    min-width: 320px;
-    max-height: 80vh;
-  }
-  
-  #drink-options-modal .options-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(105px, 1fr));
-    gap: 15px;
-    padding: 15px;
-    align-content: start;
-    justify-content: center;
-  }
-  
-  #drink-options-modal .drink-option {
-    min-height: 40px;
-    padding: 8px 6px;
-    font-size: 0.85rem;
-    flex-direction: column;
-    justify-content: center;
-    text-align: center;
-    align-items: center;
-    font-weight: 500;
-    word-wrap: break-word;
-    hyphens: auto;
-    line-height: 1.3;
-    width: 100%;
-  }
+  /* REGLAS #drink-options-modal MOBILE - ELIMINADO PARA CONSOLIDACIÓN */
   
   /* Hamburger and back button positioning - solo para tablets */
   @media (max-width: 768px) {
@@ -2571,37 +2391,9 @@ textarea:focus {
     gap: 0; /* Sin espacios para aprovechar toda la pantalla */
   }
   
-  /* Drink options modal specific adjustments for small landscape screens */
-  #drink-options-modal .modal-content {
-    max-height: 80vh;
-    max-width: 90vw;
-    padding: 15px;
-    display: flex;
-    flex-direction: column;
-  }
+  /* REGLAS #drink-options-modal SMALL LANDSCAPE - ELIMINADO PARA CONSOLIDACIÓN */
   
-  #drink-options-modal .options-grid {
-    max-height: 50vh;
-    overflow-y: auto;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 10px;
-  }
-  
-  #drink-options-modal .drink-option-container {
-    min-height: 70px;
-    padding: 10px;
-  }
-  
-  #drink-options-modal .counter-btn {
-    width: 28px;
-    height: 28px;
-    font-size: 1rem;
-  }
-  
-  #drink-options-modal .count-display {
-    width: 28px;
-    font-size: 0.9rem;
-  }
+  /* REGLAS #drink-options-modal LANDSCAPE - ELIMINADO PARA CONSOLIDACIÓN */
   
   /* Optimización de espacios para landscape móvil */
   #app {
@@ -3232,37 +3024,9 @@ textarea:focus {
     transition: gap 0.2s ease-in-out;
   }
   
-  /* Drink options modal specific adjustments for tablet landscape */
-  #drink-options-modal .modal-content {
-    max-height: 75vh;
-    max-width: 85vw;
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-  }
+  /* REGLAS #drink-options-modal LANDSCAPE TABLET FINAL - ELIMINADO PARA CONSOLIDACIÓN */
   
-  #drink-options-modal .options-grid {
-    max-height: 55vh;
-    overflow-y: auto;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 15px;
-  }
-  
-  #drink-options-modal .drink-option-container {
-    min-height: 80px;
-    padding: 12px;
-  }
-  
-  #drink-options-modal .counter-btn {
-    width: 32px;
-    height: 32px;
-    font-size: 1.1rem;
-  }
-  
-  #drink-options-modal .count-display {
-    width: 32px;
-    font-size: 1rem;
-  }
+  /* REGLAS #drink-options-modal LANDSCAPE TABLET - ELIMINADO PARA CONSOLIDACIÓN */
   
   /* Ajustar padding para sidebar lateral en landscape tablet */
   body.order-mode-active #app {
@@ -3372,37 +3136,7 @@ textarea:focus {
     box-sizing: border-box;
   }
   
-  /* Drink options modal specific adjustments for large desktop landscape */
-  #drink-options-modal .modal-content {
-    max-height: 80vh;
-    max-width: 70vw;
-    padding: 25px;
-    display: flex;
-    flex-direction: column;
-  }
-  
-  #drink-options-modal .options-grid {
-    max-height: 60vh;
-    overflow-y: auto;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 20px;
-  }
-  
-  #drink-options-modal .drink-option-container {
-    min-height: 90px;
-    padding: 15px;
-  }
-  
-  #drink-options-modal .counter-btn {
-    width: 36px;
-    height: 36px;
-    font-size: 1.2rem;
-  }
-  
-  #drink-options-modal .count-display {
-    width: 36px;
-    font-size: 1.1rem;
-  }
+  /* Drink options modal specific adjustments for large desktop landscape - ELIMINADO PARA CONSOLIDACIÓN */
   
   #order-sidebar h3 {
     font-size: 1.6rem;
