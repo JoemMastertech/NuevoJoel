@@ -2342,6 +2342,10 @@ textarea:focus {
     left: -210px !important; /* Ajustar posición inicial */
   }
   
+  .drawer-menu.open {
+    left: 0 !important; /* Cuando está abierto, debe ir a posición 0 */
+  }
+  
   /* ORDER SIDEBAR - LANDSCAPE RESPONSIVE - Mismo nivel jerárquico */
   #order-sidebar { 
     width: clamp(200px, 25vw, 280px); /* Ancho responsivo basado en viewport */
@@ -2583,6 +2587,10 @@ textarea:focus {
     left: -210px !important; /* Ajustar posición inicial */
   }
   
+  .drawer-menu.open {
+    left: 0 !important; /* Cuando está abierto, debe ir a posición 0 */
+  }
+  
   .product-table,
   .liquor-table {
     width: 100% !important;
@@ -2613,6 +2621,10 @@ textarea:focus {
   .drawer-menu {
     width: 210px !important; /* 300px - 30% = 210px */
     left: -210px !important; /* Ajustar posición inicial */
+  }
+  
+  .drawer-menu.open {
+    left: 0 !important; /* Cuando está abierto, debe ir a posición 0 */
   }
   
   .content-wrapper {
