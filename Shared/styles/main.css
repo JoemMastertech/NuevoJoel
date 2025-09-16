@@ -2566,6 +2566,11 @@ textarea:focus {
     max-width: 100vw !important;
   }
   
+  /* Contenedor con sidebar activo en landscape móvil */
+  .content-wrapper.with-sidebar {
+    width: calc(100vw - clamp(160px, 22vw, 200px)) !important;
+  }
+  
   .product-table,
   .liquor-table {
     width: 100% !important;
@@ -2585,6 +2590,11 @@ textarea:focus {
   #order-sidebar {
     width: clamp(160px, 22vw, 200px) !important; /* Más compacto en pantallas pequeñas */
     padding: 6px !important; /* Padding aún más reducido */
+  }
+  
+  /* Contenedor con sidebar activo en landscape móvil pequeño */
+  .content-wrapper.with-sidebar {
+    width: calc(100vw - clamp(160px, 22vw, 200px)) !important;
   }
   
   .content-wrapper {
