@@ -3632,6 +3632,72 @@ body.order-mode-active #app {
   transform: translateX(100%) !important;
 }
 
+/* Estilos para los bloques organizados de refrescos */
+.refrescos-section,
+.jarras-section,
+.vasos-section {
+  margin-bottom: 2rem;
+}
+
+.refrescos-section:not(:last-child),
+.jarras-section:not(:last-child),
+.vasos-section:not(:last-child) {
+  border-bottom: 2px solid #e0e0e0;
+  padding-bottom: 1.5rem;
+}
+
+.refrescos-section h2,
+.jarras-section h2,
+.vasos-section h2 {
+  color: #333;
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  padding: 0.5rem 0;
+  border-left: 4px solid #007bff;
+  padding-left: 1rem;
+}
+
+.jarras-section h2 {
+  border-left-color: #28a745;
+}
+
+.vasos-section h2 {
+  border-left-color: #ffc107;
+}
+
+/* Estilos para los bloques organizados de cervezas */
+.cervezas-botella-section,
+.tarros-section,
+.vasos-cerveza-section {
+  margin-bottom: 2rem;
+}
+
+.cervezas-botella-section:not(:last-child),
+.tarros-section:not(:last-child),
+.vasos-cerveza-section:not(:last-child) {
+  border-bottom: 2px solid #e0e0e0;
+  padding-bottom: 1.5rem;
+}
+
+.cervezas-botella-section h2,
+.tarros-section h2,
+.vasos-cerveza-section h2 {
+  color: #333;
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  padding: 0.5rem 0;
+  border-left: 4px solid #dc3545;
+  padding-left: 1rem;
+}
+
+.tarros-section h2 {
+  border-left-color: #17a2b8;
+}
+
+.vasos-cerveza-section h2 {
+  border-left-color: #6f42c1;
+}
+
 .content-hidden {
   display: none;
 }

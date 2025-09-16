@@ -1353,33 +1353,105 @@ const ProductRenderer = {
   renderCervezas: async function(container) {
     const productRepository = getProductRepository();
     
-    // Add view toggle button - DISABLED: Using top nav button instead
-    // const toggleElement = this.createViewToggle(container);
-    // container.appendChild(toggleElement);
-    
     try {
       const data = await productRepository.getCervezas();
       
-      if (this.currentViewMode === 'grid') {
-        this.createProductGrid(container, 
-          data, 
-          ['nombre', 'ruta_archivo', 'precio'],
-          'Cervezas'
-        );
-      } else {
-        this.createProductTable(container, 
-          ['NOMBRE', 'IMAGEN', 'PRECIO'], 
-          data, 
-          ['nombre', 'ruta_archivo', 'precio'],
-          'product-table',
-          'Cervezas'
-        );
+      // Organizar productos en 3 bloques
+      const cervezasEnBotella = [];
+      const tarros = [];
+      const vasos = [];
+      
+      data.forEach(product => {
+        const nombre = product.nombre.toUpperCase();
+        
+        if (nombre.startsWith('TARRO')) {
+          tarros.push(product);
+        } else if (nombre.startsWith('VASO')) {
+          vasos.push(product);
+        } else {
+          cervezasEnBotella.push(product);
+        }
+      });
+      
+      // Ordenar alfabéticamente cada bloque
+      const sortByName = (a, b) => a.nombre.localeCompare(b.nombre);
+      cervezasEnBotella.sort(sortByName);
+      tarros.sort(sortByName);
+      vasos.sort(sortByName);
+      
+      // Limpiar contenedor
+      container.innerHTML = '';
+      
+      // Renderizar cada bloque
+      if (cervezasEnBotella.length > 0) {
+        const cervezasContainer = document.createElement('div');
+        cervezasContainer.className = 'cervezas-botella-section';
+        
+        if (this.currentViewMode === 'grid') {
+          this.createProductGrid(cervezasContainer, 
+            cervezasEnBotella, 
+            ['nombre', 'ruta_archivo', 'precio'],
+            'Cervezas en botella'
+          );
+        } else {
+          this.createProductTable(cervezasContainer, 
+            ['NOMBRE', 'IMAGEN', 'PRECIO'], 
+            cervezasEnBotella, 
+            ['nombre', 'ruta_archivo', 'precio'],
+            'product-table',
+            'Cervezas en botella'
+          );
+        }
+        container.appendChild(cervezasContainer);
       }
+      
+      if (tarros.length > 0) {
+        const tarrosContainer = document.createElement('div');
+        tarrosContainer.className = 'tarros-section';
+        
+        if (this.currentViewMode === 'grid') {
+          this.createProductGrid(tarrosContainer, 
+            tarros, 
+            ['nombre', 'ruta_archivo', 'precio'],
+            'Tarros'
+          );
+        } else {
+          this.createProductTable(tarrosContainer, 
+            ['NOMBRE', 'IMAGEN', 'PRECIO'], 
+            tarros, 
+            ['nombre', 'ruta_archivo', 'precio'],
+            'product-table',
+            'Tarros'
+          );
+        }
+        container.appendChild(tarrosContainer);
+      }
+      
+      if (vasos.length > 0) {
+        const vasosContainer = document.createElement('div');
+        vasosContainer.className = 'vasos-cerveza-section';
+        
+        if (this.currentViewMode === 'grid') {
+          this.createProductGrid(vasosContainer, 
+            vasos, 
+            ['nombre', 'ruta_archivo', 'precio'],
+            'Vasos'
+          );
+        } else {
+          this.createProductTable(vasosContainer, 
+            ['NOMBRE', 'IMAGEN', 'PRECIO'], 
+            vasos, 
+            ['nombre', 'ruta_archivo', 'precio'],
+            'product-table',
+            'Vasos'
+          );
+        }
+        container.appendChild(vasosContainer);
+      }
+      
     } catch (error) {
       logError('Error rendering Cervezas:', error);
-      // Preserve sidebar when showing error
-      const targetContainer = container.id === 'content-container' ? container : document.getElementById('content-container') || container;
-      targetContainer.innerHTML = '<p>Error cargando Cervezas. Por favor, intente de nuevo.</p>';
+      container.innerHTML = '<p>Error cargando Cervezas. Por favor, intente de nuevo.</p>';
     }
   },
 
@@ -1481,10 +1553,108 @@ const ProductRenderer = {
   },
 
   renderRefrescos: async function(container) {
-    await this.renderFoodCategory(container, 'getRefrescos', 'Refrescos', 
-      ['nombre', 'ruta_archivo', 'precio'], 
-      ['NOMBRE', 'IMAGEN', 'PRECIO']
-    );
+    const productRepository = getProductRepository();
+    
+    try {
+      const data = await productRepository.getRefrescos();
+      
+      // Organizar productos en 3 bloques
+      const refrescos = [];
+      const jarrasDeJugo = [];
+      const vasosDeJugo = [];
+      
+      data.forEach(product => {
+        const nombre = product.nombre.toUpperCase();
+        
+        if (nombre.startsWith('JARRA')) {
+          jarrasDeJugo.push(product);
+        } else if (nombre.startsWith('VASO DE JUGO')) {
+          vasosDeJugo.push(product);
+        } else {
+          refrescos.push(product);
+        }
+      });
+      
+      // Ordenar alfabéticamente cada bloque
+      const sortByName = (a, b) => a.nombre.localeCompare(b.nombre);
+      refrescos.sort(sortByName);
+      jarrasDeJugo.sort(sortByName);
+      vasosDeJugo.sort(sortByName);
+      
+      // Limpiar contenedor
+      container.innerHTML = '';
+      
+      // Renderizar cada bloque
+      if (refrescos.length > 0) {
+        const refrescosContainer = document.createElement('div');
+        refrescosContainer.className = 'refrescos-section';
+        
+        if (this.currentViewMode === 'grid') {
+          this.createProductGrid(refrescosContainer, 
+            refrescos, 
+            ['nombre', 'ruta_archivo', 'precio'],
+            'Refrescos'
+          );
+        } else {
+          this.createProductTable(refrescosContainer, 
+            ['NOMBRE', 'IMAGEN', 'PRECIO'], 
+            refrescos, 
+            ['nombre', 'ruta_archivo', 'precio'],
+            'product-table',
+            'Refrescos'
+          );
+        }
+        container.appendChild(refrescosContainer);
+      }
+      
+      if (jarrasDeJugo.length > 0) {
+        const jarrasContainer = document.createElement('div');
+        jarrasContainer.className = 'jarras-section';
+        
+        if (this.currentViewMode === 'grid') {
+          this.createProductGrid(jarrasContainer, 
+            jarrasDeJugo, 
+            ['nombre', 'ruta_archivo', 'precio'],
+            'Jarras de jugo'
+          );
+        } else {
+          this.createProductTable(jarrasContainer, 
+            ['NOMBRE', 'IMAGEN', 'PRECIO'], 
+            jarrasDeJugo, 
+            ['nombre', 'ruta_archivo', 'precio'],
+            'product-table',
+            'Jarras de jugo'
+          );
+        }
+        container.appendChild(jarrasContainer);
+      }
+      
+      if (vasosDeJugo.length > 0) {
+        const vasosContainer = document.createElement('div');
+        vasosContainer.className = 'vasos-section';
+        
+        if (this.currentViewMode === 'grid') {
+          this.createProductGrid(vasosContainer, 
+            vasosDeJugo, 
+            ['nombre', 'ruta_archivo', 'precio'],
+            'Vasos de jugo'
+          );
+        } else {
+          this.createProductTable(vasosContainer, 
+            ['NOMBRE', 'IMAGEN', 'PRECIO'], 
+            vasosDeJugo, 
+            ['nombre', 'ruta_archivo', 'precio'],
+            'product-table',
+            'Vasos de jugo'
+          );
+        }
+        container.appendChild(vasosContainer);
+      }
+      
+    } catch (error) {
+      logError('Error rendering Refrescos:', error);
+      container.innerHTML = '<p>Error cargando Refrescos. Por favor, intente de nuevo.</p>';
+    }
   },
 
   renderCocktails: async function(container) {
