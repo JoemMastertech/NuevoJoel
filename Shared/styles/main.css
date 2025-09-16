@@ -2476,18 +2476,36 @@ textarea:focus {
   #content-container .liquor-table {
     width: 100% !important;
     max-width: 100% !important;
-    table-layout: fixed !important; /* Forzar que la tabla respete el ancho del contenedor */
-    overflow: hidden !important; /* Evitar desbordamiento */
+    table-layout: auto !important; /* Permitir que la tabla se ajuste al contenido */
+    overflow: visible !important; /* Permitir expansión del contenido */
   }
   
-  /* Asegurar que las celdas de la tabla también respeten el ancho */
+  /* Permitir expansión del texto en múltiples líneas como en portrait */
   #content-container .product-table td,
   #content-container .product-table th,
   #content-container .liquor-table td,
   #content-container .liquor-table th {
-    overflow: hidden !important;
-    text-overflow: ellipsis !important;
-    white-space: nowrap !important;
+    overflow: visible !important;
+    white-space: normal !important;
+    word-break: break-word !important;
+    line-height: 1.2 !important;
+  }
+  
+  /* Reglas específicas para nombres de productos e ingredientes */
+  #content-container .product-table td.product-name,
+  #content-container .liquor-table td.product-name {
+    overflow: visible !important;
+    white-space: normal !important;
+    word-break: break-word !important;
+    line-height: 1.2 !important;
+  }
+  
+  #content-container .product-table td.product-ingredients,
+  #content-container .liquor-table td.product-ingredients {
+    overflow: visible !important;
+    white-space: normal !important;
+    word-break: break-word !important;
+    line-height: 1.2 !important;
   }
   
   /* Sobrescribir reglas específicas de categorías cuando el sidebar está visible */
@@ -2495,7 +2513,7 @@ textarea:focus {
   #content-container .product-table[data-category="cervezas"] {
     width: 100% !important;
     max-width: 100% !important;
-    table-layout: fixed !important;
+    table-layout: auto !important;
   }
 
   #content-container {

@@ -582,6 +582,16 @@ const ProductRenderer = {
     return field.includes('precio') || field === 'precioBotella' || field === 'precioLitro' || field === 'precioCopa';
   },
 
+  _formatPriceForLiquor: function(priceValue) {
+    // Check if price already has $ symbol
+    if (typeof priceValue === 'string' && priceValue.includes('$')) {
+      return priceValue;
+    }
+    
+    // Add $ symbol for liquor prices
+    return `$${priceValue}`;
+  },
+
   _createPriceCell: function(td, item, field) {
     td.className = 'product-price';
     const priceButton = document.createElement('button');
@@ -593,7 +603,9 @@ const ProductRenderer = {
       priceButton.disabled = true;
     } else {
       priceButton.className = 'price-button';
-      priceButton.textContent = priceValue;
+      // Add $ symbol for liquor subcategories
+      const formattedPrice = this._formatPriceForLiquor(priceValue);
+      priceButton.textContent = formattedPrice;
       priceButton.dataset.productName = item.nombre;
       priceButton.dataset.priceType = field;
     }
@@ -759,7 +771,9 @@ const ProductRenderer = {
               // Create price button
               const priceButton = document.createElement('button');
               priceButton.className = 'price-button';
-              priceButton.textContent = priceValue;
+              // Add $ symbol for liquor subcategories
+              const formattedPrice = this._formatPriceForLiquor(priceValue);
+              priceButton.textContent = formattedPrice;
               priceButton.dataset.productName = item.nombre;
               priceButton.dataset.price = priceValue;
               priceButton.dataset.field = field;
