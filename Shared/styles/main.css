@@ -448,6 +448,7 @@ body.order-mode-active #app {
   border-bottom: 2px solid var(--border-color);
   text-transform: uppercase;
   letter-spacing: 1px;
+  white-space: nowrap;
 }
 
 .product-table th:first-child, .liquor-table th:first-child {
@@ -880,6 +881,17 @@ body.order-mode-active #app {
   overflow: hidden;
   text-overflow: ellipsis;
   transition: all 0.2s ease;
+  transform: scale(1.02);
+  border-color: var(--price-color);
+  box-shadow: 0 0 15px var(--price-color);
+}
+
+.product-card.liquor-card .price-button:hover {
+  background-color: transparent;
+  transform: scale(1.02);
+  border-color: var(--price-color);
+  color: var(--price-color);
+  box-shadow: 0 0 15px var(--price-color);
 }
 
 /* Optimized responsive styles for liquor cards */
@@ -922,12 +934,17 @@ body.order-mode-active #app {
   transition: all var(--transition-time) ease;
   font: 600 0.9rem 'Montserrat', sans-serif;
   min-height: 32px;
+  transform: scale(1.02);
+  border-color: var(--price-color);
+  box-shadow: 0 0 15px var(--price-color);
 }
 
 .price-button:hover {
-  background: var(--price-color);
-  color: var(--background-color);
-  transform: scale(1.05);
+  background-color: transparent;
+  transform: scale(1.02);
+  border-color: var(--price-color);
+  color: var(--price-color);
+  box-shadow: 0 0 15px var(--price-color);
 }
 
 .price-button.non-selectable {
@@ -2023,11 +2040,21 @@ textarea:focus {
     min-width: 45px;
     background: var(--button-bg);
     border: 1px solid var(--border-color);
-    transform: none;
+    transform: scale(1.02);
     animation: none;
     /* Mantener flexibilidad */
     flex: 1;
     max-width: 100%;
+    border-color: var(--price-color);
+    box-shadow: 0 0 15px var(--price-color);
+  }
+
+  .product-grid .product-card.liquor-card .price-button:hover {
+    background-color: transparent;
+    transform: scale(1.02);
+    border-color: var(--price-color);
+    color: var(--price-color);
+    box-shadow: 0 0 15px var(--price-color);
   }
   
   /* Image modal responsive for tablet */
@@ -2155,11 +2182,21 @@ textarea:focus {
     min-width: 40px;
     background: var(--button-bg);
     border: 1px solid var(--border-color);
-    transform: none;
+    transform: scale(1.02);
     animation: none;
     flex: 1;
     max-width: 100%;
     min-height: 26px;
+    border-color: var(--price-color);
+    box-shadow: 0 0 15px var(--price-color);
+  }
+
+  .product-grid .product-card.liquor-card .price-button:hover {
+    background-color: transparent;
+    transform: scale(1.02);
+    border-color: var(--price-color);
+    color: var(--price-color);
+    box-shadow: 0 0 15px var(--price-color);
   }
   .view-toggle-container { padding: 0 15px; }
   .options-grid:not(#drink-options-modal .options-grid) { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 8px; }
@@ -2571,15 +2608,22 @@ textarea:focus {
     overflow: visible !important; /* Permitir expansión del contenido */
   }
   
-  /* Permitir expansión del texto en múltiples líneas como en portrait */
+  /* Permitir expansión del texto en múltiples líneas - SOLO CELDAS TD */
   #content-container .product-table td,
-  #content-container .product-table th,
-  #content-container .liquor-table td,
-  #content-container .liquor-table th {
+  #content-container .liquor-table td {
     overflow: visible !important;
     white-space: normal !important;
     word-break: break-word !important;
     line-height: 1.2 !important;
+  }
+  
+  /* ENCABEZADOS TH MANTIENEN NOWRAP SIEMPRE - MÁXIMA ESPECIFICIDAD */
+  #content-container .product-table th,
+  #content-container .liquor-table th {
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    padding: 8px 4px !important;
   }
   
   /* Reglas específicas para nombres de productos e ingredientes */
@@ -2721,6 +2765,18 @@ textarea:focus {
     white-space: nowrap !important;
     display: inline-block !important;
     line-height: 1.2 !important;
+    transform: scale(1.02) !important;
+    border-color: var(--price-color) !important;
+    box-shadow: 0 0 15px var(--price-color) !important;
+  }
+
+  .product-table .price-button:hover,
+  .liquor-table .price-button:hover {
+    background-color: transparent !important;
+    transform: scale(1.02) !important;
+    border-color: var(--price-color) !important;
+    color: var(--price-color) !important;
+    box-shadow: 0 0 15px var(--price-color) !important;
   }
   
   /* Celda de precio con configuración específica para landscape */
@@ -2778,6 +2834,20 @@ textarea:focus {
     padding: 6px !important; /* Padding reducido para pantallas pequeñas */
   }
   
+  /* FORZAR WHITE-SPACE NOWRAP EN ENCABEZADOS PARA MÓVIL LANDSCAPE */
+  body .product-table th, 
+  body .liquor-table th,
+  body .content-wrapper .product-table th,
+  body .content-wrapper .liquor-table th,
+  body #content-container .product-table th,
+  body #content-container .liquor-table th {
+    white-space: nowrap !important;
+    font-size: 0.7rem !important;
+    padding: 8px 4px !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+  
   /* Tablas a ancho completo en pantallas muy pequeñas para coincidir con grid */
   .product-table,
   .liquor-table {
@@ -2800,6 +2870,18 @@ textarea:focus {
     white-space: nowrap !important;
     display: inline-block !important;
     line-height: 1.1 !important;
+    transform: scale(1.02) !important;
+    border-color: var(--price-color) !important;
+    box-shadow: 0 0 15px var(--price-color) !important;
+  }
+
+  .product-table .price-button:hover,
+  .liquor-table .price-button:hover {
+    background-color: transparent !important;
+    transform: scale(1.02) !important;
+    border-color: var(--price-color) !important;
+    color: var(--price-color) !important;
+    box-shadow: 0 0 15px var(--price-color) !important;
   }
   
   /* Celda de precio ultra compacta para landscape muy pequeño */
@@ -3260,6 +3342,28 @@ textarea:focus {
     transition: gap 0.2s ease-in-out;
   }
   
+  /* Ajuste específico para encabezados en tablets landscape - MÁXIMA PRIORIDAD */
+  body .product-table th, body .liquor-table th {
+    white-space: nowrap !important;
+    padding: 15px 8px !important;
+    font-size: 0.9rem !important;
+  }
+  
+  /* Ajuste específico para la columna de precio en tablets landscape - MÁXIMA PRIORIDAD */
+  body .product-table th:last-child, body .liquor-table th:last-child,
+  body .product-table td:last-child, body .liquor-table td:last-child {
+    min-width: 80px !important;
+    width: auto !important;
+  }
+  
+  /* Forzar white-space nowrap para todos los encabezados en landscape */
+  body .content-wrapper .product-table th,
+  body .content-wrapper .liquor-table th,
+  body #content-container .product-table th,
+  body #content-container .liquor-table th {
+    white-space: nowrap !important;
+  }
+  
   /* REGLAS #drink-options-modal LANDSCAPE TABLET FINAL - ELIMINADO PARA CONSOLIDACIÓN */
   
   /* REGLAS #drink-options-modal LANDSCAPE TABLET - ELIMINADO PARA CONSOLIDACIÓN */
@@ -3310,6 +3414,18 @@ textarea:focus {
     white-space: nowrap !important;
     display: inline-block !important;
     line-height: 1.2 !important;
+    transform: scale(1.02) !important;
+    border-color: var(--price-color) !important;
+    box-shadow: 0 0 15px var(--price-color) !important;
+  }
+
+  .product-table .price-button:hover,
+  .liquor-table .price-button:hover {
+    background-color: transparent !important;
+    transform: scale(1.02) !important;
+    border-color: var(--price-color) !important;
+    color: var(--price-color) !important;
+    box-shadow: 0 0 15px var(--price-color) !important;
   }
   
   /* Celda de precio con configuración específica para landscape tablet */
@@ -3366,6 +3482,17 @@ textarea:focus {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    transform: scale(1.02);
+    border-color: var(--price-color);
+    box-shadow: 0 0 15px var(--price-color);
+  }
+
+  .price-button:hover {
+    background-color: transparent;
+    transform: scale(1.02);
+    border-color: var(--price-color);
+    color: var(--price-color);
+    box-shadow: 0 0 15px var(--price-color);
   }
   .view-toggle-btn {
     min-height: 50px;
