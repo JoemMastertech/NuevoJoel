@@ -998,12 +998,37 @@ body.order-mode-active #app {
   border-radius: 15px;
   box-shadow: 0 0 30px var(--price-color);
   border: 1px solid var(--border-color);
-  padding: 25px 15px;
+  padding: 0;
   display: flex;
   flex-direction: column;
   flex: 1;
   min-height: 0;
   overflow: hidden;
+}
+
+/* Modal header - fixed at top */
+.modal-content h3 {
+  padding: 25px 15px 15px 15px;
+  margin: 0;
+  flex-shrink: 0;
+}
+
+/* Modal scrollable content area */
+.modal-content .options-grid {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0 15px;
+  margin-bottom: 10px;
+}
+
+/* Modal footer - fixed at bottom */
+.modal-content .modal-actions {
+  padding: 15px;
+  margin: 0;
+  flex-shrink: 0;
+  border-top: 1px solid rgba(0, 247, 255, 0.2);
+  background: rgba(0, 0, 0, 0.95);
+  border-radius: 0 0 15px 15px;
 }
 
 /* Drink options modal specific sizing - Horizontal layout - ELIMINADO PARA CONSOLIDACIÓN */
@@ -1164,7 +1189,7 @@ body.order-mode-active #app {
   }
   
   .modal-actions {
-    margin-top: 15px;
+    margin-top: 0;
     gap: 10px;
     flex-wrap: wrap;
     justify-content: center;
@@ -1298,8 +1323,11 @@ body.order-mode-active #app {
     flex-direction: column;
   }
   
-  .options-grid {
-    max-height: 30vh;
+  /* Ensure proper scrolling in portrait */
+  .modal-content .options-grid {
+    max-height: none;
+    flex: 1;
+    overflow-y: auto;
   }
   
   .modal-content img {
@@ -2305,6 +2333,18 @@ textarea:focus {
     width: 100vw !important;
   }
   
+  /* Modal adjustments for landscape */
+  .modal-content {
+    max-height: 85vh;
+  }
+  
+  /* Ensure proper scrolling in landscape */
+  .modal-content .options-grid {
+    max-height: none;
+    flex: 1;
+    overflow-y: auto;
+  }
+  
   /* Configuración para contenedor padre en landscape - sidebar fixed */
   .content-wrapper { 
     display: block; /* Cambiar a block ya que sidebar es fixed */
@@ -3192,6 +3232,18 @@ textarea:focus {
    RESPONSIVE DESIGN - LANDSCAPE TABLETS (768px - 1024px)
    ================================================================= */
 @media (min-width: 768px) and (max-width: 1024px) and (orientation: landscape) {
+  /* Modal adjustments for landscape tablets */
+  .modal-content {
+    max-height: 80vh;
+  }
+  
+  /* Ensure proper scrolling in landscape tablets */
+  .modal-content .options-grid {
+    max-height: none;
+    flex: 1;
+    overflow-y: auto;
+  }
+  
   /* Layout adjustments for landscape */
   .content-wrapper { 
     flex-direction: row;
