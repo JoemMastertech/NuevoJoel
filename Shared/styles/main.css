@@ -2325,6 +2325,69 @@ textarea:focus {
     margin-right: clamp(220px, 27vw, 300px); /* Espacio para el sidebar */
   }
   
+  /* NUEVA CONFIGURACIÓN: Reducción proporcional del contenido cuando sidebar está activo */
+  .content-wrapper.order-active .product-table,
+  .content-wrapper.order-active .liquor-table {
+    /* Aplicar la misma lógica que en portrait para reducir contenido */
+    table-layout: fixed;
+    font-size: 0.85rem; /* Reducir tamaño base */
+  }
+  
+  /* Reducir tamaños de headers cuando sidebar está activo */
+  .content-wrapper.order-active .product-table th,
+  .content-wrapper.order-active .liquor-table th {
+    padding: 8px 4px;
+    font-size: 0.75rem;
+    letter-spacing: 0.1px;
+  }
+  
+  /* Reducir tamaños de celdas cuando sidebar está activo */
+  .content-wrapper.order-active .product-table td,
+  .content-wrapper.order-active .liquor-table td {
+    padding: 8px 4px;
+    font-size: 0.8rem;
+  }
+  
+  /* Nombres de productos más compactos cuando sidebar está activo */
+  .content-wrapper.order-active .product-table td.product-name,
+  .content-wrapper.order-active .liquor-table td.product-name {
+    font-size: 0.75rem;
+    line-height: 1.2;
+    word-break: break-word;
+    white-space: normal;
+  }
+  
+  /* Ingredientes más compactos cuando sidebar está activo */
+  .content-wrapper.order-active .product-table td.product-ingredients {
+    font-size: 0.7rem;
+    line-height: 1.1;
+    word-break: break-word;
+    white-space: normal;
+  }
+  
+  /* Imágenes más pequeñas cuando sidebar está activo */
+  .content-wrapper.order-active .product-table td.image-icon img,
+  .content-wrapper.order-active .liquor-table td.image-icon img {
+    width: 35px;
+    height: 35px;
+  }
+  
+  /* Precios más compactos cuando sidebar está activo */
+  .content-wrapper.order-active .product-table td.product-price,
+  .content-wrapper.order-active .liquor-table td.product-price {
+    font-size: 0.75rem;
+    padding: 6px 4px;
+  }
+  
+  /* Botones de precio optimizados cuando sidebar está activo */
+  .content-wrapper.order-active .price-button {
+    max-width: 85px;
+    min-width: 50px;
+    padding: 6px 10px;
+    font-size: 0.75rem;
+    box-sizing: border-box;
+  }
+  
   /* Reducir ancho del menú lateral en landscape - 30% menos */
   .drawer-menu {
     width: 210px !important; /* 300px - 30% = 210px */
@@ -2602,6 +2665,36 @@ textarea:focus {
     width: 100% !important;
     max-width: 100% !important;
   }
+  
+  /* Botones de precio optimizados para landscape móvil - mantener en una sola fila */
+  .product-table .price-button,
+  .liquor-table .price-button {
+    width: auto !important;
+    max-width: 70px !important;
+    min-width: 40px !important;
+    padding: 3px 6px !important;
+    font-size: 0.65rem !important;
+    margin: 0 !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+    display: inline-block !important;
+    line-height: 1.2 !important;
+  }
+  
+  /* Celda de precio con configuración específica para landscape */
+  .product-table td.product-price,
+  .liquor-table td.product-price {
+    flex: 0 0 auto !important;
+    width: auto !important;
+    min-width: 50px !important;
+    max-width: 80px !important;
+    padding: 4px 2px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
 }
 
 /* Ajustes específicos para pantallas landscape muy pequeñas */
@@ -2650,6 +2743,36 @@ textarea:focus {
   .liquor-table {
     width: 100% !important;
     max-width: 100% !important;
+  }
+  
+  /* Botones de precio ultra compactos para landscape muy pequeño */
+  .product-table .price-button,
+  .liquor-table .price-button {
+    width: auto !important;
+    max-width: 60px !important;
+    min-width: 35px !important;
+    padding: 2px 4px !important;
+    font-size: 0.6rem !important;
+    margin: 0 !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+    display: inline-block !important;
+    line-height: 1.1 !important;
+  }
+  
+  /* Celda de precio ultra compacta para landscape muy pequeño */
+  .product-table td.product-price,
+  .liquor-table td.product-price {
+    flex: 0 0 auto !important;
+    width: auto !important;
+    min-width: 40px !important;
+    max-width: 65px !important;
+    padding: 2px 1px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
   }
 }
 
@@ -3119,7 +3242,37 @@ textarea:focus {
   #order-sidebar.active {
     transform: translateX(0);
   }
+  
+  /* Botones de precio optimizados para landscape tablet - mantener en una sola fila */
+  .product-table .price-button,
+  .liquor-table .price-button {
+    width: auto !important;
+    max-width: 75px !important;
+    min-width: 45px !important;
+    padding: 4px 8px !important;
+    font-size: 0.7rem !important;
+    margin: 0 !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+    display: inline-block !important;
+    line-height: 1.2 !important;
   }
+  
+  /* Celda de precio con configuración específica para landscape tablet */
+  .product-table td.product-price,
+  .liquor-table td.product-price {
+    flex: 0 0 auto !important;
+    width: auto !important;
+    min-width: 55px !important;
+    max-width: 85px !important;
+    padding: 6px 4px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+  
   #order-sidebar h3 {
     font-size: 1.4rem;
   }
