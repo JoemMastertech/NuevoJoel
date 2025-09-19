@@ -1,0 +1,33 @@
+ANÁLISIS DE DISCREPANCIA CSS - main.css
+==========================================
+
+PROBLEMA IDENTIFICADO:
+- Tu editor muestra: 1,598 líneas (termina en línea 1597)
+- Archivo real tiene: 3,491 líneas (confirmado por sistema)
+- Servidor reporta: 3,793 líneas (incluye líneas vacías/espacios)
+
+LÍNEA DONDE TERMINA TU EDITOR (1597):
+  scrollbar-color: var(--primary-color) rgba(0, 0, 0, 0.2);
+
+CONTENIDO QUE NO VES (después de línea 1598):
+Las líneas 1590-1640 contienen:
+- Estilos para .cooking-options
+- Estilos para .cooking-option
+- Estilos para textarea
+- Y mucho más contenido CSS...
+
+LÍNEAS FINALES REALES DEL ARCHIVO (3790-3793):
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--primary-color) rgba(0, 0, 0, 0.2);
+}
+
+CAUSA PROBABLE:
+- Cache del editor/IDE
+- Problema de sincronización de archivos
+- El editor no ha recargado el contenido completo del archivo
+
+SOLUCIÓN RECOMENDADA:
+1. Cerrar y reabrir el archivo main.css en tu editor
+2. Refrescar/recargar el workspace
+3. Verificar configuración de límites de líneas en el editor
