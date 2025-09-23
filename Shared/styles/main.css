@@ -515,7 +515,9 @@ body.order-mode-active #app {
   display: block;
 }
 
-.liquor-table td.image-icon img {
+.liquor-table td.image-icon img,
+.product-table[data-category="cervezas"] td.image-icon img,
+.product-table[data-category="refrescos"] td.image-icon img {
   width: 52px;
   height: 52px;
 }
@@ -882,6 +884,8 @@ body.order-mode-active #app {
   transition: all 0.2s ease;
 }
 
+/* El efecto de iluminación y transformación ahora está incluido directamente en el estilo base del botón */
+
 /* Optimized responsive styles for liquor cards */
 @media (max-width: 1200px) {
   .product-card.liquor-card .price-button {
@@ -922,12 +926,8 @@ body.order-mode-active #app {
   transition: all var(--transition-time) ease;
   font: 600 0.9rem 'Montserrat', sans-serif;
   min-height: 32px;
-}
-
-.price-button:hover {
-  background: var(--price-color);
-  color: var(--background-color);
-  transform: scale(1.05);
+  transform: scale(1.02);
+  box-shadow: 0 0 15px var(--price-color);
 }
 
 .price-button.non-selectable {
@@ -1680,7 +1680,7 @@ textarea:focus {
   border-color: var(--price-color);
 }
 
-.price-selection-mode .price-button:not(.product-grid .product-card.liquor-card .price-button) { background: rgba(0, 247, 255, 0.2); transform: scale(1.05); transition: all 0.3s ease; animation: pulse 2s infinite; }
+.price-selection-mode .price-button:not(.product-grid .product-card.liquor-card .price-button) { transform: scale(1.02); box-shadow: 0 0 15px var(--price-color); }
 
 .remove-order-item {
   background: transparent;
@@ -2008,7 +2008,7 @@ textarea:focus {
 .price-button:disabled { cursor: not-allowed; opacity: 0.5; }
 .price-button.non-selectable:hover, .price-button:disabled:hover { background: transparent; transform: none; box-shadow: none; }
 .price-selection-mode .price-button.non-selectable, .price-selection-mode .price-button:disabled { animation: none; background: transparent; transform: none; }
-.price-selection-mode .product-grid .product-card.liquor-card .price-button { background: rgba(0, 247, 255, 0.2); animation: pulse 2s infinite; transform: scale(1.02); }
+.price-selection-mode .product-grid .product-card.liquor-card .price-button { transform: scale(1.02); box-shadow: 0 0 15px var(--price-color); }
 
 /* =================================================================
    RESPONSIVE DESIGN - TABLET (481px - 768px)
@@ -2278,6 +2278,47 @@ textarea:focus {
   }
   
   /* Sidebar visible cuando está activo en portrait tablet */
+  
+  /* ===== PROTECCIÓN DE CONFIGURACIÓN TABLET PORTRAIT ===== */
+  /* Estas reglas protegen la configuración de tablet portrait de cambios futuros */
+  
+  /* Configuración protegida para tablas de licores en tablet portrait - SOLO PORTRAIT */
+  @media (orientation: portrait) {
+    .liquor-table {
+      /* Mantener configuración estándar de tabla */
+      width: 100% !important;
+      border-collapse: collapse !important;
+      table-layout: auto !important;
+    }
+    
+    .liquor-table th,
+    .liquor-table td {
+      /* Mantener padding y configuración estándar */
+      padding: 12px 8px !important;
+      text-align: center !important;
+      border: 1px solid #ddd !important;
+      font-size: 0.9rem !important;
+      line-height: 1.4 !important;
+      white-space: normal !important;
+      word-break: normal !important;
+    }
+    
+    /* Proteger encabezados de dos palabras - NO aplicar cambios de móvil */
+    .liquor-table th:nth-child(3), /* PRECIO BOTELLA */
+    .liquor-table th:nth-child(4), /* PRECIO LITRO */
+    .liquor-table th:nth-child(5)  /* PRECIO COPA */ {
+      /* Configuración estándar para tablet - sin modificaciones de móvil */
+      font-size: 0.9rem !important;
+      padding: 12px 8px !important;
+      line-height: 1.4 !important;
+      white-space: normal !important;
+      word-break: normal !important;
+      max-width: none !important;
+      min-width: auto !important;
+      text-align: center !important;
+      hyphens: none !important;
+    }
+  }
   #order-sidebar.active {
     transform: translateY(0) !important;
   }
@@ -2410,6 +2451,13 @@ textarea:focus {
   .content-wrapper.order-active .liquor-table td.image-icon img {
     width: 35px;
     height: 35px;
+  }
+  
+  /* Cervezas y refrescos mantienen tamaño más grande incluso con sidebar activo */
+  .content-wrapper.order-active .product-table[data-category="cervezas"] td.image-icon img,
+  .content-wrapper.order-active .product-table[data-category="refrescos"] td.image-icon img {
+    width: 42px;
+    height: 42px;
   }
   
   /* Precios más compactos cuando sidebar está activo */
@@ -2706,7 +2754,7 @@ textarea:focus {
     max-width: 100% !important;
   }
   
-  /* Botones de precio optimizados para landscape móvil - mantener en una sola fila */
+  /* Botones de precio optimizados para landscape móvil - mantener en una sola fila con efecto permanente */
   .product-table .price-button,
   .liquor-table .price-button {
     width: auto !important;
@@ -2720,6 +2768,8 @@ textarea:focus {
     text-overflow: ellipsis !important;
     white-space: nowrap !important;
     display: inline-block !important;
+    transform: scale(1.02) !important;
+    box-shadow: 0 0 15px var(--price-color) !important;
     line-height: 1.2 !important;
   }
   
@@ -2734,6 +2784,16 @@ textarea:focus {
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
+  }
+
+  /* Evitar división de palabras en encabezados de tabla - landscape móvil */
+  .product-table th,
+  .liquor-table th {
+    white-space: nowrap !important;
+    word-break: keep-all !important;
+    hyphens: none !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
   }
 }
 
@@ -2814,6 +2874,8 @@ textarea:focus {
     align-items: center !important;
     justify-content: center !important;
   }
+  
+  /* Reglas de tabla movidas al bloque unificado landscape al final del archivo */
 }
 
 /* ESTAS REGLAS AHORA ESTÁN EN @media (orientation: portrait) MÁS ABAJO */
@@ -3183,6 +3245,13 @@ textarea:focus {
     height: 30px !important;
   }
   
+  /* Cervezas y refrescos mantienen tamaño más grande en móviles */
+  .product-table[data-category="cervezas"] td.image-icon img,
+  .product-table[data-category="refrescos"] td.image-icon img {
+    width: 38px !important;
+    height: 38px !important;
+  }
+  
   /* Precios más compactos */
   .product-table td.product-price, .liquor-table td.product-price {
     font-size: 0.7rem !important;
@@ -3295,7 +3364,7 @@ textarea:focus {
     transform: translateX(0);
   }
   
-  /* Botones de precio optimizados para landscape tablet - mantener en una sola fila */
+  /* Botones de precio optimizados para landscape tablet - mantener en una sola fila con efecto permanente */
   .product-table .price-button,
   .liquor-table .price-button {
     width: auto !important;
@@ -3309,6 +3378,8 @@ textarea:focus {
     text-overflow: ellipsis !important;
     white-space: nowrap !important;
     display: inline-block !important;
+    transform: scale(1.02) !important;
+    box-shadow: 0 0 15px var(--price-color) !important;
     line-height: 1.2 !important;
   }
   
@@ -3347,6 +3418,8 @@ textarea:focus {
   .product-card { min-height: 240px; height: auto; padding: 10px; }
   .product-card .product-name { font-size: 0.78rem; height: clamp(1.2rem, 1.8vw + 0.5rem, 1.6rem); -webkit-line-clamp: unset; line-clamp: unset; overflow: visible; text-overflow: unset; display: block; margin-bottom: 6px; }
   .product-card .product-ingredients { font-size: 0.75rem; }
+  
+  /* Reglas de tabla movidas al bloque unificado landscape al final del archivo */
 }
 
 /* =================================================================
@@ -4085,4 +4158,80 @@ body.order-mode-active #app {
 .order-history-container::-webkit-scrollbar-thumb:hover,
 .modal-content::-webkit-scrollbar-thumb:hover {
   background: rgba(0, 247, 255, 0.7);
+}
+
+/* =================================================================
+   CORRECCIÓN ESPECÍFICA PARA ENCABEZADOS DE DOS PALABRAS EN MÓVIL PORTRAIT
+   ================================================================= */
+@media (max-width: 375px) and (orientation: portrait) {
+  /* Ajustar solo los encabezados de dos palabras en tablas de licores */
+  .liquor-table th:nth-child(3), /* PRECIO BOTELLA */
+  .liquor-table th:nth-child(4), /* PRECIO LITRO */
+  .liquor-table th:nth-child(5)  /* PRECIO COPA */ {
+    font-size: 0.595rem !important; /* 15% menos que 0.7rem (0.7 * 0.85 = 0.595) */
+    padding: 6px 1px !important; /* Reducir padding horizontal aún más para que quepan */
+    line-height: 1.1 !important;
+    word-break: break-word !important;
+    white-space: pre-line !important; /* Permite saltos de línea */
+    max-width: 50px !important; /* Aumentar ligeramente para que PRECIO BOTELLA quede en 2 filas */
+    text-align: center !important;
+    hyphens: auto !important;
+    min-width: 50px !important; /* Asegurar ancho mínimo consistente */
+  }
+}
+
+/* =================================================================
+   REGLAS LANDSCAPE UNIFICADAS - PREVENCIÓN DE SALTOS DE LÍNEA
+   ================================================================= */
+
+/* ===== MÓVIL LANDSCAPE (max-width: 767px) ===== */
+@media (max-width: 767px) and (orientation: landscape) {
+  /* Ajustar encabezados de tabla para evitar truncamiento - móvil landscape */
+  .product-table th,
+  .liquor-table th {
+    font-size: 0.75rem !important;
+    white-space: nowrap !important;
+    word-break: keep-all !important;
+    hyphens: none !important;
+    padding: 8px 4px !important;
+    min-width: 0 !important;
+  }
+  
+  /* Ajustar anchos específicos de columnas en landscape móvil */
+  .product-table th:nth-child(1), .product-table td:nth-child(1) { width: 45% !important; }
+  .product-table th:nth-child(2), .product-table td:nth-child(2) { width: 30% !important; }
+  .product-table th:nth-child(3), .product-table td:nth-child(3) { width: 25% !important; }
+  
+  /* Mantener imágenes consistentes en móvil landscape */
+  .product-table[data-category="cervezas"] td.image-icon img,
+  .product-table[data-category="refrescos"] td.image-icon img {
+    width: 45px !important;
+    height: 45px !important;
+  }
+}
+
+/* ===== TABLET LANDSCAPE (768px - 1024px) ===== */
+@media (min-width: 768px) and (max-width: 1024px) and (orientation: landscape) {
+  /* Ajustar encabezados de tabla para evitar truncamiento - tablet landscape */
+  .product-table th,
+  .liquor-table th {
+    font-size: 0.85rem !important;
+    white-space: nowrap !important;
+    word-break: keep-all !important;
+    hyphens: none !important;
+    padding: 10px 6px !important;
+    min-width: 0 !important;
+  }
+  
+  /* Ajustar anchos específicos de columnas en landscape tablet */
+  .product-table th:nth-child(1), .product-table td:nth-child(1) { width: 45% !important; }
+  .product-table th:nth-child(2), .product-table td:nth-child(2) { width: 30% !important; }
+  .product-table th:nth-child(3), .product-table td:nth-child(3) { width: 25% !important; }
+  
+  /* Mantener imágenes consistentes en tablet landscape */
+  .product-table[data-category="cervezas"] td.image-icon img,
+  .product-table[data-category="refrescos"] td.image-icon img {
+    width: 48px !important;
+    height: 48px !important;
+  }
 }
