@@ -4235,3 +4235,185 @@ body.order-mode-active #app {
     height: 48px !important;
   }
 }
+
+/* ===== CORRECCIONES DE ALINEACIÓN MÓVIL PORTRAIT ===== */
+/* Reglas específicas para corregir alineación en móvil portrait con máxima especificidad */
+@media (max-width: 768px) and (orientation: portrait) {
+  /* Alinear a la izquierda las columnas de nombre e ingredientes con máxima especificidad */
+  html body div .product-table tbody tr td:first-child,
+  html body div .product-table tbody tr td.product-name,
+  html body div .product-table td:first-child,
+  html body div .product-table td.product-name,
+  html body .product-table tbody tr td:first-child,
+  html body .product-table tbody tr td.product-name,
+  html body .product-table td:first-child,
+  html body .product-table td.product-name {
+    text-align: left !important;
+    padding-left: 15px !important;
+    vertical-align: top !important;
+    white-space: normal !important;
+  }
+  
+  html body div .product-table tbody tr td:nth-child(2),
+  html body div .product-table tbody tr td.product-ingredients,
+  html body div .product-table td:nth-child(2),
+  html body div .product-table td.product-ingredients,
+  html body .product-table tbody tr td:nth-child(2),
+  html body .product-table tbody tr td.product-ingredients,
+  html body .product-table td:nth-child(2),
+  html body .product-table td.product-ingredients {
+    text-align: left !important;
+    padding-left: 10px !important;
+    vertical-align: top !important;
+    white-space: normal !important;
+  }
+}
+
+@media (max-width: 480px) and (orientation: portrait) {
+  html body div .product-table tbody tr td:first-child,
+  html body div .product-table tbody tr td.product-name,
+  html body div .product-table td:first-child,
+  html body div .product-table td.product-name,
+  html body .product-table tbody tr td:first-child,
+  html body .product-table tbody tr td.product-name,
+  html body .product-table td:first-child,
+  html body .product-table td.product-name {
+    text-align: left !important;
+    padding-left: 12px !important;
+    vertical-align: top !important;
+    white-space: normal !important;
+  }
+  
+  html body div .product-table tbody tr td:nth-child(2),
+  html body div .product-table tbody tr td.product-ingredients,
+  html body div .product-table td:nth-child(2),
+  html body div .product-table td.product-ingredients,
+  html body .product-table tbody tr td:nth-child(2),
+  html body .product-table tbody tr td.product-ingredients,
+  html body .product-table td:nth-child(2),
+  html body .product-table td.product-ingredients {
+    text-align: left !important;
+    padding-left: 8px !important;
+    vertical-align: top !important;
+    white-space: normal !important;
+  }
+}
+
+@media (max-width: 375px) and (orientation: portrait) {
+  html body div .product-table tbody tr td:first-child,
+  html body div .product-table tbody tr td.product-name,
+  html body div .product-table td:first-child,
+  html body div .product-table td.product-name,
+  html body .product-table tbody tr td:first-child,
+  html body .product-table tbody tr td.product-name,
+  html body .product-table td:first-child,
+  html body .product-table td.product-name {
+    text-align: left !important;
+    padding-left: 10px !important;
+    vertical-align: top !important;
+    white-space: normal !important;
+  }
+  
+  html body div .product-table tbody tr td:nth-child(2),
+  html body div .product-table tbody tr td.product-ingredients,
+  html body div .product-table td:nth-child(2),
+  html body div .product-table td.product-ingredients,
+  html body .product-table tbody tr td:nth-child(2),
+  html body .product-table tbody tr td.product-ingredients,
+  html body .product-table td:nth-child(2),
+  html body .product-table td.product-ingredients {
+    text-align: left !important;
+    padding-left: 6px !important;
+    vertical-align: top !important;
+    white-space: normal !important;
+  }
+}
+
+/* Reglas generales de respaldo para todas las resoluciones con máxima especificidad */
+html body div .product-table td:first-child,
+html body div .product-table td.product-name,
+html body .product-table td:first-child,
+html body .product-table td.product-name {
+  text-align: left !important;
+  white-space: normal !important;
+}
+
+html body div .product-table td:nth-child(2),
+html body div .product-table td.product-ingredients,
+html body .product-table td:nth-child(2),
+html body .product-table td.product-ingredients {
+  text-align: left !important;
+  white-space: normal !important;
+}
+
+/* Mantener imágenes centradas */
+.product-table td.image-icon {
+  text-align: center !important;
+}
+
+.product-table td.image-icon img {
+  display: block;
+  margin: 0 auto;
+}
+
+/* =================================================================
+   SOLUCIÓN DEFINITIVA PARA ALINEACIÓN DE NOMBRES EN PORTRAIT
+   ================================================================= */
+/* Estas reglas tienen máxima especificidad para sobrescribir 
+   las reglas generales de portrait que centran todas las celdas */
+
+@media (orientation: portrait) {
+  /* Forzar alineación izquierda para columna de nombres con máxima especificidad */
+  html body div .product-table td:first-child,
+  html body div .product-table td.product-name,
+  html body div .liquor-table td:first-child,
+  html body div .liquor-table td.product-name {
+    text-align: left !important;
+    white-space: normal !important;
+    padding-left: 15px !important;
+  }
+  
+  /* Forzar alineación izquierda para columna de ingredientes con máxima especificidad */
+  html body div .product-table td:nth-child(2),
+  html body div .product-table td.ingredients,
+  html body div .liquor-table td:nth-child(2),
+  html body div .liquor-table td.ingredients {
+    text-align: left !important;
+    white-space: normal !important;
+    padding-left: 10px !important;
+  }
+}
+
+/* SOLUCIÓN DEFINITIVA - Máxima especificidad para forzar alineación izquierda */
+@media (orientation: portrait) {
+  html body div.main-container .product-table tbody tr td:first-child,
+  html body div.main-container .product-table tbody tr td.product-name,
+  html body div.main-container .liquor-table tbody tr td:first-child,
+  html body div.main-container .liquor-table tbody tr td.product-name {
+    text-align: left !important;
+    white-space: normal !important;
+    padding-left: 15px !important;
+  }
+  
+  html body div.main-container .product-table tbody tr td:nth-child(2),
+  html body div.main-container .product-table tbody tr td.product-ingredients,
+  html body div.main-container .liquor-table tbody tr td:nth-child(2),
+  html body div.main-container .liquor-table tbody tr td.ingredients {
+    text-align: left !important;
+    white-space: normal !important;
+    padding-left: 10px !important;
+  }
+  
+  /* Corregir justify-content center que causa centrado visual en flexbox */
+  html body div.main-container .product-table tbody tr td:first-child,
+  html body div.main-container .product-table tbody tr td.product-name,
+  html body div.main-container .liquor-table tbody tr td:first-child,
+  html body div.main-container .liquor-table tbody tr td.product-name,
+  .product-table td:first-child,
+  .liquor-table td:first-child,
+  .product-table td.product-name,
+  .liquor-table td.product-name {
+    justify-content: flex-start !important;
+    align-items: flex-start !important;
+  }
+}

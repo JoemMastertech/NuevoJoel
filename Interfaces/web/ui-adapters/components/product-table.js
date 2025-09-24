@@ -1393,6 +1393,11 @@ const ProductRenderer = {
             ['nombre', 'ruta_archivo', 'precio'],
             'Cervezas en botella'
           );
+          // Asegurar que el grid tenga el atributo data-category
+          const productGrid = cervezasContainer.querySelector('.product-grid');
+          if (productGrid) {
+            productGrid.setAttribute('data-category', 'cervezas');
+          }
         } else {
           this.createProductTable(cervezasContainer, 
             ['NOMBRE', 'IMAGEN', 'PRECIO'], 
@@ -1401,6 +1406,11 @@ const ProductRenderer = {
             'product-table',
             'Cervezas en botella'
           );
+          // Asegurar que la tabla tenga el atributo data-category
+          const productTable = cervezasContainer.querySelector('table');
+          if (productTable) {
+            productTable.setAttribute('data-category', 'cervezas');
+          }
         }
         container.appendChild(cervezasContainer);
       }
@@ -1415,6 +1425,11 @@ const ProductRenderer = {
             ['nombre', 'ruta_archivo', 'precio'],
             'Tarros'
           );
+          // Asegurar que el grid tenga el atributo data-category
+          const productGrid = tarrosContainer.querySelector('.product-grid');
+          if (productGrid) {
+            productGrid.setAttribute('data-category', 'cervezas');
+          }
         } else {
           this.createProductTable(tarrosContainer, 
             ['NOMBRE', 'IMAGEN', 'PRECIO'], 
@@ -1423,6 +1438,11 @@ const ProductRenderer = {
             'product-table',
             'Tarros'
           );
+          // Asegurar que la tabla tenga el atributo data-category
+          const productTable = tarrosContainer.querySelector('table');
+          if (productTable) {
+            productTable.setAttribute('data-category', 'cervezas');
+          }
         }
         container.appendChild(tarrosContainer);
       }
@@ -1437,6 +1457,11 @@ const ProductRenderer = {
             ['nombre', 'ruta_archivo', 'precio'],
             'Vasos'
           );
+          // Asegurar que el grid tenga el atributo data-category
+          const productGrid = vasosContainer.querySelector('.product-grid');
+          if (productGrid) {
+            productGrid.setAttribute('data-category', 'cervezas');
+          }
         } else {
           this.createProductTable(vasosContainer, 
             ['NOMBRE', 'IMAGEN', 'PRECIO'], 
@@ -1445,9 +1470,36 @@ const ProductRenderer = {
             'product-table',
             'Vasos'
           );
+          // Asegurar que la tabla tenga el atributo data-category
+          const productTable = vasosContainer.querySelector('table');
+          if (productTable) {
+            productTable.setAttribute('data-category', 'cervezas');
+          }
         }
         container.appendChild(vasosContainer);
       }
+      
+      // Ajustes específicos para dispositivos móviles en portrait
+      // Esto solucionará el problema de tamaño y alineación de imágenes
+      setTimeout(() => {
+        if (window.innerWidth <= 768 && window.innerHeight > window.innerWidth) {
+          const images = container.querySelectorAll('img');
+          images.forEach(img => {
+            img.style.maxWidth = '100%';
+            img.style.height = 'auto';
+            img.style.objectFit = 'contain';
+            img.style.display = 'block';
+            img.style.margin = '0 auto';
+          });
+          
+          // Ajustar alineación de columnas - SOLO para celdas de imagen
+          const imageCells = container.querySelectorAll('td.image-icon, .product-image');
+          imageCells.forEach(cell => {
+            cell.style.textAlign = 'center';
+            cell.style.verticalAlign = 'middle';
+          });
+        }
+      }, 100);
       
     } catch (error) {
       logError('Error rendering Cervezas:', error);
