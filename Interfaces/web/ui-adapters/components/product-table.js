@@ -615,6 +615,7 @@ const ProductRenderer = {
 
   _createVideoCell: function(td, item, categoryTitle) {
     td.className = 'video-icon';
+    
     if (item.video) {
       const thumbnailUrl = this.getThumbnailUrl(item.video, item.nombre, '');
       const thumbnailImg = document.createElement('img');
@@ -622,7 +623,7 @@ const ProductRenderer = {
       thumbnailImg.src = thumbnailUrl;
       thumbnailImg.alt = `Ver video de ${item.nombre}`;
       thumbnailImg.dataset.videoUrl = item.video;
-      // No individual event listener - handled by delegation
+      
       td.appendChild(thumbnailImg);
     } else {
       td.textContent = '--';
@@ -968,10 +969,6 @@ const ProductRenderer = {
       errorMessage.textContent = 'Video no disponible en este momento';
       errorMessage.className = 'error-message';
       modalContent.insertBefore(errorMessage, video.nextSibling);
-    });
-    
-    video.addEventListener('loadstart', () => {
-      Logger.info('Loading video:', videoUrl);
     });
     
     modalContent.appendChild(video);

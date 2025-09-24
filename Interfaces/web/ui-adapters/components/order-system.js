@@ -68,6 +68,11 @@ class OrderSystem {
     this.previousTitle = null;
     this.isShowingHistory = false;
     
+    // Initialize cleanup function to avoid undefined errors
+    this._cleanupFixedButton = function() {
+      console.log("Default cleanup - no button to clean");
+    };
+    
     // Phase 3: Event delegation setup
     this.eventDelegationInitialized = false;
     this.boundDelegatedHandler = this.handleDelegatedEvent.bind(this);
@@ -1999,6 +2004,8 @@ class OrderSystem {
   }
 
   showOrdersScreen() {
+    console.log("montado"); // Log para validar el montaje
+    
     const elements = {
       mainContentScreen: document.querySelector('.main-content-screen'),
       contentContainer: document.getElementById('content-container'),
@@ -2014,15 +2021,14 @@ class OrderSystem {
     this.previousTitle = elements.pageTitleElement ? elements.pageTitleElement.textContent : 'Coctelería';
     this.isShowingHistory = false;
     
-    if (elements.ordersScreen) {
-      elements.ordersScreen.className = 'orders-screen screen-block';
-      const historyButton = elements.ordersScreen.querySelector('.history-btn');
-      if (historyButton) historyButton.textContent = 'Historial Órdenes';
-      this.populateOrdersScreen();
-    } else {
-      elements.mainContentScreen.appendChild(this._createOrdersScreen());
-      this.populateOrdersScreen();
+    // Remover cualquier pantalla de órdenes existente para evitar duplicados
+    if (elements.ordersScreen && elements.ordersScreen.parentNode) {
+      elements.ordersScreen.parentNode.removeChild(elements.ordersScreen);
     }
+    
+    // Crear y agregar una nueva pantalla de órdenes
+    elements.mainContentScreen.appendChild(this._createOrdersScreen());
+    this.populateOrdersScreen();
   }
 
   _createOrdersScreen() {
@@ -2091,6 +2097,7 @@ class OrderSystem {
   }
 
   _showHistoryView(button, { ordersList, orderHistoryContainer, ordersScreenTitle }) {
+    console.log("Mostrando vista de historial");
     button.textContent = 'Ver Órdenes Activas';
     if (ordersScreenTitle) ordersScreenTitle.textContent = 'Historial de Órdenes';
     if (ordersList) {
@@ -2098,11 +2105,18 @@ class OrderSystem {
       ordersList.classList.remove('screen-visible');
     }
     
-    if (!orderHistoryContainer) {
-      orderHistoryContainer = this._createHistoryContainer();
+    // Siempre crear un nuevo contenedor de historial para evitar problemas de estado
+    if (orderHistoryContainer && orderHistoryContainer.parentNode) {
+      orderHistoryContainer.parentNode.removeChild(orderHistoryContainer);
     }
+    orderHistoryContainer = this._createHistoryContainer();
+    
+    // Asegurarse de que el contenedor se muestra correctamente
     orderHistoryContainer.classList.add('screen-visible');
     orderHistoryContainer.classList.remove('screen-hidden');
+    
+    // Limpiar y repoblar el contenedor de historial
+    orderHistoryContainer.innerHTML = '';
     this.populateOrderHistoryScreen(orderHistoryContainer);
   }
 
@@ -2118,6 +2132,10 @@ class OrderSystem {
       ordersList.classList.remove('screen-hidden');
     }
     this.populateOrdersScreen();
+    
+      // Limpiar el botón fijo al salir de la vista de historial
+    console.log("Exiting history view - cleaning up button");
+    this._cleanupFixedButton();
   }
 
   _createHistoryContainer() {
@@ -2134,25 +2152,164 @@ class OrderSystem {
   
   populateOrderHistoryScreen(container) {
     container.innerHTML = '';
-    container.appendChild(this._createClearHistoryButton(container));
-    this._populateOrdersList(container, 'orderHistory', 'No hay órdenes en el historial.', false);
+    
+    // Agregar el contenedor de lista de órdenes
+    const ordersListContent = this._createElement('div', 'history-list-content');
+    container.appendChild(ordersListContent);
+    
+    // Poblar el contenedor con las órdenes del historial
+    this._populateOrdersList(ordersListContent, 'orderHistory', 'No hay órdenes en el historial.', false);
+    
+    // Crear un contenedor fijo en la parte inferior para el botón de limpiar
+    this._createFixedBottomClearButton(container);
   }
 
-  _createClearHistoryButton(container) {
+  _createFixedBottomClearButton(parentContainer) {
+    console.log("Creating fixed bottom clear button");
+    
+    // Limpiar cualquier botón fijo existente antes de crear uno nuevo
+    this._cleanupExistingFixedButtons();
+    
+    // Crear contenedor fijo en la parte inferior
+    const fixedContainer = this._createElement('div', 'fixed-bottom-actions');
+    Object.assign(fixedContainer.style, {
+      position: 'fixed',
+      bottom: '20px',
+      left: '0',
+      right: '0',
+      textAlign: 'center',
+      zIndex: '100'
+    });
+    
+    // Crear el botón de limpiar historial
     const button = this._createElement('button', 'nav-button clear-history-btn');
     button.textContent = 'Limpiar Historial';
     Object.assign(button.style, {
-      marginBottom: '20px',
-      gridColumn: '1 / -1',
-      margin: '10px auto 20px auto',
-      display: 'block'
+      width: '90%',
+      maxWidth: '300px',
+      padding: '12px 24px',
+      fontSize: '16px',
+      backgroundColor: 'rgba(255, 99, 71, 0.2)',
+      borderColor: 'rgba(255, 99, 71, 0.5)',
+      color: 'rgba(255, 99, 71, 1)',
+      borderRadius: '8px'
     });
-    button.addEventListener('click', () => this.promptClearHistory(container));
-    return button;
+    
+    button.addEventListener('mouseover', function() {
+      this.style.backgroundColor = 'rgba(255, 99, 71, 0.8)';
+      this.style.color = 'white';
+    });
+    
+    button.addEventListener('mouseout', function() {
+      this.style.backgroundColor = 'rgba(255, 99, 71, 0.2)';
+      this.style.color = 'rgba(255, 99, 71, 1)';
+    });
+    
+    button.addEventListener('click', () => {
+      // Encontrar el contenedor de lista de órdenes para limpiar
+      const historyListContent = parentContainer.querySelector('.history-list-content');
+      this.promptClearHistory(historyListContent || parentContainer);
+    });
+    
+    fixedContainer.appendChild(button);
+    
+    // Hacer que el contenedor sea parte del contenedor de historial, no del body
+    parentContainer.appendChild(fixedContainer);
+    
+    // Definir función para limpiar este botón específico
+    this._cleanupFixedButton = function() {
+      console.log("Cleaning up fixed bottom button");
+      if (fixedContainer && fixedContainer.parentNode) {
+        fixedContainer.parentNode.removeChild(fixedContainer);
+      }
+      // Reiniciar la función para evitar referencias colgantes
+      this._cleanupFixedButton = function() { console.log("No fixed button to clean up"); };
+    }.bind(this);
+  }
+  
+
+  
+  _cleanupExistingFixedButtons() {
+    console.log("Cleaning up any existing fixed buttons");
+    const existingFixedButtons = document.querySelectorAll('.fixed-bottom-actions');
+    existingFixedButtons.forEach(btn => {
+      btn.remove();
+    });
+  }
+  
+  // Modificar hideOrdersScreen para limpiar el botón fijo
+  async hideOrdersScreen() {
+    console.log("desmontado"); // Log para validar el desmontaje
+    
+    // Limpiar el botón fijo al salir de la pantalla de órdenes
+    console.log("Hiding orders screen - cleaning up button");
+    this._cleanupFixedButton();
+    
+    try {
+      // Ocultar la pantalla de órdenes
+      const ordersScreen = document.querySelector('.orders-screen');
+      if (ordersScreen) {
+        ordersScreen.classList.add('screen-hidden');
+        ordersScreen.classList.remove('screen-visible');
+        
+        // Eliminar event listeners de todos los botones dentro de ordersScreen
+        const buttons = ordersScreen.querySelectorAll('button');
+        buttons.forEach(button => {
+          const newButton = button.cloneNode(true);
+          button.parentNode.replaceChild(newButton, button);
+        });
+        
+        // Eliminar completamente el elemento ordersScreen
+        setTimeout(() => {
+          if (ordersScreen.parentNode) {
+            ordersScreen.parentNode.removeChild(ordersScreen);
+          }
+        }, 300);
+      }
+      
+      // Asegurarse de que la pantalla principal esté visible
+      const mainContentScreen = document.querySelector('.main-content-screen');
+      if (mainContentScreen) {
+        mainContentScreen.classList.remove('screen-hidden');
+        mainContentScreen.classList.add('screen-visible');
+      }
+      
+      // Restablecer el estado de visualización de historial
+      this.isShowingHistory = false;
+      
+      // Cargar el contenido de la categoría anterior
+      if (this.previousCategory) {
+        await AppInit.loadContent(this.previousCategory);
+      } else {
+        await AppInit.loadContent('cocteles'); // Valor predeterminado si no hay categoría anterior
+      }
+      
+      // Mostrar el botón de hamburguesa nuevamente
+      const hamburgerBtn = document.getElementById('hamburger-btn');
+      if (hamburgerBtn) {
+        hamburgerBtn.className = 'hamburger-btn';
+      }
+      
+      // Mostrar el contenedor de contenido
+      const contentContainer = document.getElementById('content-container');
+      if (contentContainer) {
+        contentContainer.className = 'content-container';
+      }
+    } catch (error) {
+      console.error('Error al ocultar la pantalla de órdenes:', error);
+      // Mostrar pantalla principal como fallback
+      const mainContentScreen = document.querySelector('.main-content-screen');
+      if (mainContentScreen) {
+        mainContentScreen.classList.remove('screen-hidden');
+        mainContentScreen.classList.add('screen-visible');
+      }
+    }
   }
 
   _populateOrdersList(containerOrId, storageKey, emptyMessage, includeDeleteButton) {
     const container = typeof containerOrId === 'string' ? document.getElementById(containerOrId) : containerOrId;
+    // Limpiar el contenedor antes de agregar órdenes para evitar duplicación
+    container.innerHTML = '';
     const orders = JSON.parse(localStorage.getItem(storageKey) || '[]');
     
     if (orders.length === 0) {
@@ -2313,6 +2470,8 @@ class OrderSystem {
   }
 
   async hideOrdersScreen() {
+    console.log("desmontado"); // Log para validar el desmontaje
+    
     Logger.debug('🔄 Ocultando pantalla de órdenes - Estado DOM antes:', {
       mainScreen: !!document.getElementById('main-screen'),
       contentContainer: !!document.getElementById('content-container'),
@@ -2324,29 +2483,65 @@ class OrderSystem {
     const elements = {
       contentContainer: document.getElementById('content-container'),
       ordersScreen: document.querySelector('.orders-screen'),
-      hamburgerBtn: document.getElementById('hamburger-btn')
+      hamburgerBtn: document.getElementById('hamburger-btn'),
+      mainContentScreen: document.querySelector('.main-content-screen')
     };
     
+    // Mostrar botón hamburguesa y ocultar pantalla de órdenes
     elements.hamburgerBtn.classList.add('hamburger-visible');
     elements.hamburgerBtn.classList.remove('hamburger-hidden');
-    elements.ordersScreen.classList.add('screen-hidden');
-    elements.ordersScreen.classList.remove('screen-visible');
+    
+    // Limpiar y remover event listeners de la pantalla de órdenes
+    if (elements.ordersScreen) {
+      // Remover todos los event listeners hijos
+      const buttons = elements.ordersScreen.querySelectorAll('button');
+      buttons.forEach(button => {
+        const newButton = button.cloneNode(true);
+        button.parentNode.replaceChild(newButton, button);
+      });
+      
+      // Eliminar la pantalla de órdenes del DOM para una limpieza completa
+      if (elements.ordersScreen.parentNode) {
+        elements.ordersScreen.parentNode.removeChild(elements.ordersScreen);
+      }
+    }
+    
+    // Mostrar contenedor de contenido
     elements.contentContainer.classList.add('content-visible');
     elements.contentContainer.classList.remove('content-hidden');
     
+    // Asegurar que mainContentScreen sea visible
+    if (elements.mainContentScreen) {
+      elements.mainContentScreen.classList.add('screen-visible');
+      elements.mainContentScreen.classList.remove('screen-hidden');
+    }
+    
+    // Resetear estado local
+    this.isShowingHistory = false;
+    
+    // Cargar el contenido anterior
     if (this.previousCategory && window.AppInit) {
       Logger.debug('📞 Llamando a AppInit.loadContent con categoría:', this.previousCategory);
-      await window.AppInit.loadContent(this.previousCategory);
-      
-      // Log DOM state after loadContent
-      setTimeout(() => {
-        Logger.debug('📊 Estado DOM después de loadContent:', {
-          mainScreen: !!document.getElementById('main-screen'),
-          contentContainer: !!document.getElementById('content-container'),
-          ordersBox: !!document.getElementById('orders-box'),
-          mainScreenVisible: document.getElementById('main-screen') ? !document.getElementById('main-screen').classList.contains('screen-hidden') : false
-        });
-      }, 100);
+      try {
+        await window.AppInit.loadContent(this.previousCategory);
+        
+        // Log DOM state after loadContent
+        setTimeout(() => {
+          Logger.debug('📊 Estado DOM después de loadContent:', {
+            mainScreen: !!document.getElementById('main-screen'),
+            contentContainer: !!document.getElementById('content-container'),
+            ordersBox: !!document.getElementById('orders-box'),
+            mainScreenVisible: document.getElementById('main-screen') ? !document.getElementById('main-screen').classList.contains('screen-hidden') : false
+          });
+        }, 100);
+      } catch (error) {
+        Logger.error('❌ Error al cargar contenido anterior:', error);
+        // Fallback: Mostrar la pantalla principal
+        if (elements.mainContentScreen) {
+          elements.mainContentScreen.classList.add('screen-visible');
+          elements.mainContentScreen.classList.remove('screen-hidden');
+        }
+      }
     }
   }
 }
