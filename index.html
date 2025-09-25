@@ -147,23 +147,26 @@
     <!-- Meat Customization Modal Template -->
     <template id="meat-customization-template">
       <div class="modal-content">
-        <h3>Seleccione el término de cocción:</h3>
-        <div class="cooking-options">
-          <button class="cooking-option nav-button" data-term="medio">Término ½</button>
-          <button class="cooking-option nav-button" data-term="tres-cuartos">Término ¾</button>
-          <button class="cooking-option nav-button" data-term="bien-cocido">Bien Cocido</button>
-        </div>
-        <h3>¿Desea cambiar algo de la guarnición?</h3>
-        <div class="modal-actions garnish-choice">
-          <button id="change-garnish-btn" class="nav-button">Sí</button>
-          <button id="keep-garnish-btn" class="nav-button">No</button>
-        </div>
-        <div id="garnish-input-container" class="input-container-hidden">
-          <textarea id="garnish-modifications" placeholder="Indique los cambios en la guarnición"></textarea>
-          <div class="modal-actions">
-            <button id="confirm-garnish-btn" class="nav-button">Confirmar</button>
-            <button id="cancel-garnish-btn" class="nav-button">Cancelar</button>
+        <div class="modal-scrollable-content">
+          <h3>Seleccione el término de cocción:</h3>
+          <div class="cooking-options">
+            <button class="cooking-option nav-button" data-term="medio">Término ½</button>
+            <button class="cooking-option nav-button" data-term="tres-cuartos">Término ¾</button>
+            <button class="cooking-option nav-button" data-term="bien-cocido">Bien Cocido</button>
           </div>
+          <h3>¿Desea cambiar algo de la guarnición?</h3>
+          <div class="garnish-choice">
+            <button id="change-garnish-btn" class="nav-button">Sí</button>
+            <button id="keep-garnish-btn" class="nav-button">No</button>
+          </div>
+          <div id="garnish-input-container" class="input-container-hidden">
+            <textarea id="garnish-modifications" placeholder="Indique los cambios en la guarnición"></textarea>
+          </div>
+        </div>
+        <!-- Botones fijos en la parte inferior -->
+        <div class="modal-actions garnish-actions input-container-hidden">
+          <button id="confirm-garnish-btn" class="nav-button">Confirmar</button>
+          <button id="cancel-garnish-btn" class="nav-button">Cancelar</button>
         </div>
       </div>
     </template>

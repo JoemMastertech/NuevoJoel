@@ -1029,17 +1029,30 @@ body.order-mode-active #app {
   border-top: 1px solid rgba(0, 247, 255, 0.2);
   background: rgba(0, 0, 0, 0.95);
   border-radius: 0 0 15px 15px;
+  display: flex;
+  justify-content: center;
+  gap: 18px;
 }
 
 /* Drink options modal specific sizing - Horizontal layout - ELIMINADO PARA CONSOLIDACIÓN */
 
 /* Meat customization modal specific sizing */
 #meat-customization-modal .modal-content {
-  width: 42%;
-  max-width: 535px;
-  max-height: 43.7vh;
+  width: 60%;
+  max-width: 650px;
+  max-height: 80vh;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* Contenedor de contenido scrollable del modal de carnes */
+#meat-customization-modal .modal-scrollable-content {
+  flex: 1;
+  overflow-y: auto;
   padding: 21px;
-  aspect-ratio: 1.4/1;
+  -webkit-overflow-scrolling: touch;
 }
 
 /* RESPONSIVE MODAL ADJUSTMENTS - CONSISTENT SIZING */
@@ -1047,17 +1060,28 @@ body.order-mode-active #app {
   .modal-content {
     width: 95%;
     max-width: none;
-    padding: 20px 15px;
+    padding: 0;
   }
   
   /* #drink-options-modal .modal-content - ELIMINADO PARA CONSOLIDACIÓN */
   
   #meat-customization-modal .modal-content {
-    width: 72%;
+    width: 90%;
     max-width: none;
-    max-height: 54.05vh;
-    aspect-ratio: 1.2/1;
+    max-height: 85vh;
+  }
+  
+  #meat-customization-modal .modal-scrollable-content {
     padding: 17px;
+  }
+  
+  /* Centrar botones de confirmar y cancelar en dispositivos móviles landscape */
+  #meat-customization-modal .modal-content .modal-actions.garnish-actions.input-container-visible {
+    display: flex !important;
+    justify-content: center !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 15px !important;
   }
 }
 
@@ -1069,7 +1093,7 @@ body.order-mode-active #app {
   
   .modal-content {
     width: 98%;
-    padding: 15px 10px;
+    padding: 0;
     border-radius: 10px;
   }
   
@@ -1080,11 +1104,22 @@ body.order-mode-active #app {
   /* #drink-options-modal .modal-content - ELIMINADO PARA CONSOLIDACIÓN */
   
   #meat-customization-modal .modal-content {
-    width: 75%;
+    width: 98%;
     max-width: none;
-    max-height: 56.35vh;
-    aspect-ratio: 1.1/1;
+    max-height: 90vh;
+  }
+  
+  #meat-customization-modal .modal-scrollable-content {
     padding: 13px;
+  }
+  
+  /* Centrar botones de confirmar y cancelar en dispositivos móviles portrait */
+  #meat-customization-modal .modal-content .modal-actions.garnish-actions.input-container-visible {
+    display: flex !important;
+    justify-content: center !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 15px !important;
   }
 }
 

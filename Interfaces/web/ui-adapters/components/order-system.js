@@ -1536,6 +1536,10 @@ class OrderSystem {
   _setupMeatModal() {
     const garnishContainer = document.getElementById('garnish-input-container');
     if (garnishContainer) garnishContainer.className = 'input-container-hidden';
+    
+    const garnishActions = document.querySelector('.garnish-actions');
+    if (garnishActions) garnishActions.className = 'modal-actions garnish-actions input-container-hidden';
+    
     const garnishModifications = document.getElementById('garnish-modifications');
     if (garnishModifications) garnishModifications.value = '';
     
@@ -1562,8 +1566,11 @@ class OrderSystem {
     if (!this._validateCookingTerm()) return;
     const garnishContainer = document.getElementById('garnish-input-container');
     const garnishChoice = document.querySelector('.garnish-choice');
+    const garnishActions = document.querySelector('.garnish-actions');
+    
     if (garnishContainer) garnishContainer.className = 'input-container-visible';
     if (garnishChoice) garnishChoice.className = 'choice-hidden';
+    if (garnishActions) garnishActions.className = 'modal-actions garnish-actions input-container-visible';
   }
 
   _addMeatToOrder(garnishType) {
