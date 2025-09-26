@@ -309,28 +309,18 @@ const ProductRenderer = {
     const categoryElement = target.closest('table, .product-grid');
     const category = categoryElement?.dataset.category;
     
-    const liquorCategories = ['whisky', 'tequila', 'ron', 'vodka', 'ginebra', 'mezcal', 'cognac', 'brandy', 'digestivos', 'espumosos'];
-    const modalCategory = (category === 'cervezas' || category === 'refrescos' || liquorCategories.includes(category)) ? category : null;
+    const modalCategory = (category === 'cervezas' || category === 'refrescos') ? category : null;
     this.showVideoModal(videoUrl, productName, modalCategory);
   },
   
   handleImageClick: function(target) {
-    const mediaUrl = target.src;
+    const imageUrl = target.src;
     const productName = target.alt || 'Producto';
     const categoryElement = target.closest('table, .product-grid');
     const category = categoryElement?.dataset.category;
     
-    const liquorCategories = ['whisky', 'tequila', 'ron', 'vodka', 'ginebra', 'mezcal', 'cognac', 'brandy', 'digestivos', 'espumosos'];
-    const isLiquorSubcategory = category && liquorCategories.includes(category);
-    
-    // For liquor subcategories, check if it's a video
-    if (isLiquorSubcategory && this.isVideoUrl(mediaUrl)) {
-      const modalCategory = category;
-      this.showVideoModal(mediaUrl, productName, modalCategory);
-    } else {
-      const modalCategory = (category === 'cervezas' || category === 'refrescos') ? category : null;
-      this.showImageModal(mediaUrl, productName, modalCategory);
-    }
+    const modalCategory = (category === 'cervezas' || category === 'refrescos') ? category : null;
+    this.showImageModal(imageUrl, productName, modalCategory);
   },
   
   handleCardClick: function(target, event) {
@@ -640,71 +630,25 @@ const ProductRenderer = {
     }
   },
 
-  // Helper function to detect if a URL is a video
-  isVideoUrl: function(url) {
-    if (!url) return false;
-    const videoExtensions = ['.mp4', '.webm', '.mov', '.avi', '.mkv'];
-    const lowerUrl = url.toLowerCase();
-    return videoExtensions.some(ext => lowerUrl.endsWith(ext));
-  },
-  
-  // Helper function to create a video element for thumbnails
-  _createVideoThumbnail: function(item, field, categoryTitle) {
-    const videoUrl = item[field];
-    const video = document.createElement('video');
-    video.src = videoUrl;
-    video.alt = item.nombre;
-    video.className = 'product-image product-video-thumbnail';
-    video.loop = true;
-    video.autoplay = true;
-    video.muted = true;
-    video.playsInline = true;
-    video.style.objectFit = 'contain';
-    
-    // Apply same styling as images
-    const liquorCategories = ['whisky', 'tequila', 'ron', 'vodka', 'ginebra', 'mezcal', 'cognac', 'brandy', 'digestivos', 'espumosos'];
-    const isBeverage = categoryTitle && (categoryTitle.toLowerCase() === 'cervezas' || categoryTitle.toLowerCase() === 'refrescos');
-    const isLiquorSubcategory = categoryTitle && liquorCategories.includes(categoryTitle.toLowerCase());
-    
-    if (isBeverage || isLiquorSubcategory) {
-      video.classList.add('product-image-large');
-    } else {
-      video.classList.add('product-image-small');
-    }
-    
-    // Add loading state
-    video.onloadeddata = function() {
-      video.style.opacity = '1';
-    };
-    
-    return video;
-  },
-  
   _createImageCell: function(td, item, field, categoryTitle) {
     td.className = 'image-icon';
     if (item[field]) {
+      const img = document.createElement('img');
+      img.src = item[field];
+      img.alt = item.nombre;
+      
       const liquorCategories = ['whisky', 'tequila', 'ron', 'vodka', 'ginebra', 'mezcal', 'cognac', 'brandy', 'digestivos', 'espumosos'];
+      const isBeverage = categoryTitle && (categoryTitle.toLowerCase() === 'cervezas' || categoryTitle.toLowerCase() === 'refrescos');
       const isLiquorSubcategory = categoryTitle && liquorCategories.includes(categoryTitle.toLowerCase());
       
-      // For liquor subcategories, check if it's a video
-      if (isLiquorSubcategory && this.isVideoUrl(item[field])) {
-        const video = this._createVideoThumbnail(item, field, categoryTitle);
-        td.appendChild(video);
+      img.className = 'product-image';
+      if (isBeverage || isLiquorSubcategory) {
+        img.classList.add('product-image-large');
       } else {
-        const img = document.createElement('img');
-        img.src = item[field];
-        img.alt = item.nombre;
-        
-        const isBeverage = categoryTitle && (categoryTitle.toLowerCase() === 'cervezas' || categoryTitle.toLowerCase() === 'refrescos');
-        
-        img.className = 'product-image';
-        if (isBeverage || isLiquorSubcategory) {
-          img.classList.add('product-image-large');
-        } else {
-          img.classList.add('product-image-small');
-        }
-        td.appendChild(img);
+        img.classList.add('product-image-small');
       }
+      // No individual event listener - handled by delegation
+      td.appendChild(img);
     } else {
       td.textContent = '--';
     }
@@ -747,10 +691,6 @@ const ProductRenderer = {
     grid.appendChild(titleElement);
     
     // Create product cards
-    // Check if this is a liquor subcategory (declared outside the loop for reuse)
-    const liquorCategories = ['whisky', 'tequila', 'ron', 'vodka', 'ginebra', 'mezcal', 'cognac', 'brandy', 'digestivos', 'espumosos'];
-    const isLiquorCategory = liquorCategories.includes(normalizedCategory);
-    
     data.forEach(item => {
       const card = document.createElement('div');
       card.className = 'product-card';
@@ -773,8 +713,6 @@ const ProductRenderer = {
       const mediaContainer = document.createElement('div');
       mediaContainer.className = 'product-media';
       
-      // Reuse liquorCategories and isLiquorCategory variables declared outside the loop
-      
       if (item.video) {
         const videoThumbnail = document.createElement('img');
         videoThumbnail.className = 'video-thumbnail';
@@ -784,30 +722,12 @@ const ProductRenderer = {
         // No individual event listener - handled by delegation
         mediaContainer.appendChild(videoThumbnail);
       } else if (item.imagen || item.ruta_archivo) {
-        const mediaUrl = item.imagen || item.ruta_archivo;
-        
-        // For liquor subcategories, check if it's a video
-        if (isLiquorCategory && this.isVideoUrl(mediaUrl)) {
-          const video = document.createElement('video');
-          video.src = mediaUrl;
-          video.alt = item.nombre;
-          video.className = 'product-image product-video-thumbnail';
-          video.loop = true;
-          video.autoplay = true;
-          video.muted = true;
-          video.playsInline = true;
-          video.style.objectFit = 'contain';
-          
-          // Add video to container
-          mediaContainer.appendChild(video);
-        } else {
-          const image = document.createElement('img');
-          image.className = 'product-image';
-          image.src = mediaUrl;
-          image.alt = item.nombre;
-          // No individual event listener - handled by delegation
-          mediaContainer.appendChild(image);
-        }
+        const image = document.createElement('img');
+        image.className = 'product-image';
+        image.src = item.imagen || item.ruta_archivo;
+        image.alt = item.nombre;
+        // No individual event listener - handled by delegation
+        mediaContainer.appendChild(image);
       }
       
       card.appendChild(mediaContainer);
@@ -816,7 +736,9 @@ const ProductRenderer = {
       const pricesContainer = document.createElement('div');
       pricesContainer.className = 'product-prices';
       
-      // Reuse liquorCategories and isLiquorCategory variables declared outside the loop
+      // Check if this is a liquor subcategory
+      const liquorCategories = ['whisky', 'tequila', 'ron', 'vodka', 'ginebra', 'mezcal', 'cognac', 'brandy', 'digestivos', 'espumosos'];
+      const isLiquorCategory = liquorCategories.includes(normalizedCategory);
       
       if (isLiquorCategory) {
         card.classList.add('liquor-card');
@@ -1032,19 +954,11 @@ const ProductRenderer = {
     modalTitle.textContent = title;
     modalContent.appendChild(modalTitle);
     
-    // Add video with auto-loop, muted, no controls
+    // Add video
     const video = document.createElement('video');
     video.src = videoUrl;
-    video.loop = true;
+    video.controls = true;
     video.autoplay = true;
-    video.muted = true;
-    video.playsInline = true;
-    video.controls = false; // No controls as requested
-    
-    // Ensure video maintains aspect ratio
-    video.style.maxWidth = '100%';
-    video.style.maxHeight = '70vh';
-    video.style.objectFit = 'contain';
     
     // Add error handling for video loading
     video.addEventListener('error', (e) => {
@@ -1064,6 +978,7 @@ const ProductRenderer = {
     closeButton.textContent = 'Cerrar';
     closeButton.className = 'nav-button modal-close-btn';
     closeButton.dataset.modalId = 'video-modal';
+    // No individual event listener - handled by delegation
     modalContent.appendChild(closeButton);
     
     // Add modal to body
