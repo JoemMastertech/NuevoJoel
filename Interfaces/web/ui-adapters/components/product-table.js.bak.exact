@@ -5,6 +5,84 @@ import { setSafeInnerHTML } from '../../../../Shared/utils/domUtils.js';
 import { logError, logWarning } from '../../../../Shared/utils/errorHandler.js';
 import Logger from '../../../../Shared/utils/logger.js';
 
+// Caché de videos recientes en memoria
+const videoCache = new Map();
+const MAX_CACHE_SIZE = 5; // Número máximo de videos a mantener en caché
+
+// Función para verificar si el navegador soporta Service Worker
+function supportServiceWorker() {
+  return 'serviceWorker' in navigator && 'CacheStorage' in window;
+}
+
+// Función para verificar el tipo de conexión
+function getNetworkType() {
+  if ('connection' in navigator) {
+    const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+    return connection.effectiveType || 'unknown';
+  }
+  return 'unknown';
+}
+
+// Precachear videos recientes (si es posible)
+async function precacheVideo(videoUrl) {
+  if (!supportServiceWorker()) return;
+  
+  try {
+    // Solo precachear en conexiones WiFi para evitar consumir datos móviles
+    const networkType = getNetworkType();
+    if (networkType.includes('2g') || networkType.includes('3g')) return;
+    
+    // No precachear si el video ya está en caché
+    if (videoCache.has(videoUrl)) return;
+    
+    // Realizar una solicitud para precachear el video
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 5000); // Timeout de 5 segundos
+    
+    await fetch(videoUrl, {
+      method: 'GET',
+      cache: 'force-cache',
+      signal: controller.signal,
+      headers: {
+        'Range': 'bytes=0-499999' // Solo precargar los primeros 500KB
+      }
+    });
+    
+    clearTimeout(timeoutId);
+    Logger.info('Video precacheado parcialmente:', videoUrl);
+    
+    // Agregar a la caché de memoria
+    addToMemoryCache(videoUrl);
+  } catch (error) {
+    logWarning('Error al precachear video:', error);
+  }
+}
+
+// Agregar video a la caché de memoria
+function addToMemoryCache(videoUrl) {
+  // Eliminar el video más antiguo si se excede el tamaño máximo
+  if (videoCache.size >= MAX_CACHE_SIZE) {
+    const oldestKey = videoCache.keys().next().value;
+    videoCache.delete(oldestKey);
+  }
+  
+  // Guardar con timestamp para futura gestión
+  videoCache.set(videoUrl, {
+    timestamp: Date.now(),
+    lastAccessed: Date.now()
+  });
+}
+
+// Actualizar el timestamp de acceso de un video
+function updateCacheAccess(videoUrl) {
+  if (videoCache.has(videoUrl)) {
+    videoCache.set(videoUrl, {
+      ...videoCache.get(videoUrl),
+      lastAccessed: Date.now()
+    });
+  }
+}
+
 const ProductRenderer = {
   // Current view mode: 'table' or 'grid'
   currentViewMode: 'table',
@@ -309,18 +387,59 @@ const ProductRenderer = {
     const categoryElement = target.closest('table, .product-grid');
     const category = categoryElement?.dataset.category;
     
-    const modalCategory = (category === 'cervezas' || category === 'refrescos') ? category : null;
+    const liquorCategories = ['whisky', 'tequila', 'ron', 'vodka', 'ginebra', 'mezcal', 'cognac', 'brandy', 'digestivos', 'espumosos'];
+    const modalCategory = (category === 'cervezas' || category === 'refrescos' || liquorCategories.includes(category)) ? category : null;
+    
+    // Actualizar el acceso a la caché para este video
+    updateCacheAccess(videoUrl);
+    
+    // Intentar precachear videos relacionados que puedan ser necesarios próximamente
+    this.precacheRelatedVideos(categoryElement);
+    
+    // Mostrar el modal del video con optimizaciones para dispositivos móviles
     this.showVideoModal(videoUrl, productName, modalCategory);
   },
   
+  // Precachear videos relacionados que puedan ser vistos próximamente
+  precacheRelatedVideos: function(categoryElement) {
+    if (!categoryElement) return;
+    
+    try {
+      // Obtener los videos visibles en la página actual
+      const visibleVideos = Array.from(categoryElement.querySelectorAll('video[data-src], .video-thumb[data-video-url]'));
+      
+      // Obtener los URLs de los primeros 3 videos que no estén en caché
+      const videosToPrecache = visibleVideos
+        .slice(0, 3) // Solo los primeros 3
+        .map(video => video.dataset.src || video.dataset.videoUrl)
+        .filter(url => url && !videoCache.has(url));
+      
+      // Precachear cada video en paralelo
+      videosToPrecache.forEach(videoUrl => {
+        precacheVideo(videoUrl);
+      });
+    } catch (error) {
+      logWarning('Error al intentar precachear videos relacionados:', error);
+    }
+  },
+  
   handleImageClick: function(target) {
-    const imageUrl = target.src;
+    const mediaUrl = target.src;
     const productName = target.alt || 'Producto';
     const categoryElement = target.closest('table, .product-grid');
     const category = categoryElement?.dataset.category;
     
-    const modalCategory = (category === 'cervezas' || category === 'refrescos') ? category : null;
-    this.showImageModal(imageUrl, productName, modalCategory);
+    const liquorCategories = ['whisky', 'tequila', 'ron', 'vodka', 'ginebra', 'mezcal', 'cognac', 'brandy', 'digestivos', 'espumosos'];
+    const isLiquorSubcategory = category && liquorCategories.includes(category);
+    
+    // For liquor subcategories, check if it's a video
+    if (isLiquorSubcategory && this.isVideoUrl(mediaUrl)) {
+      const modalCategory = category;
+      this.showVideoModal(mediaUrl, productName, modalCategory);
+    } else {
+      const modalCategory = (category === 'cervezas' || category === 'refrescos') ? category : null;
+      this.showImageModal(mediaUrl, productName, modalCategory);
+    }
   },
   
   handleCardClick: function(target, event) {
@@ -630,28 +749,319 @@ const ProductRenderer = {
     }
   },
 
+  // Helper function to detect if a URL is a video
+  isVideoUrl: function(url) {
+    if (!url) return false;
+    const videoExtensions = ['.mp4', '.webm', '.mov', '.avi', '.mkv'];
+    const lowerUrl = url.toLowerCase();
+    return videoExtensions.some(ext => lowerUrl.endsWith(ext));
+  },
+  
+  // Helper function to create a video element for thumbnails
+  _createVideoThumbnail: function(item, field, categoryTitle) {
+    const videoUrl = item[field];
+    const video = document.createElement('video');
+    
+    // Configurar para autoplay en loop sin controles
+    video.src = videoUrl; // Cargar directamente sin lazy loading para autoplay
+    video.className = 'product-image product-video-thumbnail';
+    video.loop = true;
+    video.muted = true;
+    video.autoplay = true;
+    video.playsInline = true;
+    video.controls = false; // Sin controles visibles
+    video.style.objectFit = 'contain';
+    video.style.opacity = '0';
+    video.style.transition = 'opacity 0.3s ease-in-out';
+    
+    // Apply same styling as images
+    const liquorCategories = ['whisky', 'tequila', 'ron', 'vodka', 'ginebra', 'mezcal', 'cognac', 'brandy', 'digestivos', 'espumosos'];
+    const isBeverage = categoryTitle && (categoryTitle.toLowerCase() === 'cervezas' || categoryTitle.toLowerCase() === 'refrescos');
+    const isLiquorSubcategory = categoryTitle && liquorCategories.includes(categoryTitle.toLowerCase());
+    
+    if (isBeverage || isLiquorSubcategory) {
+      video.classList.add('product-image-large');
+    } else {
+      video.classList.add('product-image-small');
+    }
+    
+    // Add loading state y autoplay
+    video.onloadeddata = function() {
+      video.style.opacity = '1';
+      // Asegurar que el video se reproduzca automáticamente
+      video.play().catch(e => {
+        console.log('Autoplay prevented:', e);
+        // Si autoplay falla, intentar reproducir cuando el usuario interactúe
+        video.addEventListener('click', () => video.play(), { once: true });
+      });
+    };
+    
+    // Manejo de errores
+    video.onerror = function() {
+      logWarning('Error loading video thumbnail:', { videoUrl });
+      // Crear imagen de respaldo si el video falla
+      const img = document.createElement('img');
+      const parent = video.parentElement;
+      if (parent) {
+        this._loadImageOptimized(img, item.imagen || item.ruta_archivo || this.getThumbnailUrl(videoUrl), item.nombre, video.className);
+        parent.replaceChild(img, video);
+      }
+    };
+    
+    // Preload metadata para mejor rendimiento
+    video.setAttribute('preload', 'metadata');
+    
+    return video;
+  },
+  
+  // Cargar imagen con optimizaciones de lazy loading y placeholders
+  _loadImageOptimized: function(img, src, alt, className) {
+    // Detectar si es un dispositivo móvil
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    
+    // Para imágenes críticas (licores, cervezas, etc.), cargar directamente
+    const isCriticalImage = className.includes('product-image-large') || 
+                           className.includes('video-thumbnail') || 
+                           className.includes('category-image') ||
+                           className.includes('product-image');
+    
+    if (isCriticalImage) {
+      // Carga directa para imágenes críticas
+      img.style.opacity = '0';
+      img.style.transition = 'opacity 0.3s ease-in-out';
+      img.src = src;
+      img.alt = alt;
+      img.className = className;
+      
+      // Evento de carga completada
+      img.onload = function() {
+        img.style.opacity = '1';
+      };
+      
+      // Manejo de errores
+      img.onerror = function() {
+        logWarning('Error loading image:', { src });
+        img.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"%3E%3Crect width="100" height="100" fill="%23fee"/%3E%3Ctext x="10" y="50" font-family="Arial" font-size="12" fill="%23900"%3EFallo al cargar%3C/text%3E%3C/svg%3E';
+        img.style.opacity = '1';
+      };
+    } else {
+      // Lazy loading para imágenes no críticas
+      img.style.opacity = '0';
+      img.style.transition = 'opacity 0.3s ease-in-out';
+      img.dataset.src = src;
+      img.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"%3E%3Crect width="100" height="100" fill="%23f0f0f0"/%3E%3C/svg%3E';
+      img.alt = alt;
+      img.className = className + ' lazy-load';
+      
+      // En dispositivos móviles, reducir prioridad de carga de imágenes no esenciales
+      if (isMobile) {
+        img.loading = 'lazy';
+      }
+      
+      // Evento de carga completada
+      img.onload = function() {
+        img.style.opacity = '1';
+        img.classList.remove('lazy-load');
+      };
+      
+      // Manejo de errores
+      img.onerror = function() {
+        logWarning('Error loading image:', { src });
+        img.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"%3E%3Crect width="100" height="100" fill="%23fee"/%3E%3Ctext x="10" y="50" font-family="Arial" font-size="12" fill="%23900"%3EFallo al cargar%3C/text%3E%3C/svg%3E';
+        img.style.opacity = '1';
+      };
+    }
+  },
+  
+  // Cargar recursos multimedia con estrategias basadas en dispositivo y red
+  _loadMediaResource: function(element) {
+    const isVideo = element.tagName === 'VIDEO';
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    const networkType = getNetworkType();
+    
+    if (isVideo) {
+      const video = element;
+      
+      // Configurar atributos optimizados para videos
+      video.preload = networkType.includes('2g') || networkType.includes('3g') ? 'metadata' : 'auto';
+      video.autoplay = false; // No autoplay en miniaturas para ahorrar recursos
+      
+      // Cargar el video
+      video.src = video.dataset.src;
+      video.load();
+      
+      // En caso de videos en miniaturas, intentar reproducir silenciosamente
+      if (video.classList.contains('video-thumbnail') && !video.classList.contains('video-modal')) {
+        video.muted = true;
+        video.loop = true;
+        
+        // Intentar reproducir con manejador de errores
+        video.onloadeddata = function() {
+          this.style.opacity = '1';
+          this.classList.remove('lazy-load');
+          
+          // Solo intentar reproducir en redes no 2G
+          if (!networkType.includes('2g')) {
+            this.play().catch(e => {
+              logWarning('Failed to autoplay video thumbnail:', e);
+              // En caso de fallo, mostrar el primer frame como imagen
+              this.poster = this.currentSrc + '#t=0.1';
+            });
+          }
+        };
+      } else {
+        // Para videos no miniaturas, solo cargar el poster
+        video.onloadeddata = function() {
+          this.style.opacity = '1';
+          this.classList.remove('lazy-load');
+        };
+      }
+      
+      // Manejar errores de carga
+      video.onerror = function() {
+        logWarning('Failed to load video:', { src: this.dataset.src });
+        // Mostrar imagen de respaldo si el video falla
+        if (this.parentElement) {
+          const img = document.createElement('img');
+          img.src = this.currentSrc ? this.currentSrc + '#t=0.1' : '';
+          img.alt = this.alt || 'Video no disponible';
+          img.className = this.className.replace('video', 'image').replace('lazy-load', '');
+          img.style.opacity = '1';
+          this.parentElement.replaceChild(img, this);
+        }
+      };
+    } else {
+      // Cargar imagen
+      const img = element;
+      img.src = img.dataset.src;
+      
+      // Mostrar imagen cuando se carga
+      img.onload = function() {
+        this.style.opacity = '1';
+        this.classList.remove('lazy-load');
+      };
+      
+      // Manejar errores de carga
+      img.onerror = function() {
+        logWarning('Failed to load image:', { src: this.dataset.src });
+        // Imagen de respaldo
+        this.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"%3E%3Crect width="100" height="100" fill="%23fee"/%3E%3Ctext x="10" y="50" font-family="Arial" font-size="12" fill="%23900"%3EFallo al cargar%3C/text%3E%3C/svg%3E';
+        this.style.opacity = '1';
+        this.classList.remove('lazy-load');
+      };
+    }
+  },
+  
+  // Inicializar lazy loading para imágenes y videos con optimizaciones para móviles
+  _initLazyLoading: function() {
+    // Detectar si es un dispositivo móvil y el tipo de conexión
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    const networkType = getNetworkType();
+    
+    // Configurar opciones de observador según el dispositivo y red
+    const observerOptions = {
+      rootMargin: isMobile ? '100px 0px' : '300px 0px', // Menor margen en móviles
+      threshold: 0.1
+    };
+    
+    const lazyImages = document.querySelectorAll('img.lazy-load');
+    const lazyVideos = document.querySelectorAll('video.lazy-load');
+    
+    const lazyLoadObserver = new IntersectionObserver(function(entries, observer) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+          const element = entry.target;
+          
+          if (element.tagName === 'IMG') {
+            const src = element.dataset.src;
+            if (src) {
+              // En redes lentas, retrasar carga de imágenes no esenciales
+              if (isMobile && networkType.includes('2g') && !element.classList.contains('category-image')) {
+                setTimeout(() => {
+                  element.src = src;
+                }, 500);
+              } else {
+                element.src = src;
+              }
+            }
+          } else if (element.tagName === 'VIDEO') {
+            const src = element.dataset.src;
+            if (src) {
+              // Priorizar videos en caché
+              if (typeof videoCache !== 'undefined' && videoCache.has(src)) {
+                // Video está en caché, cargar inmediatamente
+                element.src = src;
+                element.load();
+              } else if (isMobile) {
+                // En móviles, manejar según tipo de conexión
+                if (networkType.includes('2g')) {
+                  // En 2G, no cargar automáticamente videos, solo mostar poster
+                  if (typeof getThumbnailUrl === 'function') {
+                    element.poster = getThumbnailUrl(src);
+                  } else {
+                    element.poster = src + '#t=0.1';
+                  }
+                  element.style.opacity = '1';
+                  element.classList.remove('lazy-load');
+                } else {
+                  // En redes más rápidas, cargar con un pequeño retraso
+                  setTimeout(() => {
+                    element.src = src;
+                    element.load();
+                  }, 300);
+                }
+              } else {
+                // En desktop, cargar normalmente
+                element.src = src;
+                element.load();
+              }
+            }
+          }
+          
+          observer.unobserve(element);
+        }
+      });
+    }, observerOptions);
+    
+    lazyImages.forEach(function(img) {
+      lazyLoadObserver.observe(img);
+    });
+    
+    lazyVideos.forEach(function(video) {
+      lazyLoadObserver.observe(video);
+    });
+  },
+  
   _createImageCell: function(td, item, field, categoryTitle) {
     td.className = 'image-icon';
     if (item[field]) {
-      const img = document.createElement('img');
-      img.src = item[field];
-      img.alt = item.nombre;
-      
       const liquorCategories = ['whisky', 'tequila', 'ron', 'vodka', 'ginebra', 'mezcal', 'cognac', 'brandy', 'digestivos', 'espumosos'];
-      const isBeverage = categoryTitle && (categoryTitle.toLowerCase() === 'cervezas' || categoryTitle.toLowerCase() === 'refrescos');
       const isLiquorSubcategory = categoryTitle && liquorCategories.includes(categoryTitle.toLowerCase());
       
-      img.className = 'product-image';
-      if (isBeverage || isLiquorSubcategory) {
-        img.classList.add('product-image-large');
+      // For liquor subcategories, check if it's a video
+      if (isLiquorSubcategory && this.isVideoUrl(item[field])) {
+        const video = this._createVideoThumbnail(item, field, categoryTitle);
+        td.appendChild(video);
       } else {
-        img.classList.add('product-image-small');
+        const img = document.createElement('img');
+        const isBeverage = categoryTitle && (categoryTitle.toLowerCase() === 'cervezas' || categoryTitle.toLowerCase() === 'refrescos');
+        
+        let className = 'product-image';
+        if (isBeverage || isLiquorSubcategory) {
+          className += ' product-image-large';
+        } else {
+          className += ' product-image-small';
+        }
+        
+        this._loadImageOptimized(img, item[field], item.nombre, className);
+        td.appendChild(img);
       }
-      // No individual event listener - handled by delegation
-      td.appendChild(img);
     } else {
       td.textContent = '--';
     }
+    
+    // Inicializar lazy loading después de agregar las imágenes
+    setTimeout(() => this._initLazyLoading(), 100);
   },
 
   _getCategoryForModal: function(categoryTitle) {
@@ -691,6 +1101,10 @@ const ProductRenderer = {
     grid.appendChild(titleElement);
     
     // Create product cards
+    // Check if this is a liquor subcategory (declared outside the loop for reuse)
+    const liquorCategories = ['whisky', 'tequila', 'ron', 'vodka', 'ginebra', 'mezcal', 'cognac', 'brandy', 'digestivos', 'espumosos'];
+    const isLiquorCategory = liquorCategories.includes(normalizedCategory);
+    
     data.forEach(item => {
       const card = document.createElement('div');
       card.className = 'product-card';
@@ -713,22 +1127,67 @@ const ProductRenderer = {
       const mediaContainer = document.createElement('div');
       mediaContainer.className = 'product-media';
       
+      // Reuse liquorCategories and isLiquorCategory variables declared outside the loop
+      
       if (item.video) {
         const videoThumbnail = document.createElement('img');
-        videoThumbnail.className = 'video-thumbnail';
-        videoThumbnail.src = this.getThumbnailUrl(item.video);
-        videoThumbnail.alt = `Video de ${item.nombre}`;
+        this._loadImageOptimized(videoThumbnail, this.getThumbnailUrl(item.video), `Video de ${item.nombre}`, 'video-thumbnail');
         videoThumbnail.dataset.videoUrl = item.video;
         // No individual event listener - handled by delegation
         mediaContainer.appendChild(videoThumbnail);
       } else if (item.imagen || item.ruta_archivo) {
-        const image = document.createElement('img');
-        image.className = 'product-image';
-        image.src = item.imagen || item.ruta_archivo;
-        image.alt = item.nombre;
-        // No individual event listener - handled by delegation
-        mediaContainer.appendChild(image);
+        const mediaUrl = item.imagen || item.ruta_archivo;
+        
+        // For liquor subcategories, check if it's a video
+        if (isLiquorCategory && this.isVideoUrl(mediaUrl)) {
+          const video = document.createElement('video');
+          video.src = mediaUrl; // Cargar directamente sin lazy loading para autoplay
+          video.alt = item.nombre;
+          video.className = 'product-image product-video-thumbnail';
+          video.loop = true;
+          video.muted = true;
+          video.autoplay = true; // Autoplay para subcategorías de licores
+          video.controls = false; // Sin controles visibles
+          video.playsInline = true;
+          video.style.objectFit = 'contain';
+          video.style.opacity = '0';
+          video.style.transition = 'opacity 0.3s ease-in-out';
+          video.setAttribute('preload', 'auto'); // Cargar completamente para mejor loop
+          
+          // Manejo de carga y errores con autoplay
+          video.onloadeddata = function() {
+            video.style.opacity = '1';
+            // Asegurar que el video se reproduzca automáticamente
+            video.play().catch(e => {
+              console.log('Autoplay prevented in grid:', e);
+              // Si autoplay falla, intentar reproducir cuando el usuario interactúe
+              video.addEventListener('click', () => video.play(), { once: true });
+            });
+          };
+          
+          video.onerror = function() {
+            logWarning('Error loading video:', { mediaUrl });
+            // Crear imagen de respaldo si el video falla
+            const img = document.createElement('img');
+            const parent = video.parentElement;
+            if (parent) {
+              this._loadImageOptimized(img, item.imagen || item.ruta_archivo, item.nombre, video.className);
+              parent.replaceChild(img, video);
+            }
+          }.bind(this);
+          
+          // Add video to container
+          mediaContainer.appendChild(video);
+        } else {
+          const image = document.createElement('img');
+          this._loadImageOptimized(image, mediaUrl, item.nombre, 'product-image');
+          // No individual event listener - handled by delegation
+          mediaContainer.appendChild(image);
+        }
       }
+      
+      // Inicializar lazy loading después de agregar los medios
+      setTimeout(() => this._initLazyLoading(), 100);
       
       card.appendChild(mediaContainer);
       
@@ -736,9 +1195,7 @@ const ProductRenderer = {
       const pricesContainer = document.createElement('div');
       pricesContainer.className = 'product-prices';
       
-      // Check if this is a liquor subcategory
-      const liquorCategories = ['whisky', 'tequila', 'ron', 'vodka', 'ginebra', 'mezcal', 'cognac', 'brandy', 'digestivos', 'espumosos'];
-      const isLiquorCategory = liquorCategories.includes(normalizedCategory);
+      // Reuse liquorCategories and isLiquorCategory variables declared outside the loop
       
       if (isLiquorCategory) {
         card.classList.add('liquor-card');
@@ -938,6 +1395,16 @@ const ProductRenderer = {
   },
 
   showVideoModal: function(videoUrl, title, category = null) {
+    // Validar que la URL del video sea válida
+    if (!videoUrl || !this.isVideoUrl(videoUrl)) {
+      logWarning('Invalid video URL provided:', videoUrl);
+      this.showImageModal(videoUrl, title, category); // Fallback a imagen
+      return;
+    }
+    
+    // Detectar si es un dispositivo móvil
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    
     // Create modal backdrop
     const modalBackdrop = document.createElement('div');
     modalBackdrop.className = 'modal-backdrop';
@@ -954,31 +1421,89 @@ const ProductRenderer = {
     modalTitle.textContent = title;
     modalContent.appendChild(modalTitle);
     
-    // Add video
+    // Crear contenedor de video simplificado
+    const videoContainer = document.createElement('div');
+    videoContainer.className = 'video-container';
+    videoContainer.style.position = 'relative';
+    videoContainer.style.display = 'flex';
+    videoContainer.style.justifyContent = 'center';
+    videoContainer.style.alignItems = 'center';
+    videoContainer.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
+    videoContainer.style.borderRadius = '8px';
+    videoContainer.style.overflow = 'hidden';
+    
+    // Add video con configuración para loop sin controles
     const video = document.createElement('video');
     video.src = videoUrl;
-    video.controls = true;
-    video.autoplay = true;
     
-    // Add error handling for video loading
-    video.addEventListener('error', (e) => {
-      logWarning('Video loading error', e, { videoUrl });
-      video.className = 'video-hidden';
+    // Detectar si es una subcategoría de licores para configuración especial
+    const liquorCategories = ['whisky', 'tequila', 'ron', 'vodka', 'ginebra', 'mezcal', 'cognac', 'brandy', 'digestivos', 'espumosos'];
+    const isLiquorCategory = category && liquorCategories.includes(category.toLowerCase());
+    
+    if (isLiquorCategory) {
+      // Para subcategorías de licores: loop sin controles
+      video.controls = false; // Sin controles visibles
+      video.loop = true;
+      video.muted = true; // Silenciado para permitir autoplay
+      video.autoplay = true;
+      video.playsInline = true;
+      video.preload = 'auto'; // Cargar completamente para mejor loop
+    } else {
+      // Para otras categorías: controles normales
+      video.controls = true; // Usar controles nativos del navegador
+      video.loop = true;
+      video.muted = false; // Permitir audio
+      video.playsInline = true;
+      video.preload = 'metadata'; // Cargar solo metadatos inicialmente
       
-      const errorMessage = document.createElement('p');
-      errorMessage.textContent = 'Video no disponible en este momento';
-      errorMessage.className = 'error-message';
-      modalContent.insertBefore(errorMessage, video.nextSibling);
+      // Configuración básica para móviles
+      if (isMobile) {
+        video.autoplay = false;
+        video.muted = true; // Silenciar en móviles para permitir autoplay
+      } else {
+        video.autoplay = false; // No autoplay automático
+      }
+    }
+    
+    // Ensure video maintains aspect ratio
+    video.style.maxWidth = '100%';
+    video.style.maxHeight = '70vh';
+    video.style.objectFit = 'contain';
+    video.style.width = '100%';
+    
+    // Manejo de errores simplificado
+    video.addEventListener('error', (e) => {
+      console.warn('Video loading error:', e);
+      
+      // Crear mensaje de error más informativo
+      const errorMessage = document.createElement('div');
+      errorMessage.style.color = 'white';
+      errorMessage.style.textAlign = 'center';
+      errorMessage.style.padding = '40px 20px';
+      errorMessage.style.fontSize = '16px';
+      errorMessage.innerHTML = `
+        <p>⚠️ Video no disponible</p>
+        <p style="font-size: 14px; opacity: 0.8;">El video no se pudo cargar en este momento</p>
+      `;
+      
+      // Reemplazar el video con el mensaje de error
+      video.style.display = 'none';
+      videoContainer.appendChild(errorMessage);
     });
     
-    modalContent.appendChild(video);
+    // Evento cuando el video está listo para reproducir
+    video.addEventListener('loadedmetadata', () => {
+      console.log('Video metadata loaded successfully');
+    });
+    
+    videoContainer.appendChild(video);
+    modalContent.appendChild(videoContainer);
     
     // Add close button
     const closeButton = document.createElement('button');
     closeButton.textContent = 'Cerrar';
     closeButton.className = 'nav-button modal-close-btn';
     closeButton.dataset.modalId = 'video-modal';
-    // No individual event listener - handled by delegation
     modalContent.appendChild(closeButton);
     
     // Add modal to body
