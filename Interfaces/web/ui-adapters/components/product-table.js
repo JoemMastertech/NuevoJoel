@@ -762,17 +762,31 @@ const ProductRenderer = {
     const videoUrl = item[field];
     const video = document.createElement('video');
     
-    // Configurar para autoplay en loop sin controles
-    video.src = videoUrl; // Cargar directamente sin lazy loading para autoplay
-    video.className = 'product-image product-video-thumbnail';
+    // Detectar si es un dispositivo móvil
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    
+    // Configurar para autoplay en loop sin controles - optimizado para móviles
+    video.className = 'product-image product-video-thumbnail lazy-load';
     video.loop = true;
     video.muted = true;
-    video.autoplay = true;
     video.playsInline = true;
     video.controls = false; // Sin controles visibles
     video.style.objectFit = 'contain';
     video.style.opacity = '0';
     video.style.transition = 'opacity 0.3s ease-in-out';
+    
+    // Optimizaciones para móviles
+    if (isMobile) {
+      // En móviles, usar lazy loading y preload mínimo
+      video.dataset.src = videoUrl;
+      video.setAttribute('preload', 'none');
+      video.autoplay = false; // Desactivar autoplay en móviles por defecto
+    } else {
+      // En desktop, comportamiento normal pero con preload optimizado
+      video.src = videoUrl;
+      video.setAttribute('preload', 'metadata');
+      video.autoplay = true;
+    }
     
     // Apply same styling as images
     const liquorCategories = ['whisky', 'tequila', 'ron', 'vodka', 'ginebra', 'mezcal', 'cognac', 'brandy', 'digestivos', 'espumosos'];
@@ -785,16 +799,26 @@ const ProductRenderer = {
       video.classList.add('product-image-small');
     }
     
-    // Add loading state y autoplay
+    // Add loading state y autoplay optimizado
     video.onloadeddata = function() {
       video.style.opacity = '1';
-      // Asegurar que el video se reproduzca automáticamente
-      video.play().catch(e => {
-        console.log('Autoplay prevented:', e);
-        // Si autoplay falla, intentar reproducir cuando el usuario interactúe
-        video.addEventListener('click', () => video.play(), { once: true });
-      });
-    };
+      
+      // Solo intentar autoplay si no es móvil o si el usuario ya interactuó
+      if (!isMobile || video.dataset.userInteracted) {
+        video.play().catch(e => {
+          console.log('Autoplay prevented:', e);
+          // Si autoplay falla, mostrar poster o thumbnail
+          if (!video.poster) {
+            video.poster = this.getThumbnailUrl(videoUrl);
+          }
+        });
+      } else {
+        // En móviles, mostrar poster por defecto
+        if (!video.poster) {
+          video.poster = this.getThumbnailUrl(videoUrl);
+        }
+      }
+    }.bind(this);
     
     // Manejo de errores
     video.onerror = function() {
@@ -806,10 +830,19 @@ const ProductRenderer = {
         this._loadImageOptimized(img, item.imagen || item.ruta_archivo || this.getThumbnailUrl(videoUrl), item.nombre, video.className);
         parent.replaceChild(img, video);
       }
-    };
+    }.bind(this);
     
-    // Preload metadata para mejor rendimiento
-    video.setAttribute('preload', 'metadata');
+    // Agregar evento de click para reproducir en móviles
+    if (isMobile) {
+      video.addEventListener('click', function() {
+        video.dataset.userInteracted = 'true';
+        if (video.paused) {
+          video.play();
+        } else {
+          video.pause();
+        }
+      });
+    }
     
     return video;
   },
@@ -1030,6 +1063,40 @@ const ProductRenderer = {
     lazyVideos.forEach(function(video) {
       lazyLoadObserver.observe(video);
     });
+    
+    // Configurar observador para pausar videos fuera de vista (solo en móviles)
+    if (isMobile) {
+      this._initVideoVisibilityObserver();
+    }
+  },
+  
+  // Observador para pausar videos que no están visibles (optimización móvil)
+  _initVideoVisibilityObserver: function() {
+    const visibilityObserver = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        const video = entry.target;
+        if (entry.isIntersecting) {
+          // Video está visible, permitir reproducción si el usuario ya interactuó
+          if (video.dataset.userInteracted && video.paused) {
+            video.play().catch(e => console.log('Play failed:', e));
+          }
+        } else {
+          // Video no está visible, pausar para ahorrar recursos
+          if (!video.paused) {
+            video.pause();
+          }
+        }
+      });
+    }, {
+      rootMargin: '50px 0px',
+      threshold: 0.1
+    });
+    
+    // Observar todos los videos
+    const allVideos = document.querySelectorAll('video');
+    allVideos.forEach(function(video) {
+      visibilityObserver.observe(video);
+    });
   },
   
   _createImageCell: function(td, item, field, categoryTitle) {
@@ -1141,29 +1208,60 @@ const ProductRenderer = {
         // For liquor subcategories, check if it's a video
         if (isLiquorCategory && this.isVideoUrl(mediaUrl)) {
           const video = document.createElement('video');
-          video.src = mediaUrl; // Cargar directamente sin lazy loading para autoplay
+          
+          // Detectar si es un dispositivo móvil
+          const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+          
           video.alt = item.nombre;
-          video.className = 'product-image product-video-thumbnail';
+          video.className = 'product-image product-video-thumbnail lazy-load';
           video.loop = true;
           video.muted = true;
-          video.autoplay = true; // Autoplay para subcategorías de licores
           video.controls = false; // Sin controles visibles
           video.playsInline = true;
           video.style.objectFit = 'contain';
           video.style.opacity = '0';
           video.style.transition = 'opacity 0.3s ease-in-out';
-          video.setAttribute('preload', 'auto'); // Cargar completamente para mejor loop
           
-          // Manejo de carga y errores con autoplay
+          // Optimizaciones específicas para móviles en grid
+          if (isMobile) {
+            // En móviles, usar lazy loading y limitar autoplay
+            video.dataset.src = mediaUrl;
+            video.setAttribute('preload', 'none');
+            video.autoplay = false;
+            // Mostrar poster por defecto
+            video.poster = this.getThumbnailUrl(mediaUrl);
+          } else {
+            // En desktop, comportamiento optimizado
+            video.src = mediaUrl;
+            video.setAttribute('preload', 'metadata');
+            video.autoplay = true;
+          }
+          
+          // Manejo de carga y errores con autoplay optimizado
           video.onloadeddata = function() {
             video.style.opacity = '1';
-            // Asegurar que el video se reproduzca automáticamente
-            video.play().catch(e => {
-              console.log('Autoplay prevented in grid:', e);
-              // Si autoplay falla, intentar reproducir cuando el usuario interactúe
-              video.addEventListener('click', () => video.play(), { once: true });
-            });
-          };
+            
+            // Control de autoplay más inteligente
+            if (!isMobile || video.dataset.userInteracted) {
+              // Limitar el número de videos reproduciéndose simultáneamente
+              const playingVideos = document.querySelectorAll('video:not([paused])');
+              const maxSimultaneousVideos = isMobile ? 1 : 3;
+              
+              if (playingVideos.length < maxSimultaneousVideos) {
+                video.play().catch(e => {
+                  console.log('Autoplay prevented in grid:', e);
+                  if (!video.poster) {
+                    video.poster = this.getThumbnailUrl(mediaUrl);
+                  }
+                });
+              } else {
+                // Si hay demasiados videos reproduciéndose, mostrar poster
+                if (!video.poster) {
+                  video.poster = this.getThumbnailUrl(mediaUrl);
+                }
+              }
+            }
+          }.bind(this);
           
           video.onerror = function() {
             logWarning('Error loading video:', { mediaUrl });
@@ -1175,6 +1273,23 @@ const ProductRenderer = {
               parent.replaceChild(img, video);
             }
           }.bind(this);
+          
+          // Agregar evento de click para reproducir en móviles
+          if (isMobile) {
+            video.addEventListener('click', function() {
+              video.dataset.userInteracted = 'true';
+              if (video.paused) {
+                // Pausar otros videos antes de reproducir este
+                const otherVideos = document.querySelectorAll('video:not([paused])');
+                otherVideos.forEach(v => {
+                  if (v !== video) v.pause();
+                });
+                video.play();
+              } else {
+                video.pause();
+              }
+            });
+          }
           
           // Add video to container
           mediaContainer.appendChild(video);
