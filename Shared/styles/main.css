@@ -1,6 +1,6 @@
 /* Master Technology Bar - Optimized Stylesheet */
 :root {
-  /* Primary Colors */
+  /* Default theme (dark-blue) */
   --primary-color: #f3f6f6;
   --accent-color: #00f7ff;
   --background-color: #000;
@@ -27,13 +27,65 @@
   --sidebar-transition: transform 0.3s ease, width 0.3s ease;
   
   /* Legacy support */
-  --primary: #f3f6f6;
-  --accent: #00f7ff;
-  --bg: #000;
-  --text: #ECE9D8;
-  --card: rgba(0,0,0,0.7);
-  --border: #00f7ff40;
-  --transition: 0.3s;
+  --primary: var(--primary-color);
+  --accent: var(--accent-color);
+  --bg: var(--background-color);
+  --text: var(--text-color);
+  --card: var(--card-bg);
+  --border: var(--border-color);
+  --transition: var(--transition-time);
+}
+
+/* Dark Blue Theme (default) */
+[data-theme="dark-blue"] {
+  --primary-color: #f3f6f6;
+  --accent-color: #00f7ff;
+  --background-color: #000;
+  --text-color: #ECE9D8;
+  --price-color: #00f7ff;
+  --card-bg: rgba(0,0,0,0.7);
+  --border-color: #00f7ff40;
+  --glow-shadow: 0 0 10px rgba(0, 247, 255, 0.3);
+  --glow-shadow-hover: 0 0 20px rgba(0, 247, 255, 0.6);
+}
+
+/* Dark Red Theme */
+[data-theme="dark-red"] {
+  --primary-color: #f3f6f6;
+  --accent-color: #ff4d4d;
+  --background-color: #000;
+  --text-color: #ECE9D8;
+  --price-color: #ff4d4d;
+  --card-bg: rgba(0,0,0,0.7);
+  --border-color: #ff4d4d40;
+  --glow-shadow: 0 0 10px rgba(255, 77, 77, 0.3);
+  --glow-shadow-hover: 0 0 20px rgba(255, 77, 77, 0.6);
+}
+
+/* Light Blue Theme - now shares styles with Dark Blue Theme */
+[data-theme="light-blue"] {
+  --primary-color: #f3f6f6;
+  --accent-color: #00f7ff;
+  --background-color: #000;
+  --text-color: #ECE9D8;
+  --price-color: #00f7ff;
+  --card-bg: rgba(0,0,0,0.7);
+  --border-color: #00f7ff40;
+  --glow-shadow: 0 0 10px rgba(0, 247, 255, 0.3);
+  --glow-shadow-hover: 0 0 20px rgba(0, 247, 255, 0.6);
+}
+
+/* Light White Theme */
+[data-theme="light-white"] {
+  --primary-color: #1e293b;
+  --accent-color: #3b82f6;
+  --background-color: #ffffff;
+  --text-color: #1e293b;
+  --price-color: #3b82f6;
+  --card-bg: rgba(255,255,255,0.9);
+  --border-color: #3b82f640;
+  --glow-shadow: 0 0 10px rgba(59, 130, 246, 0.3);
+  --glow-shadow-hover: 0 0 20px rgba(59, 130, 246, 0.6);
 }
 
 /* Background video styles */
