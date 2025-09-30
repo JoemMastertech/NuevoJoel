@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prueba Super Mínima</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+        
+        #settings-menu {
+            border: 1px solid #ddd;
+            padding: 20px;
+            margin-top: 20px;
+            max-width: 400px;
+        }
+        
+        .settings-panel {
+            display: none;
+        }
+        
+        .settings-panel.active {
+            display: block;
+        }
+        
+        .settings-option {
+            padding: 10px;
+            margin: 5px 0;
+            border: 1px solid #eee;
+            cursor: pointer;
+        }
+        
+        .settings-option:hover {
+            background-color: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+    <h1>Prueba Super Mínima de Menú</h1>
+    
+    <!-- Menú visible por defecto -->
+    <div id="settings-menu">
+        <!-- Panel Principal - Activo por defecto -->
+        <div id="main-panel" class="settings-panel active">
+            <h2>Menú Principal</h2>
+            <div class="settings-option" id="idiomas-option">Idiomas</div>
+            <div class="settings-option" id="fondo-option">Fondo</div>
+        </div>
+        
+        <!-- Panel de Idiomas -->
+        <div id="languages-panel" class="settings-panel">
+            <h2>Idiomas</h2>
+            <button id="back-to-main" class="settings-option">← Volver</button>
+            <div class="settings-option" data-language="es">Español</div>
+            <div class="settings-option" data-language="en">English</div>
+        </div>
+    </div>
+    
+    <script>
+        // Código super simple para probar la navegación
+        document.addEventListener('DOMContentLoaded', function() {
+            // Obtener elementos
+            const mainPanel = document.getElementById('main-panel');
+            const languagesPanel = document.getElementById('languages-panel');
+            const idiomasOption = document.getElementById('idiomas-option');
+            const backButton = document.getElementById('back-to-main');
+            
+            // Función para cambiar a panel de idiomas
+            idiomasOption.addEventListener('click', function() {
+                mainPanel.classList.remove('active');
+                languagesPanel.classList.add('active');
+                console.log('Panel de idiomas mostrado');
+            });
+            
+            // Función para volver al panel principal
+            backButton.addEventListener('click', function() {
+                languagesPanel.classList.remove('active');
+                mainPanel.classList.add('active');
+                console.log('Volviendo al panel principal');
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GitHub Pages Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 50px;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            color: white;
+        }
+        .container {
+            background: rgba(0,0,0,0.7);
+            padding: 30px;
+            border-radius: 10px;
+            display: inline-block;
+        }
+        .timestamp {
+            font-size: 24px;
+            margin: 20px 0;
+            color: #ffeb3b;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 GitHub Pages Test</h1>
+        <p>Si puedes ver este archivo, GitHub Pages está funcionando correctamente.</p>
+        <div class="timestamp">
+            Última actualización: <span id="timestamp"></span>
+        </div>
+        <p>Archivo creado para verificar sincronización entre local y GitHub Pages</p>
+        <p><strong>Versión:</strong> 2.0 - Con settings-manager.js</p>
+    </div>
+
+    <script>
+        document.getElementById('timestamp').textContent = new Date().toLocaleString('es-ES');
+    </script>
+</body>
+</html>
