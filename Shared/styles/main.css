@@ -45,7 +45,7 @@
   height: 100%;
   object-fit: cover;
   z-index: -1;
-  opacity: 0.4;
+  opacity: 1;
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -3795,8 +3795,8 @@ textarea:focus {
 }
 
 /* Optimized drawer menu */
-.drawer-menu { position: fixed; top: 70px; left: -300px; width: 300px; height: calc(100vh - 70px); background: rgba(0, 0, 0, 0.9); backdrop-filter: blur(10px); z-index: 999; transition: left 0.3s ease-in-out; overflow-y: auto; border-right: 1px solid var(--border-color); }
-.drawer-menu.open { left: 0; }
+.drawer-menu { position: fixed; top: 70px; right: -300px; width: 300px; height: calc(100vh - 70px); background: rgba(0, 0, 0, 0.9); backdrop-filter: blur(10px); z-index: 999; transition: right 0.3s ease-in-out; overflow-y: auto; border-left: 1px solid var(--border-color); }
+.drawer-menu.open { right: 0; }
 .drawer-content { padding: 20px 20px 20px 20px; display: flex; flex-direction: column; gap: 15px; }
 .drawer-logo-container { display: flex; justify-content: center; margin-bottom: 10px; }
 .drawer-logo { width: 100px; height: auto; object-fit: contain; margin-bottom: 10px; }
@@ -3897,6 +3897,120 @@ body.order-mode-active #app {
 /* Hamburger menu visibility */
 .hamburger-hidden {
   display: none;
+}
+
+/* =================================================================
+   SETTINGS MENU STYLES
+   ================================================================= */
+/* Settings panel styles */
+.settings-panel {
+  width: 100%;
+  height: 100%;
+}
+
+/* Settings title */
+.settings-title {
+  font: 700 1.2rem 'Playfair Display', serif;
+  color: var(--primary-color);
+  margin: 15px 0 25px 0;
+  text-align: center;
+  border-bottom: 2px solid var(--border-color);
+  padding-bottom: 10px;
+}
+
+/* Fade in animation for panels */
+.fade-in {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Language and theme buttons - using existing nav-button styles but adding some specificities */
+.language-btn,
+.theme-btn {
+  transition: all 0.3s ease;
+}
+
+.language-btn:hover,
+.theme-btn:hover {
+  transform: translateX(5px);
+}
+
+/* Active state for selected options */
+.language-btn.active,
+.theme-btn.active {
+  background-color: rgba(0, 247, 255, 0.1);
+  border-color: var(--primary-color);
+  color: var(--primary-color);
+}
+
+/* =================================================================
+   RESPONSIVE SETTINGS MENU STYLES
+   ================================================================= */
+
+/* Tablet styles */
+@media (max-width: 768px) {
+  .settings-title {
+    font-size: 1.1rem;
+    margin: 10px 0 20px 0;
+  }
+  
+  .drawer-content {
+    padding: 15px;
+  }
+}
+
+/* Mobile phone styles */
+@media (max-width: 480px) {
+  .drawer-menu {
+    width: 250px;
+  }
+  
+  .settings-title {
+    font-size: 1rem;
+    margin: 10px 0 15px 0;
+  }
+  
+  .drawer-menu .nav-button {
+    font-size: 0.7rem;
+    padding: 10px 15px;
+  }
+  
+  .back-button {
+    width: 40px;
+    height: 40px;
+    font-size: 1.2rem;
+  }
+}
+
+/* Portrait orientation styles */
+@media (orientation: portrait) {
+  .drawer-menu {
+    top: 60px;
+    height: calc(100vh - 60px);
+  }
+}
+
+/* Landscape orientation styles for smaller devices */
+@media (orientation: landscape) and (max-width: 768px) {
+  .drawer-menu {
+    top: 50px;
+    height: calc(100vh - 50px);
+  }
+  
+  .drawer-content {
+    padding: 10px;
+    gap: 10px;
+  }
 }
 
 .hamburger-visible {
