@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Prueba Simple - Menús y Tema</title>
+  <link rel="stylesheet" href="Shared/styles/main.css">
+</head>
+<body data-theme="dark-blue">
+  <div id="app">
+    <!-- Menú lateral izquierdo (hamburguesa) -->
+    <div id="drawer-overlay" class="drawer-overlay"></div>
+    <div id="drawer-menu" class="drawer-menu">
+      <div class="drawer-content">
+        <h2>Menú Principal</h2>
+        <div class="nav-button">Opción 1</div>
+        <div class="nav-button">Opción 2</div>
+        <div class="nav-button">Opción 3</div>
+      </div>
+    </div>
+
+    <!-- Menú de configuración (derecha) -->
+    <div id="settings-overlay" class="drawer-overlay"></div>
+    <div id="settings-menu" class="drawer-menu">
+      <div class="drawer-content">
+        <h2>Configuración</h2>
+        <div id="main-settings-panel" class="settings-panel">
+          <div id="dark-mode-option">Modo Oscuro</div>
+          <div id="light-mode-option">Modo Claro</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Botones para abrir menús -->
+    <div style="padding: 20px;">
+      <button id="menu-btn" style="margin: 10px; padding: 10px;">Abrir Menú Principal</button>
+      <button id="settings-btn" style="margin: 10px; padding: 10px;">Abrir Configuración</button>
+      <button id="toggle-theme-btn" style="margin: 10px; padding: 10px;">Cambiar Tema</button>
+    </div>
+  </div>
+
+  <script>
+    // Script simple para probar los menús y el tema
+    document.addEventListener('DOMContentLoaded', () => {
+      // Botones
+      const menuBtn = document.getElementById('menu-btn');
+      const settingsBtn = document.getElementById('settings-btn');
+      const toggleThemeBtn = document.getElementById('toggle-theme-btn');
+      
+      // Menús
+      const drawerMenu = document.getElementById('drawer-menu');
+      const settingsMenu = document.getElementById('settings-menu');
+      const drawerOverlay = document.getElementById('drawer-overlay');
+      const settingsOverlay = document.getElementById('settings-overlay');
+      
+      // Estado actual del tema
+      let currentTheme = 'dark-blue';
+      
+      // Abrir menú principal (izquierda)
+      menuBtn.addEventListener('click', () => {
+        drawerMenu.classList.toggle('open');
+        drawerOverlay.classList.toggle('active');
+      });
+      
+      // Abrir menú de configuración (derecha)
+      settingsBtn.addEventListener('click', () => {
+        settingsMenu.classList.toggle('open');
+        settingsOverlay.classList.toggle('active');
+      });
+      
+      // Cerrar menús al hacer clic en overlay
+      drawerOverlay.addEventListener('click', () => {
+        drawerMenu.classList.remove('open');
+        drawerOverlay.classList.remove('active');
+      });
+      
+      settingsOverlay.addEventListener('click', () => {
+        settingsMenu.classList.remove('open');
+        settingsOverlay.classList.remove('active');
+      });
+      
+      // Cambiar tema
+      toggleThemeBtn.addEventListener('click', () => {
+        currentTheme = currentTheme === 'dark-blue' ? 'light-white' : 'dark-blue';
+        document.body.setAttribute('data-theme', currentTheme);
+        console.log('Tema cambiado a:', currentTheme);
+      });
+    });
+  </script>
+</body>
+</html>

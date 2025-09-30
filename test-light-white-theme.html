@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prueba Tema Light White</title>
+    <link rel="stylesheet" href="Shared/styles/main.css">
+    <style>
+        body {
+            font-family: 'Montserrat', sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .preview-section {
+            margin-bottom: 40px;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        td, th {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        tr:hover td {
+            background-color: rgba(59, 130, 246, 0.2);
+        }
+        .theme-toggle {
+            text-align: center;
+            margin: 20px 0;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #3b82f6;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #2563eb;
+        }
+    </style>
+</head>
+<body data-theme="light-white">
+    <div class="container">
+        <h1>Prueba de Tema Light White</h1>
+        
+        <div class="theme-toggle">
+            <button onclick="toggleTheme()">Cambiar a Tema Oscuro</button>
+        </div>
+        
+        <div class="preview-section" style="background: var(--gradient-overlay);">
+            <h2>Vista con Gradiente Blanco a Azul</h2>
+            <p>Esta sección muestra el degradado lineal de blanco a azul implementado con --gradient-overlay.</p>
+        </div>
+        
+        <div class="preview-section">
+            <h2>Vista de Tabla</h2>
+            <table class="product-table">
+                <thead>
+                    <tr>
+                        <th>Producto</th>
+                        <th>Ingredientes</th>
+                        <th>Precio</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Producto 1</td>
+                        <td class="product-ingredients">Ingrediente 1, Ingrediente 2, Ingrediente 3</td>
+                        <td>$100</td>
+                    </tr>
+                    <tr>
+                        <td>Producto 2</td>
+                        <td class="product-ingredients">Ingrediente A, Ingrediente B, Ingrediente C</td>
+                        <td>$150</td>
+                    </tr>
+                    <tr>
+                        <td>Producto 3</td>
+                        <td class="product-ingredients">Ingrediente X, Ingrediente Y, Ingrediente Z</td>
+                        <td>$200</td>
+                    </tr>
+                </tbody>
+            </table>
+            <p>Pasa el cursor sobre las filas para ver el efecto hover personalizado.</p>
+        </div>
+        
+        <div class="preview-section">
+            <h2>Vista de Cuadrícula</h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
+                <div class="product-grid" style="background: var(--gradient-overlay); padding: 20px; border-radius: 8px;">
+                    <h3>Producto 1</h3>
+                    <p class="product-ingredients">Ingrediente 1, Ingrediente 2, Ingrediente 3</p>
+                    <p>$100</p>
+                </div>
+                <div class="product-grid" style="background: var(--gradient-overlay); padding: 20px; border-radius: 8px;">
+                    <h3>Producto 2</h3>
+                    <p class="product-ingredients">Ingrediente A, Ingrediente B, Ingrediente C</p>
+                    <p>$150</p>
+                </div>
+                <div class="product-grid" style="background: var(--gradient-overlay); padding: 20px; border-radius: 8px;">
+                    <h3>Producto 3</h3>
+                    <p class="product-ingredients">Ingrediente X, Ingrediente Y, Ingrediente Z</p>
+                    <p>$200</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleTheme() {
+            const body = document.body;
+            if (body.getAttribute('data-theme') === 'light-white') {
+                body.setAttribute('data-theme', 'dark-blue');
+                document.querySelector('button').textContent = 'Cambiar a Tema Light White';
+            } else {
+                body.setAttribute('data-theme', 'light-white');
+                document.querySelector('button').textContent = 'Cambiar a Tema Oscuro';
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prueba Mínima Menú Configuración</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .top-nav {
+            background-color: #333;
+            color: white;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        #settings-btn {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-size: 1.5rem;
+            padding: 0.5rem;
+        }
+        
+        #settings-menu {
+            position: fixed;
+            top: 0;
+            right: -300px;
+            width: 300px;
+            height: 100vh;
+            background-color: white;
+            box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
+            transition: right 0.3s ease;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        #settings-menu.open {
+            right: 0;
+        }
+        
+        .settings-panel {
+            display: none;
+            padding: 1rem;
+        }
+        
+        .settings-panel.active {
+            display: block;
+        }
+        
+        .settings-option {
+            padding: 1rem;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+        }
+        
+        .settings-option:hover {
+            background-color: #f9f9f9;
+        }
+        
+        .back-button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem;
+            font-size: 1rem;
+            color: #333;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <nav class="top-nav">
+        <h1>Prueba Menú Configuración</h1>
+        <button id="settings-btn">⚙️</button>
+    </nav>
+    
+    <div id="settings-menu">
+        <!-- Panel Principal -->
+        <div id="main-panel" class="settings-panel active">
+            <div class="settings-option" data-panel="languages">Idiomas</div>
+            <div class="settings-option" data-panel="background">Fondo</div>
+        </div>
+        
+        <!-- Panel de Idiomas -->
+        <div id="languages-panel" class="settings-panel">
+            <button class="back-button">← Volver</button>
+            <h3>Idiomas</h3>
+            <div class="settings-option" data-language="es">Español</div>
+            <div class="settings-option" data-language="en">English</div>
+        </div>
+        
+        <!-- Panel de Fondo -->
+        <div id="background-panel" class="settings-panel">
+            <button class="back-button">← Volver</button>
+            <h3>Fondo</h3>
+            <div class="settings-option" data-background="nature">Naturaleza</div>
+            <div class="settings-option" data-background="city">Ciudad</div>
+        </div>
+    </div>
+    
+    <script>
+        // Mínimo código para probar el menú de configuración
+        const settingsBtn = document.getElementById('settings-btn');
+        const settingsMenu = document.getElementById('settings-menu');
+        const mainPanel = document.getElementById('main-panel');
+        const languagesPanel = document.getElementById('languages-panel');
+        const backgroundPanel = document.getElementById('background-panel');
+        const backButtons = document.querySelectorAll('.back-button');
+        const mainOptions = document.querySelectorAll('#main-panel .settings-option');
+        
+        // Abrir/cerrar menú
+        settingsBtn.addEventListener('click', () => {
+            settingsMenu.classList.toggle('open');
+            console.log('Menú de configuración ' + (settingsMenu.classList.contains('open') ? 'abierto' : 'cerrado'));
+        });
+        
+        // Navegar entre paneles
+        mainOptions.forEach(option => {
+            option.addEventListener('click', () => {
+                const panelId = option.getAttribute('data-panel');
+                mainPanel.classList.remove('active');
+                
+                if (panelId === 'languages') {
+                    languagesPanel.classList.add('active');
+                    console.log('Panel de idiomas mostrado');
+                } else if (panelId === 'background') {
+                    backgroundPanel.classList.add('active');
+                    console.log('Panel de fondo mostrado');
+                }
+            });
+        });
+        
+        // Botones de vuelta
+        backButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                languagesPanel.classList.remove('active');
+                backgroundPanel.classList.remove('active');
+                mainPanel.classList.add('active');
+                console.log('Volviendo al panel principal');
+            });
+        });
+        
+        console.log('Aplicación minimalista inicializada');
+    </script>
+</body>
+</html>

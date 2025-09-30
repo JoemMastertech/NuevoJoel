@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Prueba de Posiciones de Menús Laterales</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Montserrat:wght@400;500;600;700&family=Playfair+Display:wght@400;600;700;900&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="Shared/styles/main.css">
+    <style>
+        body {
+            font-family: 'Montserrat', sans-serif;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            overflow: hidden;
+            background-color: #000;
+            color: white;
+        }
+        
+        .top-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 70px;
+            background-color: rgba(0,0,0,0.8);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            z-index: 1001;
+            backdrop-filter: blur(10px);
+        }
+        
+        .nav-btn {
+            background-color: transparent;
+            border: 2px solid white;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 10px;
+            border-radius: 8px;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-btn:hover {
+            background-color: rgba(255,255,255,0.1);
+            transform: scale(1.05);
+        }
+        
+        /* Contenido principal */
+        .main-content {
+            margin-top: 70px;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .main-content h1 {
+            color: white;
+        }
+        
+        /* Mensaje de instrucciones */
+        .instruction {
+            background-color: rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px auto;
+            max-width: 600px;
+        }
+        
+        /* Botones de cierre */
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+    </style>
+</head>
+<body>
+    <!-- Barra de navegación superior -->
+    <div class="top-nav">
+        <button id="hamburger-btn" class="nav-btn">☰</button>
+        <h2 style="color: white; margin: 0;">Prueba Menús</h2>
+        <button id="settings-btn" class="nav-btn">⚙️</button>
+    </div>
+    
+    <!-- Menú hamburguesa (izquierda) -->
+    <div id="drawer-overlay" class="drawer-overlay"></div>
+    <div id="drawer-menu" class="drawer-menu">
+        <button id="close-drawer" class="close-btn">×</button>
+        <div class="drawer-content">
+            <h2>Menú Principal</h2>
+            <p>Este menú debe aparecer desde la izquierda.</p>
+        </div>
+    </div>
+    
+    <!-- Menú de ajustes (derecha) -->
+    <div id="settings-overlay" class="drawer-overlay"></div>
+    <div id="settings-menu" class="drawer-menu">
+        <button id="close-settings" class="close-btn">×</button>
+        <div class="drawer-content">
+            <h2>Ajustes</h2>
+            <p>Este menú debe aparecer desde la derecha.</p>
+        </div>
+    </div>
+    
+    <!-- Contenido principal -->
+    <div class="main-content">
+        <h1>Prueba de Posiciones de Menús Laterales</h1>
+        <div class="instruction">
+            <p><strong>Instrucciones:</strong></p>
+            <p>1. Presiona el botón de hamburguesa (☰) en la esquina superior izquierda.</p>
+            <p>2. El menú lateral debe aparecer por la izquierda de la pantalla.</p>
+            <p>3. Presiona el botón de ajustes (⚙️) en la esquina superior derecha.</p>
+            <p>4. El menú de ajustes debe aparecer por la derecha de la pantalla.</p>
+        </div>
+    </div>
+    
+    <script>
+        // Elementos del DOM
+        const hamburgerBtn = document.getElementById('hamburger-btn');
+        const settingsBtn = document.getElementById('settings-btn');
+        const drawerMenu = document.getElementById('drawer-menu');
+        const settingsMenu = document.getElementById('settings-menu');
+        const drawerOverlay = document.getElementById('drawer-overlay');
+        const settingsOverlay = document.getElementById('settings-overlay');
+        const closeDrawerBtn = document.getElementById('close-drawer');
+        const closeSettingsBtn = document.getElementById('close-settings');
+        
+        // Manejadores de eventos
+        hamburgerBtn.addEventListener('click', () => {
+            drawerMenu.classList.toggle('open');
+            drawerOverlay.classList.toggle('active');
+            if (settingsMenu.classList.contains('open')) {
+                settingsMenu.classList.remove('open');
+                settingsOverlay.classList.remove('active');
+            }
+        });
+        
+        settingsBtn.addEventListener('click', () => {
+            settingsMenu.classList.toggle('open');
+            settingsOverlay.classList.toggle('active');
+            if (drawerMenu.classList.contains('open')) {
+                drawerMenu.classList.remove('open');
+                drawerOverlay.classList.remove('active');
+            }
+        });
+        
+        drawerOverlay.addEventListener('click', () => {
+            drawerMenu.classList.remove('open');
+            drawerOverlay.classList.remove('active');
+        });
+        
+        settingsOverlay.addEventListener('click', () => {
+            settingsMenu.classList.remove('open');
+            settingsOverlay.classList.remove('active');
+        });
+        
+        closeDrawerBtn.addEventListener('click', () => {
+            drawerMenu.classList.remove('open');
+            drawerOverlay.classList.remove('active');
+        });
+        
+        closeSettingsBtn.addEventListener('click', () => {
+            settingsMenu.classList.remove('open');
+            settingsOverlay.classList.remove('active');
+        });
+    </script>
+</body>
+</html>
