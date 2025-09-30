@@ -62,17 +62,17 @@
   --glow-shadow-hover: 0 0 20px rgba(255, 77, 77, 0.6);
 }
 
-/* Light Blue Theme - now shares styles with Dark Blue Theme */
+/* Light Blue Theme - now uses bright blue color */
 [data-theme="light-blue"] {
   --primary-color: #f3f6f6;
-  --accent-color: #00f7ff;
+  --accent-color: #85C7FF;
   --background-color: #000;
   --text-color: #ECE9D8;
-  --price-color: #00f7ff;
+  --price-color: #85C7FF;
   --card-bg: rgba(0,0,0,0.7);
-  --border-color: #00f7ff40;
-  --glow-shadow: 0 0 10px rgba(0, 247, 255, 0.3);
-  --glow-shadow-hover: 0 0 20px rgba(0, 247, 255, 0.6);
+  --border-color: #85C7FF40;
+  --glow-shadow: 0 0 10px rgba(133, 199, 255, 0.3);
+  --glow-shadow-hover: 0 0 20px rgba(133, 199, 255, 0.6);
 }
 
 /* Light White Theme */
@@ -81,13 +81,13 @@
   --accent-color: #3b82f6;
   --background-color: #ffffff;
   --text-color: #1e293b;
-  --price-color: #3b82f6;
+  --price-color: #1e40af;
   --card-bg: rgba(255,255,255,0.9);
-  --border-color: #3b82f640;
-  --glow-shadow: 0 0 10px rgba(59, 130, 246, 0.3);
-  --glow-shadow-hover: 0 0 20px rgba(59, 130, 246, 0.6);
+  --border-color: #1e40af40;
+  --glow-shadow: 0 0 10px rgba(30, 64, 175, 0.3);
+  --glow-shadow-hover: 0 0 20px rgba(30, 64, 175, 0.6);
   /* Variables nuevas para degradado y color de ingredientes */
-  --gradient-overlay: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(59, 130, 246, 0.2) 100%);
+  --gradient-overlay: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(30, 64, 175, 0.2) 100%);
   --color-ingredientes: #1a1a1a;
 }
 
@@ -4634,5 +4634,43 @@ html body .product-table td.product-ingredients {
   .liquor-table td.product-name {
     justify-content: flex-start !important;
     align-items: flex-start !important;
+  }
+}
+
+/* ===== CONFIGURACIONES ESPECÍFICAS DEL MENÚ LATERAL DE NAVEGACIÓN ===== */
+
+/* DESKTOP - Aumentar texto 30% y reducir ancho 20% */
+@media (min-width: 1200px) {
+  .drawer-menu {
+    width: 240px; /* Reducción del 20% desde 300px */
+  }
+  
+  .drawer-menu .nav-button {
+    font-size: 1.001rem; /* Aumento del 30% desde 0.77rem */
+    padding: 10px 13px; /* Ajuste proporcional del padding */
+  }
+}
+
+/* TABLET PORTRAIT - Aumentar texto 15% y reducir ancho 10% */
+@media (min-width: 768px) and (max-width: 1199px) and (orientation: portrait) {
+  .drawer-menu {
+    width: 270px; /* Reducción del 10% desde 300px */
+  }
+  
+  .drawer-menu .nav-button {
+    font-size: 0.886rem; /* Aumento del 15% desde 0.77rem */
+    padding: 9px 11px; /* Ajuste proporcional del padding */
+  }
+}
+
+/* TABLET LANDSCAPE - Aumentar texto 15% y reducir ancho 10% */
+@media (min-width: 768px) and (max-width: 1199px) and (orientation: landscape) {
+  .drawer-menu {
+    width: 270px; /* Reducción del 10% desde 300px */
+  }
+  
+  .drawer-menu .nav-button {
+    font-size: 0.886rem; /* Aumento del 15% desde 0.77rem */
+    padding: 9px 11px; /* Ajuste proporcional del padding */
   }
 }

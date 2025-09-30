@@ -1052,31 +1052,33 @@ const ProductRenderer = {
       }
     }
     
+    const licoresCategoriesHTML = await this.createLicoresCategories();
+    
     const licoresHTML = `
       <div class="category-grid" data-product-type="liquor" data-category="licores">
         <h2 class="page-title">Licores</h2>
-        ${this.createLicoresCategories()}
+        ${licoresCategoriesHTML}
         <div class="subcategory-prompt">
           <h3>Elige una categoría</h3>
         </div>
       </div>
     `;
     
-    // Contenido dinámico: HTML generado con datos internos de ProductData.licoresCategories
-    // Aunque los datos son controlados, se usa sanitización como medida preventiva
+    // Contenido dinámico: HTML generado con datos de Supabase
+    // Se usa sanitización como medida preventiva
     setSafeInnerHTML(targetContainer, licoresHTML);
     
     // No individual event listeners needed - handled by delegation
     // Category cards will be handled by the centralized event system
   },
 
-  createLicoresCategories: function() {
+  createLicoresCategories: async function() {
     const productRepository = getProductRepository();
-    const licoresCategories = productRepository.getLicoresCategories();
+    const licoresCategories = await productRepository.getLicoresCategories();
     
     const html = licoresCategories.map(category => `
       <div class="category-card" data-category="${category.nombre.toLowerCase()}">
-        <img src="${category.icono}" alt="${category.nombre}" class="category-image">
+        <img src="${category.icono || category.imagen}" alt="${category.nombre}" class="category-image">
         <h3 class="category-name">${category.nombre}</h3>
       </div>
     `).join('');

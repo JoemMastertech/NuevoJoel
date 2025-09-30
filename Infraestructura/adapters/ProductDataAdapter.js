@@ -505,11 +505,17 @@ class ProductDataAdapter extends BaseAdapter {
   }
 
   /**
-   * Get liquor categories for navigation
-   * @returns {Array} Array of liquor category objects
+   * Get liquor categories for navigation (async with Supabase)
+   * @returns {Promise<Array>} Array of liquor category objects
    */
-  getLicoresCategories() {
-    return this.productData.licoresCategories;
+  async getLicoresCategories() {
+    try {
+      const data = await this._fetchFromSupabase('licores');
+      return data.length > 0 ? data : this.productData.licoresCategories || [];
+    } catch (error) {
+      Logger.error('Error in getLicoresCategories:', error);
+      return this.productData.licoresCategories || [];
+    }
   }
 
   /**
