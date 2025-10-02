@@ -43,7 +43,7 @@
     }
   </script>
   <script src="Shared/libs/purify.min.js"></script>
-  <script src="Shared/config/settings-manager.js"></script>
+  <script type="module" src="Shared/config/settings-manager.js"></script>
 </head>
 <body>
   <!-- Background video -->
@@ -67,50 +67,51 @@
         <div id="main-settings-panel" class="settings-panel">
           <button id="settings-back-btn" class="back-button">←</button>
           <h3 class="settings-title"></h3>
-          <button id="languages-option" class="nav-button">Idiomas</button>
-          <button id="dark-mode-option" class="nav-button">Modo Oscuro</button>
-          <button id="light-mode-option" class="nav-button">Modo Claro</button>
+          <button id="languages-option" class="nav-button" data-translate="settings.languages">Idiomas</button>
+          <button id="dark-mode-option" class="nav-button" data-translate="settings.dark_mode">Modo Oscuro</button>
+          <button id="light-mode-option" class="nav-button" data-translate="settings.light_mode">Modo Claro</button>
         </div>
         
         <!-- Languages Panel -->
         <div id="languages-panel" class="settings-panel screen-hidden">
           <button id="back-to-main" class="back-button">←</button>
-          <h3 class="settings-title">Idiomas</h3>
-          <button class="nav-button language-btn" data-lang="en">Inglés</button>
-          <button class="nav-button language-btn" data-lang="fr">Francés</button>
-          <button class="nav-button language-btn" data-lang="it">Italiano</button>
-          <button class="nav-button language-btn" data-lang="cn">Chino</button>
+          <h3 class="settings-title" data-translate="settings.languages">Idiomas</h3>
+          <button class="nav-button language-btn" data-lang="es" data-translate="languages.spanish">Español</button>
+          <button class="nav-button language-btn" data-lang="en" data-translate="languages.english">Inglés</button>
+          <button class="nav-button language-btn" data-lang="fr" data-translate="languages.french">Francés</button>
+          <button class="nav-button language-btn" data-lang="it" data-translate="languages.italian">Italiano</button>
+          <button class="nav-button language-btn" data-lang="cn" data-translate="languages.chinese">Chino</button>
         </div>
         
         <!-- Dark Mode Panel -->
         <div id="dark-mode-panel" class="settings-panel screen-hidden">
           <button id="back-from-dark" class="back-button">←</button>
-          <h3 class="settings-title">Modo Oscuro</h3>
-          <button class="nav-button theme-btn" data-theme="dark-blue" data-video="https://udtlqjmrtbcpdqknwuro.supabase.co/storage/v1/object/public/productos/recursos/fondos/fondoolasazul.mp4">Azul Oscuro</button>
-          <button class="nav-button theme-btn" data-theme="dark-red" data-video="https://udtlqjmrtbcpdqknwuro.supabase.co/storage/v1/object/public/productos/recursos/fondos/fondorojo.mp4">Rojo Oscuro</button>
+          <h3 class="settings-title" data-translate="settings.dark_mode">Modo Oscuro</h3>
+          <button class="nav-button theme-btn" data-theme="dark-blue" data-video="https://udtlqjmrtbcpdqknwuro.supabase.co/storage/v1/object/public/productos/recursos/fondos/fondoolasazul.mp4" data-translate="themes.dark_blue">Azul Oscuro</button>
+          <button class="nav-button theme-btn" data-theme="dark-red" data-video="https://udtlqjmrtbcpdqknwuro.supabase.co/storage/v1/object/public/productos/recursos/fondos/fondorojo.mp4" data-translate="themes.dark_red">Rojo Oscuro</button>
         </div>
         
         <!-- Light Mode Panel -->
         <div id="light-mode-panel" class="settings-panel screen-hidden">
           <button id="back-from-light" class="back-button">←</button>
-          <h3 class="settings-title">Modo Claro</h3>
-          <button class="nav-button theme-btn" data-theme="light-blue" data-video="https://udtlqjmrtbcpdqknwuro.supabase.co/storage/v1/object/public/productos/recursos/fondos/fondoazul.mp4">Azul Claro</button>
-          <button class="nav-button theme-btn" data-theme="light-white">Blanco</button>
+          <h3 class="settings-title" data-translate="settings.light_mode">Modo Claro</h3>
+          <button class="nav-button theme-btn" data-theme="light-blue" data-video="https://udtlqjmrtbcpdqknwuro.supabase.co/storage/v1/object/public/productos/recursos/fondos/fondoazul.mp4" data-translate="themes.light_blue">Azul Claro</button>
+          <button class="nav-button theme-btn" data-theme="light-white" data-translate="themes.white">Blanco</button>
         </div>
       </div>
     </div>
     
     <div class="screen welcome-screen">
-      <h1 class="welcome-text">¡BIENVENIDOS!</h1>
+      <h1 class="welcome-text" data-translate="main.welcome">¡BIENVENIDOS!</h1>
     </div>
     <div class="screen logo-screen screen-hidden">
       <div class="logo-container">
         <img src="https://udtlqjmrtbcpdqknwuro.supabase.co/storage/v1/object/public/productos/recursos/logos/Logo5.webp" alt="Master Technology Bar Logo" class="logo">
-        <h2 class="title-text">Master Technology Bar</h2>
+        <h2 class="title-text" data-translate="main.title">Master Technology Bar</h2>
       </div>
     </div>
     <div class="screen category-title-screen screen-hidden">
-      <h2 class="category-title">Coctelería</h2>
+      <h2 class="category-title" data-translate="categories.cocktails">Coctelería</h2>
     </div>
     <div class="screen main-content-screen screen-hidden" data-category="cocteleria">
       <!-- Top Navigation Bar -->
@@ -137,15 +138,15 @@
           <div id="content-container"></div>
           <div id="order-sidebar" class="sidebar-hidden">
             <div id="order-content">
-              <h3>Tu Orden</h3>
+              <h3 data-translate="order.your_order">Tu Orden</h3>
               <div id="order-items"></div>
             </div>
             <div class="order-total">
-              <h4>Total: <span id="order-total-amount">$0.00</span></h4>
+              <h4><span data-translate="order.total">Total:</span> <span id="order-total-amount">$0.00</span></h4>
             </div>
             <div class="order-actions">
-              <button id="complete-order-btn" class="nav-button">Completar Orden</button>
-              <button id="cancel-order-btn" class="nav-button">Cancelar</button>
+              <button id="complete-order-btn" class="nav-button" data-translate="order.complete">Completar Orden</button>
+              <button id="cancel-order-btn" class="nav-button" data-translate="order.cancel">Cancelar</button>
             </div>
           </div>
         </div>

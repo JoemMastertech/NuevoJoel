@@ -4,9 +4,13 @@
  * This module manages the settings menu interactions, including:
  * - Toggling the settings menu open and closed
  * - Navigating between different settings panels
- * - Changing the language of the application
+ * - Changing the language of the application with dynamic translation
  * - Changing the theme and background video
  */
+
+// Import translation services
+import TranslationService from '../services/TranslationService.js';
+import DOMTranslator from '../services/DOMTranslator.js';
 
 class SettingsManager {
   constructor() {
@@ -39,8 +43,16 @@ class SettingsManager {
     // Background video
     this.backgroundVideo = document.getElementById('background-video');
     
+    // Translation services
+    this.translationService = TranslationService;
+    this.domTranslator = DOMTranslator;
+    this.isTranslationInitialized = false;
+    
     // Initialize event listeners
     this.initListeners();
+    
+    // Initialize translation system
+    this.initializeTranslation();
   }
   
   /**
@@ -149,29 +161,52 @@ class SettingsManager {
   }
   
   /**
-   * Change the language of the application
+   * Change the language of the application with dynamic translation
    * @param {string} language - The language code to switch to
    */
-  changeLanguage(language) {
+  async changeLanguage(language) {
     console.log(`Changing language to: ${language}`);
     
-    // For now, we'll just show a console message as the actual implementation
-    // would require translation files and modifying text throughout the app
-    
-    // Highlight the selected language button
-    this.languageBtns.forEach(btn => {
-      if (btn.getAttribute('data-lang') === language) {
-        btn.classList.add('active');
-      } else {
-        btn.classList.remove('active');
-      }
-    });
-    
-    // Store the selected language in localStorage
     try {
+      // Ensure translation system is initialized
+      if (!this.isTranslationInitialized) {
+        await this.initializeTranslation();
+      }
+      
+      // Show loading indicator (optional)
+      this.showLanguageLoadingState(true);
+      
+      // Translate the entire page to the selected language
+      await this.translationService.translatePage(language);
+      
+      // Highlight the selected language button
+      this.languageBtns.forEach(btn => {
+        if (btn.getAttribute('data-lang') === language) {
+          btn.classList.add('active');
+        } else {
+          btn.classList.remove('active');
+        }
+      });
+      
+      // Store the selected language in localStorage
       localStorage.setItem('selectedLanguage', language);
+      
+      // Hide loading indicator
+      this.showLanguageLoadingState(false);
+      
+      console.log(`✅ Language successfully changed to: ${language}`);
+      
+      // Close settings menu after successful language change
+      setTimeout(() => {
+        this.closeSettingsMenu();
+      }, 500);
+      
     } catch (error) {
-      console.error('Error saving language preference:', error);
+      console.error('Error changing language:', error);
+      this.showLanguageLoadingState(false);
+      
+      // Show error message to user (optional)
+      this.showLanguageError(language);
     }
   }
   
@@ -243,16 +278,86 @@ class SettingsManager {
   }
   
   /**
+   * Initialize the translation system
+   */
+  async initializeTranslation() {
+    try {
+      console.log('🔄 Initializing translation system...');
+      
+      // Initialize DOM translator
+      this.domTranslator.initialize();
+      
+      this.isTranslationInitialized = true;
+      console.log('✅ Translation system initialized successfully');
+      
+    } catch (error) {
+      console.error('❌ Error initializing translation system:', error);
+      this.isTranslationInitialized = false;
+    }
+  }
+
+  /**
+   * Show/hide language loading state
+   * @param {boolean} show - Whether to show loading state
+   */
+  showLanguageLoadingState(show) {
+    const languageButtons = document.querySelectorAll('.language-btn');
+    
+    languageButtons.forEach(btn => {
+      if (show) {
+        btn.style.opacity = '0.6';
+        btn.style.pointerEvents = 'none';
+      } else {
+        btn.style.opacity = '1';
+        btn.style.pointerEvents = 'auto';
+      }
+    });
+    
+    // Optional: Add loading spinner to languages panel
+    const languagesPanel = document.getElementById('languages-panel');
+    if (languagesPanel) {
+      if (show) {
+        languagesPanel.classList.add('loading');
+      } else {
+        languagesPanel.classList.remove('loading');
+      }
+    }
+  }
+
+  /**
+   * Show language change error
+   * @param {string} language - Language that failed to load
+   */
+  showLanguageError(language) {
+    console.error(`Failed to change language to: ${language}`);
+    
+    // Optional: Show user-friendly error message
+    // You could implement a toast notification here
+    const errorMessage = `Error al cambiar idioma a ${language}. Inténtalo de nuevo.`;
+    
+    // Simple alert for now (you can replace with a better UI)
+    if (window.confirm(`${errorMessage}\n\n¿Quieres intentar de nuevo?`)) {
+      // Retry language change
+      setTimeout(() => {
+        this.changeLanguage(language);
+      }, 1000);
+    }
+  }
+
+  /**
    * Apply saved preferences on page load
    */
-  applySavedPreferences() {
+  async applySavedPreferences() {
     try {
       // Apply saved language
       const savedLanguage = localStorage.getItem('selectedLanguage');
       if (savedLanguage) {
         const languageBtn = document.querySelector(`.language-btn[data-lang="${savedLanguage}"]`);
         if (languageBtn) {
-          this.changeLanguage(savedLanguage);
+          // Wait a bit for DOM to be fully ready
+          setTimeout(async () => {
+            await this.changeLanguage(savedLanguage);
+          }, 200);
         }
       }
       
@@ -280,12 +385,15 @@ class SettingsManager {
 // Initialize the SettingsManager when the DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
   // Wait a little to ensure other elements are loaded
-  setTimeout(() => {
+  setTimeout(async () => {
     const settingsManager = new SettingsManager();
-    // Apply saved preferences
-    settingsManager.applySavedPreferences();
+    
+    // Apply saved preferences (now async)
+    await settingsManager.applySavedPreferences();
     
     // Make settingsManager available globally
     window.SettingsManager = settingsManager;
+    
+    console.log('✅ SettingsManager initialized with translation support');
   }, 100);
 });
