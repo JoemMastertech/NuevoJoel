@@ -1456,11 +1456,13 @@ class OrderSystem {
 
   _renderOptionsGrid(options, container) {
     const optionsGrid = document.createElement('div');
-    optionsGrid.className = 'options-grid';
+    // Keep existing class for compatibility and add BEM class for future
+    optionsGrid.className = 'options-grid drink-modal__grid';
     
     options.forEach(option => {
       const optionButton = document.createElement('button');
-      optionButton.className = 'drink-option';
+      // Keep existing class and add BEM class
+      optionButton.className = 'drink-option drink-modal__option';
       optionButton.textContent = option;
       optionButton.addEventListener('click', () => {
         document.querySelectorAll('.drink-option').forEach(btn => {

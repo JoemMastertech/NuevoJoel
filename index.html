@@ -136,10 +136,10 @@
       <div class="content-wrapper">
         <div class="content-container-flex">
           <div id="content-container"></div>
-          <div id="order-sidebar" class="sidebar-hidden">
+          <div id="order-sidebar" class="sidebar-hidden order-sidebar">
             <div id="order-content">
-              <h3 data-translate="order.your_order">Tu Orden</h3>
-              <div id="order-items"></div>
+              <h3 class="order-sidebar__header" data-translate="order.your_order">Tu Orden</h3>
+              <div id="order-items" class="order-sidebar__items"></div>
             </div>
             <div class="order-total">
               <h4><span data-translate="order.total">Total:</span> <span id="order-total-amount">$0.00</span></h4>
@@ -155,7 +155,7 @@
   </div>
 
   <!-- Modals -->
-  <div id="drink-options-modal" class="modal modal-hidden"></div>
+  <div id="drink-options-modal" class="modal modal-hidden drink-modal"></div>
   <div id="food-customization-modal" class="modal modal-hidden"></div>
   <div id="meat-customization-modal" class="modal modal-hidden"></div>
   

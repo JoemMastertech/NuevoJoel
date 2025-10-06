@@ -1,0 +1,37 @@
+{
+  "name": "pruebas",
+  "version": "1.0.0",
+  "description": "**Aplicación web premium para gestión de pedidos con arquitectura hexagonal optimizada**",
+  "main": "test_fixes.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build:css": "postcss Shared/styles/main.css -o dist/main.css",
+    "build:css:prod": "set NODE_ENV=production&& postcss Shared/styles/main.css -o dist/main.min.css",
+    "lint:css": "stylelint Shared/styles/main.css",
+    "fix:css": "stylelint Shared/styles/main.css --fix"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JoemMastertech/NuevoJoel.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/JoemMastertech/NuevoJoel/issues"
+  },
+  "homepage": "https://github.com/JoemMastertech/NuevoJoel#readme",
+  "devDependencies": {
+    "@fullhuman/postcss-purgecss": "^7.0.2",
+    "autoprefixer": "^10.4.21",
+    "cssnano": "^7.1.1",
+    "postcss": "^8.5.6",
+    "postcss-cli": "^11.0.1",
+    "stylelint": "^16.25.0",
+    "stylelint-config-standard": "^39.0.1"
+  }
+}
