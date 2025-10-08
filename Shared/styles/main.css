@@ -4520,7 +4520,13 @@ textarea:focus {
     transition: gap 0.2s ease-in-out;
   }
   
-  /* Ajustar padding para sidebar lateral en landscape tablet */
+  /* Configuración específica de sidebar y margen para tablet landscape */
+  :root {
+    --order-sidebar-width-tl: 284px; /* ancho base del sidebar en este rango */
+    --order-sidebar-width-tl-reduced: calc(var(--order-sidebar-width-tl) * 0.95); /* -5% */
+  }
+  
+  /* Ajuste de padding cuando el sidebar de órdenes está activo (bloque general 768–1024, valores originales) */
   body.order-mode-active #app {
     padding-right: calc(max(15px, calc((100vw - var(--table-max-width)) / 2)) + 284px);
   }
@@ -4530,11 +4536,15 @@ textarea:focus {
     width: calc(100vw - 284px);
   }
   
+  /* Reducir el ancho del sidebar de órdenes en 5% dentro del rango especificado */
+  body.order-mode-active #order-sidebar {
+    width: var(--order-sidebar-width-tl-reduced);
+  }
+  
   /* Order sidebar - consolidated in main section */
   
-  /* Botones de precio optimizados para landscape tablet - mantener en una sola fila con efecto permanente */
-  .product-table .price-button,
-  .liquor-table .price-button {
+  /* Botones de precio optimizados para landscape tablet - product-table */
+  .product-table .price-button {
     width: auto !important;
     max-width: 75px !important;
     min-width: 45px !important;
@@ -4551,9 +4561,8 @@ textarea:focus {
     line-height: 1.2 !important;
   }
   
-  /* Celda de precio con configuración específica para landscape tablet */
-  .product-table td.product-price,
-  .liquor-table td.product-price {
+  /* Celda de precio con configuración específica para landscape tablet - product-table */
+  .product-table td.product-price {
     flex: 0 0 auto !important;
     width: auto !important;
     min-width: 55px !important;
@@ -4564,16 +4573,16 @@ textarea:focus {
     justify-content: center !important;
   }
 
-  /* Override específico para .liquor-table: mantener celdas como table-cell y evitar recortes */
+  /* Configuración específica para .liquor-table en tablet landscape: mantener celdas como table-cell y evitar recortes */
   .liquor-table td.product-price {
-    display: table-cell !important;
-    vertical-align: middle !important;
-    text-align: center !important;
+    display: table-cell;
+    vertical-align: middle;
+    text-align: center;
   }
   .liquor-table .price-button {
-    overflow: visible !important;
-    text-overflow: clip !important;
-    white-space: nowrap !important;
+    overflow: visible;
+    text-overflow: clip;
+    white-space: nowrap;
   }
   
   #order-sidebar h3 {
@@ -4598,6 +4607,26 @@ textarea:focus {
   .product-card { min-height: 240px; height: auto; padding: 10px; }
   .product-card .product-name { font-size: 0.78rem; height: clamp(1.2rem, 1.8vw + 0.5rem, 1.6rem); -webkit-line-clamp: unset; line-clamp: unset; overflow: visible; text-overflow: unset; display: block; margin-bottom: 6px; }
   .product-card .product-ingredients { font-size: 0.75rem; }
+
+  /* CONFIGURACIÓN ESPECÍFICA PARA TABLET LANDSCAPE (768–1024) - LIQUOR TABLE */
+  :root {
+    --liquor-col-name: 27%;
+    --liquor-col-image: 18%;
+    --liquor-col-bottle: 18%;
+    --liquor-col-liter: 18%;
+    --liquor-col-glass: 19%;
+  }
+
+  .liquor-table {
+    table-layout: fixed;
+    width: 100%;
+    border-collapse: collapse;
+  }
+  .liquor-table th:nth-child(1), .liquor-table td:nth-child(1) { width: var(--liquor-col-name); }
+  .liquor-table th:nth-child(2), .liquor-table td:nth-child(2) { width: var(--liquor-col-image); }
+  .liquor-table th:nth-child(3), .liquor-table td:nth-child(3) { width: var(--liquor-col-bottle); }
+  .liquor-table th:nth-child(4), .liquor-table td:nth-child(4) { width: var(--liquor-col-liter); }
+  .liquor-table th:nth-child(5), .liquor-table td:nth-child(5) { width: var(--liquor-col-glass); }
   
   /* Reglas de tabla movidas al bloque unificado landscape al final del archivo */
 }
@@ -5497,23 +5526,6 @@ body.order-mode-active #app {
     hyphens: none;
     min-width: 0;
   }
-
-  /* Layout y anchos consolidados para .liquor-table (5 columnas) */
-  .liquor-table {
-    table-layout: fixed;
-    width: 100%;
-    border-collapse: collapse;
-  }
-  .liquor-table th:nth-child(1),
-  .liquor-table td:nth-child(1) { width: 27%; }
-  .liquor-table th:nth-child(2),
-  .liquor-table td:nth-child(2) { width: 18%; }
-  .liquor-table th:nth-child(3),
-  .liquor-table td:nth-child(3) { width: 18%; }
-  .liquor-table th:nth-child(4),
-  .liquor-table td:nth-child(4) { width: 18%; }
-  .liquor-table th:nth-child(5),
-  .liquor-table td:nth-child(5) { width: 19%; }
 }
 
 /* ===== MÓVIL LANDSCAPE (max-width: 768px) ===== */
@@ -5957,5 +5969,27 @@ body.order-mode-active #app {
     max-width: 100% !important;
     padding-bottom: var(--order-sidebar-height-portrait-tablet) !important;
     box-sizing: border-box !important;
+  }
+}
+/* Configuración específica para resoluciones 768–1024 de ancho y 641px de alto */
+@media (min-width: 768px) and (max-width: 1024px) and (min-height: 641px) and (max-height: 641px) {
+  :root {
+    --parent-left-padding-tl: 5%;
+  }
+
+  /* Sidebar reducido y padding izquierdo del contenedor padre cuando el modo orden está activo */
+  body.order-mode-active #app {
+    padding-left: calc(var(--parent-left-padding-tl) + max(15px, calc((100vw - var(--table-max-width)) / 2)));
+    padding-right: calc(max(15px, calc((100vw - var(--table-max-width)) / 2)) + var(--order-sidebar-width-tl-reduced));
+  }
+
+  /* Ajustar el ancho del contenedor con sidebar usando el ancho reducido del sidebar */
+  body .content-wrapper.with-sidebar {
+    width: calc(100vw - var(--order-sidebar-width-tl-reduced));
+  }
+
+  /* Reducir el ancho del sidebar de órdenes en 5% específico de esta resolución */
+  #order-sidebar {
+    width: var(--order-sidebar-width-tl-reduced);
   }
 }
