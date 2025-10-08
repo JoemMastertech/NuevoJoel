@@ -11,7 +11,10 @@
     "build:css": "postcss Shared/styles/main.css -o dist/main.css",
     "build:css:prod": "set NODE_ENV=production&& postcss Shared/styles/main.css -o dist/main.min.css",
     "lint:css": "stylelint Shared/styles/main.css",
-    "fix:css": "stylelint Shared/styles/main.css --fix"
+    "fix:css": "stylelint Shared/styles/main.css --fix",
+    "watch:css": "postcss Shared/styles/main.css -o dist/main.css -w",
+    "build:css:report": "npm run build:css && node -e \"const fs=require('fs');const s=fs.statSync('dist/main.css');console.log('dist/main.css size:',s.size,'bytes');\"",
+    "build:css:prod:report": "set NODE_ENV=production&& npm run build:css:prod && node -e \"const fs=require('fs');const s=fs.statSync('dist/main.min.css');console.log('dist/main.min.css size:',s.size,'bytes');\""
   },
   "repository": {
     "type": "git",

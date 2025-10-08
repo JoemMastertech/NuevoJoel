@@ -19,30 +19,6 @@ Archivo CSS funcional optimizado con mejoras organizacionales:
 */
 
 /* =============================================================================
-   TABLA DE CONTENIDOS Y GUÍA DE EDICIÓN
-   =============================================================================
-   - 1. Variables (temas y colores)
-   - 2. Reset y elementos globales
-   - 3. Contenedores y layout base
-   - 4. Navegación (BEM)
-   - 5. Productos (BEM)
-   - 6. Modales e interacciones
-   - 7. Sidebar de configuración
-   - 8. Sidebar de pedidos
-   - 9. Listas/Historial de pedidos
-   - 10. Bloques auxiliares (tooltips, overlays)
-   - 11. Breakpoints responsivos (Móvil, Tablet, Laptop, Desktop)
-   -----------------------------------------------------------------------------
-   Convenciones:
-   - Nombres en BEM: bloque__elemento--modificador
-   - Especificidad baja: evite ids salvo para legacy (#order-sidebar)
-   - Breakpoints únicos y coherentes: 
-     MOBILE ≤480, TABLET 481–767, LAPTOP 768–1023, DESKTOP ≥1024
-   - Marcadores de región: === REGION: NOMBRE ===
-   - Busque por “REGION:” para saltar a secciones rápidamente
-   ============================================================================= */
-
-/* =============================================================================
    1. VARIABLES CSS - SISTEMA DE TEMAS COMPLETO
    ============================================================================= */
 
@@ -136,8 +112,6 @@ Archivo CSS funcional optimizado con mejoras organizacionales:
   /* Variables nuevas para degradado y color de ingredientes */
   --gradient-overlay: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(30, 64, 175, 0.2) 100%);
   --color-ingredientes: #1a1a1a;
-  /* Aumentar tamaño máximo del contenedor padre para reducir el espacio con el sidebar */
-  --table-max-width: 1520px;
 }
 
 /* Background video styles */
@@ -171,7 +145,7 @@ body { font-family: 'Montserrat', sans-serif; color: var(--text); background: va
 
 /* Ajustar padding cuando el sidebar está activo en escritorio */
 body.order-mode-active #app {
-  padding-right: calc(max(20px, calc((100vw - var(--table-max-width)) / 2)) + 284px);
+  padding-right: calc(max(20px, calc((100vw - var(--table-max-width)) / 2)) + 260px);
 }
 
 /* Adjust main content when top nav is visible */
@@ -546,7 +520,6 @@ body.order-mode-active #app {
   }
 }
 
-/* === REGION: BREAKPOINT MOBILE ≤480 === */
 /* MOBILE (≤480px) - Consolidated Rules */
 @media (max-width: 480px) {
   /* Video thumbnails */
@@ -570,7 +543,6 @@ body.order-mode-active #app {
     margin-bottom: 8px;
   }
   
-  /* === REGION: SETTINGS SIDEBAR === */
   /* Settings menu */
   .settings-title {
     font-size: 1rem;
@@ -590,7 +562,6 @@ body.order-mode-active #app {
 
 /* ===== BEM METHODOLOGY IMPLEMENTATION ===== */
 
-/* === REGION: NAV (BEM) === */
 /* Navigation Component - BEM Structure */
 .nav {
   width: 100%;
@@ -639,7 +610,6 @@ body.order-mode-active #app {
   transform: scale(1.05);
 }
 
-/* === REGION: PRODUCT (BEM) === */
 /* Product Card Component - BEM Structure */
 .product {
   min-height: clamp(300px, 35vh, 400px);
@@ -776,7 +746,6 @@ body.order-mode-active #app {
   box-shadow: 0 0 10px var(--price-color);
 }
 
-/* === REGION: MODALES (BEM) === */
 /* Modal Component - BEM Structure */
 .modal {
   position: fixed;
@@ -1134,19 +1103,6 @@ body.order-mode-active #app {
   left: 0;
 }
 
-/* Navigation drawer closed state: hide fully to avoid seam */
-#drawer-menu {
-  opacity: 0;
-  visibility: hidden;
-  pointer-events: none;
-}
-
-#drawer-menu.open {
-  opacity: 1;
-  visibility: visible;
-  pointer-events: auto;
-}
-
 /* Responsive adjustments for navigation sidebar */
 @media (max-width: 768px) and (orientation: landscape) {
   .drawer-menu {
@@ -1222,7 +1178,6 @@ body.order-mode-active #app {
   font-style: italic;
 }
 
-/* === REGION: OVERLAYS (Drawer Overlay) === */
 .drawer-overlay {
   position: fixed;
   top: 0;
@@ -1241,7 +1196,6 @@ body.order-mode-active #app {
   pointer-events: all;
 }
 
-/* === REGION: ORDER SIDEBAR (Right) === */
 /* ===== SIDEBAR 2: ORDERS SIDEBAR (Right Side - Create Order) ===== */
 #order-sidebar {
   /* Base properties */
@@ -1257,17 +1211,16 @@ body.order-mode-active #app {
   display: none;
   
   /* DESKTOP DEFAULT (>768px) - Right sidebar */
-  width: 264px; /* +10% para mejorar visualización */
+  width: 240px;
   padding: 15px;
   position: fixed;
   top: 90px;
   right: 20px;
-  max-height: 70vh;
-  overflow-y: auto;
+  max-height: 400px;
+  overflow-y: hidden;
   z-index: 900;
 }
 
-/* === REGION: BREAKPOINT TABLET 481–767 === */
 /* Responsive adjustments for orders sidebar */
 @media (max-width: 768px) {
   #order-sidebar {
@@ -1282,23 +1235,19 @@ body.order-mode-active #app {
   }
 }
 
-/* === REGION: BREAKPOINT MOBILE LANDSCAPE ≤480 === */
 @media (max-width: 480px) and (orientation: landscape) {
   #order-sidebar {
-    width: 100vw; /* Ocupa todo el ancho, sobrepone al contenedor padre */
-    padding: 12px;
+    width: clamp(160px, 22vw, 200px);
+    padding: 6px;
     position: fixed;
-    top: 72px;
-    left: 0;
-    right: 0;
+    top: 80px;
+    right: 15px;
     margin: 0;
-    max-height: calc(100vh - 72px);
+    max-height: 75vh;
     overflow-y: auto;
-    border-radius: 0;
   }
 }
 
-/* === REGION: BREAKPOINT DESKTOP ≥1200 === */
 @media (min-width: 1200px) {
   #order-sidebar {
     max-height: 85vh;
@@ -1337,7 +1286,7 @@ body.order-mode-active #order-sidebar {
   flex: 1;
   overflow-y: auto;
   overflow-x: hidden;
-  max-height: none;
+  max-height: 160px;
   margin-bottom: 10px;
   display: flex;
   flex-direction: column-reverse;
@@ -1362,7 +1311,6 @@ body.order-mode-active #order-sidebar {
   position: fixed;
   top: 70px;
   right: -270px;
-  left: auto;
   width: 270px;
   height: calc(100vh - 70px);
   background: rgba(0, 0, 0, 0.9);
@@ -1371,18 +1319,10 @@ body.order-mode-active #order-sidebar {
   transition: right 0.3s ease-in-out;
   overflow-y: auto;
   border-left: 1px solid var(--border-color);
-  border-right: none;
-  opacity: 0;
-  visibility: hidden;
-  pointer-events: none;
 }
 
 #settings-menu.open {
   right: 0;
-  left: auto;
-  opacity: 1;
-  visibility: visible;
-  pointer-events: auto;
 }
 
 /* Responsive adjustments for settings sidebar */
@@ -1391,40 +1331,6 @@ body.order-mode-active #order-sidebar {
     width: 240px;
     right: -240px;
   }
-}
-
-/* =============================
-   RANGE FIX: 481px–768px HEIGHT STABILITY
-   ============================= */
-@media (min-width: 481px) and (max-width: 768px) {
-  /* Prevent layout deformation by avoiding full absolute screens */
-  .screen {
-    position: relative;
-    height: auto;
-    min-height: 100vh;
-  }
-
-  /* Ensure sidebars remain off-screen when closed */
-  #drawer-menu {
-    left: -240px;
-    opacity: 0;
-    visibility: hidden;
-    pointer-events: none;
-  }
-
-  #drawer-menu.open {
-    left: 0;
-    opacity: 1;
-    visibility: visible;
-    pointer-events: auto;
-  }
-
-  #settings-menu {
-    width: 240px;
-    right: -240px;
-  }
-
-  #settings-menu.open { right: 0; }
 }
 
 .settings-panel {
@@ -2184,7 +2090,6 @@ body.order-mode-active #order-sidebar {
   opacity: 0.9;
 }
 
-/* === REGION: MODALES (Consolidado) === */
 /* =================================================================
    MODALS - CONSOLIDATED STYLES
    ================================================================= */
@@ -2952,7 +2857,6 @@ textarea:focus {
   margin-bottom: 20px;
 }
 
-/* === REGION: HISTORIAL Y LISTA DE ÓRDENES === */
 /* Contenedores de órdenes con scroll vertical */
 .orders-list-container {
   max-height: 70vh;
@@ -3362,9 +3266,8 @@ textarea:focus {
 @media (min-width: 768px) and (max-width: 1024px) and (orientation: portrait) {
   .content-wrapper { flex-direction: column; gap: 10px; }
   
-  /* En tablet portrait, evitar centrado: ancho completo sin padding lateral */
   #app {
-    padding: 0 !important;
+    padding: 0 max(12px, calc((100vw - var(--table-max-width)) / 2));
   }
   
   /* Optimización de espacios para landscape tablet */
@@ -3382,59 +3285,9 @@ textarea:focus {
   }
   
   /* REGLAS ESPECÍFICAS PARA PORTRAIT TABLET - SOLO EN PORTRAIT */
-  /* Vista tablet portrait: fijar sidebar inferior y ancho completo del contenedor */
-  :root {
-    --order-sidebar-height-portrait-tablet: clamp(240px, 32vh, 380px);
-  }
-  /* El contenedor padre debe ocupar todo el ancho en tablet portrait (sin depender de order-mode-active) */
-  #app,
-  .content-wrapper {
-    width: 100vw !important;
-    max-width: 100vw !important;
-    margin: 0 !important;
-    padding-left: 0 !important;
-    padding-right: 0 !important;
-    box-sizing: border-box;
-  }
-  .content-wrapper { display: block !important; }
-  /* Sidebar inferior fijo como en móvil portrait, aplicado directamente en este bloque */
-  #order-sidebar {
-    position: fixed !important;
-    bottom: 0 !important;
-    left: 0 !important;
-    right: 0 !important;
-    top: auto !important;
-    width: 100vw !important;
-    height: auto !important;
-    max-height: 50vh !important;
-    min-height: var(--order-sidebar-height-portrait-tablet) !important;
-    margin: 0 !important;
-    padding: 16px !important;
-    overflow-y: auto !important;
-    border-radius: 15px 15px 0 0 !important;
-    z-index: 1000 !important;
-    background: var(--card-bg) !important;
-    border-top: 2px solid var(--border-color) !important;
-    box-shadow: 0 -4px 20px rgba(0,0,0,0.3) !important;
-    transform: translateY(100%) !important;
-    transition: transform 0.3s ease !important;
-  }
-  /* Reservar espacio inferior para el sidebar en el contenido */
-  .content-container-flex,
-  #content-container {
-    width: 100% !important;
-    max-width: 100% !important;
-    padding-bottom: var(--order-sidebar-height-portrait-tablet) !important;
-    box-sizing: border-box !important;
-  }
-  /* Asegurar visibilidad del sidebar cuando está activo en este rango */
-  #order-sidebar.active,
-  body.order-mode-active #order-sidebar {
-    display: flex !important;
-    opacity: 1 !important;
-    visibility: visible !important;
-    pointer-events: auto !important;
-    transform: translateY(0) !important;
+  /* En portrait tablet, sidebar va abajo - resetear padding */
+  body.order-mode-active #app {
+    padding: 0 max(15px, calc((100vw - var(--table-max-width)) / 2));
   }
   
   /* ORDER SIDEBAR - Consolidado en sección principal */
@@ -3444,43 +3297,47 @@ textarea:focus {
   /* ===== PROTECCIÓN DE CONFIGURACIÓN TABLET PORTRAIT ===== */
   /* Estas reglas protegen la configuración de tablet portrait de cambios futuros */
   
-  /* Configuración protegida para tablas de licores en tablet portrait - directo en este bloque */
-  /* Optimized liquor table styles with higher specificity - removed !important */
-  body .liquor-table {
-    /* Mantener configuración estándar de tabla */
-    width: 100%;
-    border-collapse: collapse;
-    table-layout: auto;
+  /* Configuración protegida para tablas de licores en tablet portrait - SOLO PORTRAIT */
+  @media (orientation: portrait) {
+    /* Optimized liquor table styles with higher specificity - removed !important */
+    body .liquor-table {
+      /* Mantener configuración estándar de tabla */
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: auto;
+    }
+    
+    body .liquor-table th,
+    body .liquor-table td {
+      /* Mantener padding y configuración estándar */
+      padding: 12px 8px;
+      text-align: center;
+      border: 1px solid #ddd;
+      font-size: 0.9rem;
+      line-height: 1.4;
+      white-space: normal;
+      word-break: normal;
+    }
+    
+    /* Proteger encabezados de dos palabras - NO aplicar cambios de móvil */
+    body .liquor-table th:nth-child(3), /* PRECIO BOTELLA */
+    body .liquor-table th:nth-child(4), /* PRECIO LITRO */
+    body .liquor-table th:nth-child(5)  /* PRECIO COPA */ {
+      /* Configuración estándar para tablet - sin modificaciones de móvil */
+      font-size: 0.9rem;
+      padding: 12px 8px;
+      line-height: 1.4;
+      white-space: normal;
+      word-break: normal;
+      max-width: none;
+      min-width: auto;
+      text-align: center;
+      hyphens: none;
+    }
   }
-  
-  body .liquor-table th,
-  body .liquor-table td {
-    /* Mantener padding y configuración estándar */
-    padding: 12px 8px;
-    text-align: center;
-    border: 1px solid #ddd;
-    font-size: 0.9rem;
-    line-height: 1.4;
-    white-space: normal;
-    word-break: normal;
+  body #order-sidebar.active {
+    transform: translateY(0);
   }
-  
-  /* Proteger encabezados de dos palabras - NO aplicar cambios de móvil */
-  body .liquor-table th:nth-child(3), /* PRECIO BOTELLA */
-  body .liquor-table th:nth-child(4), /* PRECIO LITRO */
-  body .liquor-table th:nth-child(5)  /* PRECIO COPA */ {
-    /* Configuración estándar para tablet - sin modificaciones de móvil */
-    font-size: 0.9rem;
-    padding: 12px 8px;
-    line-height: 1.4;
-    white-space: normal;
-    word-break: normal;
-    max-width: none;
-    min-width: auto;
-    text-align: center;
-    hyphens: none;
-  }
-  body #order-sidebar.active { transform: translateY(0); }
   .product-grid { grid-template-columns: repeat(3, 1fr); gap: 18px; padding: 18px; }
   .category-grid { grid-template-columns: repeat(3, 1fr); gap: 18px; padding: 18px; }
   .product-card { min-height: 320px; }
@@ -3560,9 +3417,9 @@ textarea:focus {
     margin-right: 0; /* Sin margen ya que sidebar es fixed */
   }
   
-  /* Ajustar margen derecho cuando sidebar está activo (se gestiona por breakpoints específicos) */
+  /* Ajustar margen derecho cuando sidebar está activo para evitar solapamiento */
   .content-wrapper.order-active #content-container {
-    margin-right: 0; /* Evitar conflictos en móvil; tablet tiene su propio ajuste */
+    margin-right: clamp(220px, 27vw, 300px); /* Espacio para el sidebar */
   }
   
   /* NUEVA CONFIGURACIÓN: Reducción proporcional del contenido cuando sidebar está activo */
@@ -3876,12 +3733,12 @@ textarea:focus {
     padding-left: 10px;
   }
 
-/* Ajustes para pantallas landscape grandes - tablas a ancho completo */
+/* Ajustes para pantallas landscape grandes - tablas con 90% de ancho */
 @media (min-width: 1200px) and (orientation: landscape) {
   .product-table,
   .liquor-table {
-    width: 100%;
-    max-width: 100%;
+    width: 90%;
+    max-width: 90%;
   }
 }
 
@@ -3896,8 +3753,7 @@ textarea:focus {
   
   /* Contenedor con sidebar activo en landscape móvil */
   body .content-wrapper.with-sidebar {
-    /* Usar la variable del ancho del sidebar para evitar inconsistencias */
-    width: calc(100vw - var(--order-sidebar-width-mobile));
+    width: calc(100vw - clamp(160px, 22vw, 200px));
   }
   
   /* Navigation sidebar - consolidated in main section */
@@ -3908,17 +3764,16 @@ textarea:focus {
   .liquor-table {
     width: 100% !important;
     max-width: 100% !important;
-    table-layout: fixed; /* Evitar expansión por contenido en landscape */
   }
   
   /* Botones de precio optimizados para landscape móvil - mantener en una sola fila con efecto permanente */
   body .product-table .price-button,
   body .liquor-table .price-button {
     width: auto;
-    max-width: 64px;
-    min-width: 38px;
-    padding: 2px 5px;
-    font-size: 0.62rem;
+    max-width: 70px;
+    min-width: 40px;
+    padding: 3px 6px;
+    font-size: 0.65rem;
     margin: 0;
     box-sizing: border-box;
     overflow: hidden;
@@ -3935,8 +3790,8 @@ textarea:focus {
   body .liquor-table td.product-price {
     flex: 0 0 auto;
     width: auto;
-    min-width: 45px;
-    max-width: 68px;
+    min-width: 50px;
+    max-width: 80px;
     padding: 4px 2px;
     display: flex;
     align-items: center;
@@ -3946,44 +3801,11 @@ textarea:focus {
   /* Evitar división de palabras en encabezados de tabla - landscape móvil */
   .product-table th,
   .liquor-table th {
-    /* Permitir wrap para evitar desbordes del lado izquierdo */
-    white-space: normal !important;
-    word-break: break-word !important;
-    hyphens: auto !important;
+    white-space: nowrap !important;
+    word-break: keep-all !important;
+    hyphens: none !important;
     overflow: hidden !important;
     text-overflow: ellipsis !important;
-    min-width: 0 !important;
-    padding: 6px 4px !important;
-  }
-  /* Celdas compactas para aprovechar ancho: evitar mínimos rígidos */
-  .product-table td,
-  .liquor-table td {
-    white-space: normal !important;
-    word-break: break-word !important;
-    min-width: 0 !important;
-    padding: 6px 4px !important;
-  }
-}
-
-/* Override específico: Tablet pequeña en landscape (641–768px)
-   Mantener el sidebar a la derecha con +10% de ancho y ajustar padding */
-@media (min-width: 641px) and (max-width: 768px) and (orientation: landscape) {
-  /* Unificar con variable para evitar desbordes y mantener consistencia */
-  #order-sidebar {
-    width: var(--order-sidebar-width-mobile);
-    position: fixed;
-    top: 90px;
-    right: 20px;
-    margin: 0;
-    max-height: 75vh;
-    overflow-y: auto;
-  }
-  /* No añadir padding derecho adicional: provoca desplazamiento/recorte del contenido */
-  body.order-mode-active #app {
-    padding-right: 0 !important;
-  }
-  body .content-wrapper.with-sidebar {
-    width: calc(100vw - var(--order-sidebar-width-mobile));
   }
 }
 
@@ -4000,12 +3822,7 @@ textarea:focus {
   
   /* Contenedor con sidebar activo en landscape móvil pequeño */
   .content-wrapper.with-sidebar {
-    width: calc(100vw - var(--order-sidebar-width-mobile)) !important;
-    box-sizing: border-box;
-    /* Eliminar escalado que recorta el lado izquierdo y evita reflow */
-    transform: none;
-    transform-origin: initial;
-    transition: none;
+    width: calc(100vw - clamp(160px, 22vw, 200px)) !important;
   }
   
   /* Navigation sidebar - consolidated in main section */
@@ -4497,12 +4314,12 @@ textarea:focus {
   
   /* Ajustar padding para sidebar lateral en landscape tablet */
   body.order-mode-active #app {
-    padding-right: calc(max(15px, calc((100vw - var(--table-max-width)) / 2)) + 284px);
+    padding-right: calc(max(15px, calc((100vw - var(--table-max-width)) / 2)) + 260px);
   }
   
   /* Contenedor con sidebar activo en landscape tablet */
   body .content-wrapper.with-sidebar {
-    width: calc(100vw - 284px);
+    width: calc(100vw - 260px);
   }
   
   /* Order sidebar - consolidated in main section */
@@ -4564,8 +4381,6 @@ textarea:focus {
   
   /* Reglas de tabla movidas al bloque unificado landscape al final del archivo */
 }
-
-/* (revert) Bloque de corrección landscape tablet eliminado por solicitud */
 
 /* =================================================================
    TOUCH TARGETS - TABLETS (max-width: 1024px)
@@ -4907,7 +4722,7 @@ textarea:focus {
 
 /* Cuando el modo orden está activo en desktop, ajustar padding para el sidebar */
 body.order-mode-active #app {
-  padding-right: calc(max(20px, calc((100vw - var(--table-max-width)) / 2)) + 284px);
+  padding-right: calc(max(20px, calc((100vw - var(--table-max-width)) / 2)) + 260px);
 }
 
 .content-wrapper.order-active {
@@ -5122,14 +4937,13 @@ body.order-mode-active #app {
   display: block;
 }
 
-/* === REGION: SIDEBAR STATES (Visibility) === */
 /* Sidebar and container display states */
 .sidebar-hidden {
   display: none !important;
 }
 
 .sidebar-visible {
-  display: flex !important;
+  display: block !important;
 }
 
 /* Mobile Sidebar Control Classes */
@@ -5659,249 +5473,4 @@ body.order-mode-active #app {
   border-color: #85C7FF;
   color: #1e40af;
   box-shadow: 0 0 20px #85C7FF;
-}
-
-/* === REGION: BREAKPOINT LAPTOP/DESKTOP ≥769 === */
-/* Desktop spacing when order mode is active (avoid overlap with fixed sidebar) */
-@media (min-width: 769px) {
-  /* Evitar doble espacio: el ancho del contenedor ya descuenta el sidebar */
-  .content-wrapper.order-active #content-container {
-    margin-right: 0;
-  }
-  /* Asegurar que el contenedor con sidebar use el ancho disponible menos el sidebar */
-  body .content-wrapper.with-sidebar {
-    width: calc(100vw - 284px);
-  }
-}
-
-/* === REGION: MOBILE LANDSCAPE ≤768 === */
-/* Sidebar fijo a la derecha y espacio reservado vía ancho del wrapper */
-@media (max-width: 768px) and (orientation: landscape) {
-  :root {
-    /* Variable única para ancho del sidebar en móvil landscape */
-    --order-sidebar-width-mobile: clamp(160px, 22vw, 220px);
-    /* Separación mínima entre contenido y sidebar */
-    --content-separation: 4px;
-  }
-  /* Forzar #app a ocupar todo el ancho disponible y anclar a la izquierda */
-  body.order-mode-active #app {
-    width: 100vw !important;
-    max-width: 100vw !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    left: 0 !important;
-  }
-  /* Eliminar espacio/centrado residual de cabecera en landscape */
-  body.order-mode-active .page-header {
-    margin-left: 0 !important;
-    padding-left: 0 !important;
-    max-width: 100vw !important;
-  }
-  /* Reservar espacio para el sidebar, replicando lógica de tablet */
-  body.order-mode-active #app {
-    padding-right: calc(var(--order-sidebar-width-mobile) + var(--content-separation)) !important;
-  }
-  .content-wrapper.order-active {
-    /* Evitar doble reserva de espacio: el ancho se calcula con .with-sidebar */
-    padding-right: 0;
-    box-sizing: border-box;
-    overflow-x: hidden;
-    /* Asegurar adaptación del contenedor padre cuando el sidebar está activo */
-    width: calc(100vw - var(--order-sidebar-width-mobile));
-  }
-  /* Anclar el contenedor al borde izquierdo y eliminar centrado cuando el sidebar está activo */
-  body.order-mode-active #app,
-  body.order-mode-active .content-wrapper,
-  body.order-mode-active #content-container {
-    padding-left: 0 !important;
-    margin-left: 0 !important;
-    left: 0 !important;
-    transform: none !important;
-  }
-  body.order-mode-active .content-wrapper.with-sidebar {
-    width: calc(100vw - var(--order-sidebar-width-mobile)) !important;
-  }
-  /* Reservar ancho del contenido aunque falte la clase with-sidebar */
-  body.order-mode-active .content-wrapper #content-container {
-    flex: 0 1 calc(100vw - var(--order-sidebar-width-mobile)) !important;
-    width: calc(100vw - var(--order-sidebar-width-mobile)) !important;
-    max-width: calc(100vw - var(--order-sidebar-width-mobile)) !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    left: 0 !important;
-    transform: none !important;
-    box-sizing: border-box;
-  }
-  body.order-mode-active .content-wrapper.order-active #content-container {
-    padding-left: 0 !important;
-    padding-right: 0 !important;
-  }
-  body.order-mode-active #order-sidebar {
-    position: fixed;
-    right: 0;
-    top: var(--topbar-height, 56px);
-    bottom: auto;
-    width: var(--order-sidebar-width-mobile);
-    max-height: calc(100vh - var(--topbar-height, 56px));
-    overflow: auto;
-  }
-  /* Contracción real del contenedor padre y del área de contenido */
-  body.order-mode-active .content-wrapper {
-    display: flex;
-    flex-direction: row;
-    width: 100vw;
-    margin: 0;
-    padding: 0;
-    gap: var(--content-separation) !important; /* Separación similar a tablet */
-    box-sizing: border-box;
-    justify-content: flex-start;
-    align-items: stretch;
-  }
-  body.order-mode-active .content-wrapper.with-sidebar #content-container {
-    flex: 0 0 auto;
-    width: calc(100vw - var(--order-sidebar-width-mobile)) !important;
-    max-width: calc(100vw - var(--order-sidebar-width-mobile)) !important;
-    min-width: 0 !important;
-    overflow-x: hidden !important;
-  }
-  /* Alinear con estructura flex real del contenedor de contenido */
-  body.order-mode-active .content-wrapper.with-sidebar .content-container-flex {
-    flex: 0 1 calc(100vw - var(--order-sidebar-width-mobile) - var(--content-separation)) !important;
-    width: calc(100vw - var(--order-sidebar-width-mobile) - var(--content-separation)) !important;
-    max-width: calc(100vw - var(--order-sidebar-width-mobile) - var(--content-separation)) !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    left: 0 !important;
-    transform: none !important;
-    box-sizing: border-box;
-    overflow-x: hidden !important;
-  }
-  /* Asegurar la contracción aunque falte la clase with-sidebar */
-  body.order-mode-active .content-wrapper .content-container-flex {
-    flex: 0 1 calc(100vw - var(--order-sidebar-width-mobile) - var(--content-separation)) !important;
-    width: calc(100vw - var(--order-sidebar-width-mobile) - var(--content-separation)) !important;
-    max-width: calc(100vw - var(--order-sidebar-width-mobile) - var(--content-separation)) !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    left: 0 !important;
-    transform: none !important;
-    box-sizing: border-box;
-    overflow-x: hidden !important;
-  }
-  .content-wrapper.order-active #content-container {
-    margin-right: 0;
-    width: 100%;
-    max-width: 100%;
-    overflow-x: hidden;
-    min-width: 0; /* Permitir que el contenido se comprima sin overflow */
-  }
-
-  /* Configuración consolidada para móvil landscape con sidebar activo */
-  .content-wrapper.order-active.with-sidebar {
-    display: flex;
-    flex-direction: row;
-    align-items: stretch;
-    justify-content: flex-start;
-    gap: var(--content-separation);
-    width: calc(100vw - var(--order-sidebar-width-mobile));
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
-
-  .content-wrapper.order-active.with-sidebar .content-container-flex,
-  .content-wrapper.order-active.with-sidebar #content-container {
-    flex: 0 1 calc(100vw - var(--order-sidebar-width-mobile) - var(--content-separation));
-    width: calc(100vw - var(--order-sidebar-width-mobile) - var(--content-separation));
-    max-width: calc(100vw - var(--order-sidebar-width-mobile) - var(--content-separation));
-    min-width: 0;
-    margin: 0;
-    padding: 0;
-    left: 0;
-    transform: none;
-    box-sizing: border-box;
-    overflow-x: hidden;
-  }
-
-  /* Reducción de paddings internos para pantallas pequeñas en landscape */
-  .product-table th,
-  .product-table td,
-  .liquor-table th,
-  .liquor-table td {
-    padding: 6px 4px !important;
-  }
-  .product-table,
-  .liquor-table {
-    font-size: 0.85rem !important;
-  }
-}
-
-/* =================================================================
-   RANGE PORTRAIT: 481px–768px (phablet / tablet pequeña)
-   Replicar comportamiento de móvil portrait: ancho completo y sidebar inferior
-   ================================================================= */
-@media (min-width: 481px) and (max-width: 768px) and (orientation: portrait) {
-  /* Variable de altura del sidebar de órdenes en este rango */
-  :root {
-    --order-sidebar-height-portrait-tablet: clamp(220px, 34vh, 360px);
-  }
-
-  /* Forzar contenedor principal a ocupar todo el ancho */
-  #app,
-  .content-wrapper,
-  .content-wrapper.with-sidebar {
-    width: 100vw !important;
-    max-width: 100vw !important;
-    margin: 0 !important;
-    padding-left: 0 !important;
-    padding-right: 0 !important;
-    box-sizing: border-box !important;
-  }
-
-  /* Evitar restricciones que recortan columnas en este rango */
-  .content-wrapper { display: block !important; gap: 0 !important; }
-
-  /* Sidebar inferior fijo como en móvil portrait */
-  #order-sidebar {
-    position: fixed !important;
-    bottom: 0 !important;
-    left: 0 !important;
-    right: 0 !important;
-    top: auto !important;
-    width: 100vw !important;
-    height: auto !important;
-    max-height: 52vh !important;
-    min-height: var(--order-sidebar-height-portrait-tablet) !important;
-    margin: 0 !important;
-    padding: 16px !important;
-    overflow-y: auto !important;
-    border-radius: 15px 15px 0 0 !important;
-    z-index: 1000 !important;
-    background: var(--card-bg) !important;
-    border-top: 2px solid var(--border-color) !important;
-    box-shadow: 0 -4px 20px rgba(0,0,0,0.3) !important;
-    transform: translateY(100%) !important;
-    transition: transform 0.3s ease !important;
-  }
-
-  body #order-sidebar.active { transform: translateY(0) !important; }
-
-  /* Asegurar visibilidad del sidebar cuando está activo en este rango */
-  #order-sidebar.active,
-  body.order-mode-active #order-sidebar {
-    display: flex !important;
-    opacity: 1 !important;
-    visibility: visible !important;
-    pointer-events: auto !important;
-    transform: translateY(0) !important;
-  }
-
-  /* Reservar espacio inferior para que el contenido no se ensime */
-  .content-container-flex,
-  #content-container {
-    width: 100% !important;
-    max-width: 100% !important;
-    padding-bottom: var(--order-sidebar-height-portrait-tablet) !important;
-    box-sizing: border-box !important;
-  }
 }

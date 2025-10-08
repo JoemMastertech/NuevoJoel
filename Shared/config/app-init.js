@@ -309,12 +309,20 @@ const AppInit = {
       modal.show = function() {
         this.classList.remove('modal-hidden');
         this.classList.add('modal-flex');
+        // Semantic open state for drink modal
+        if (this.id === 'drink-options-modal' || this.classList.contains('drink-modal')) {
+          this.classList.add('is-open');
+        }
       };
       
       // Force add hide method (always override)
       modal.hide = function() {
         this.classList.remove('modal-flex');
         this.classList.add('modal-hidden');
+        // Clear semantic open state for drink modal
+        if (this.id === 'drink-options-modal' || this.classList.contains('drink-modal')) {
+          this.classList.remove('is-open');
+        }
       };
     };
     

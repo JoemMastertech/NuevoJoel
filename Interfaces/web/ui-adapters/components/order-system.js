@@ -221,21 +221,25 @@ class OrderSystem {
       return;
     }
     
-    // Handle price buttons (only in order mode and if ProductRenderer is not handling them)
-    if (this.isOrderMode && target && target.classList && target.classList.contains('price-button')) {
+    // Handle price buttons: if order mode is off, activate it and proceed
+    if (target && target.classList && target.classList.contains('price-button')) {
+      // Auto-activate order mode to ensure adding products works from price click
+      if (!this.isOrderMode) {
+        this.toggleOrderMode();
+      }
       // Check if ProductRenderer is already handling price button events
       if (window.ProductRenderer && window.ProductRenderer.eventDelegationInitialized) {
         // ProductRenderer is handling price buttons, so we don't need to
         return;
       }
-      
+
       if (target.disabled || (target.classList && target.classList.contains('non-selectable'))) {
         return;
       }
-      
+
       const row = target.closest('tr');
       const card = target.closest('.product-card');
-      
+
       if (row) {
         const nameCell = row.querySelector('.product-name');
         const priceText = target.textContent;
@@ -432,6 +436,8 @@ class OrderSystem {
       
       sidebar.classList.toggle('sidebar-visible', shouldBeVisible);
       sidebar.classList.toggle('sidebar-hidden', !shouldBeVisible);
+      // Semantic class for consistent CSS toggling
+      sidebar.classList.toggle('is-open', shouldBeVisible);
       
       // Mobile orientation control
       if (shouldBeVisible) {
@@ -469,12 +475,14 @@ class OrderSystem {
      return window.innerWidth > window.innerHeight;
    }
    
-   _handleMobileHiding(sidebar) {
-     const isLandscape = this._isLandscape();
-     
-     // Remove all mobile orientation classes first
-     sidebar.classList.remove('sidebar-mobile-portrait', 'sidebar-mobile-landscape', 
-                             'sidebar-mobile-hidden', 'sidebar-landscape-hidden', 'active');
+  _handleMobileHiding(sidebar) {
+    const isLandscape = this._isLandscape();
+    
+    // Remove all mobile orientation classes first
+    sidebar.classList.remove('sidebar-mobile-portrait', 'sidebar-mobile-landscape', 
+                            'sidebar-mobile-hidden', 'sidebar-landscape-hidden', 'active');
+    // Ensure semantic open state is cleared on hide
+    sidebar.classList.remove('is-open');
      
      if (isLandscape) {
        // Landscape: hide sidebar by sliding it to the right
@@ -1644,6 +1652,7 @@ class OrderSystem {
       if (sidebar.classList.contains('sidebar-hidden')) {
         sidebar.classList.remove('sidebar-hidden');
         sidebar.classList.add('sidebar-visible');
+        sidebar.classList.add('is-open');
         
         // Add 'with-sidebar' class to content wrapper for mobile landscape mode
         const contentWrapper = document.querySelector('.content-wrapper');
@@ -1673,6 +1682,7 @@ class OrderSystem {
       if (sidebar && sidebar.classList.contains('sidebar-hidden')) {
         sidebar.classList.remove('sidebar-hidden');
         sidebar.classList.add('sidebar-visible');
+        sidebar.classList.add('is-open');
       }
     }
     
@@ -1696,6 +1706,7 @@ class OrderSystem {
           // Force sidebar to be visible
           sidebar.classList.remove('sidebar-hidden');
           sidebar.classList.add('sidebar-visible');
+          sidebar.classList.add('is-open');
           
           // Add 'with-sidebar' class to content wrapper for mobile landscape mode
           const contentWrapper = document.querySelector('.content-wrapper');
@@ -1957,11 +1968,19 @@ class OrderSystem {
     // Force add show method (always override)
     modal.show = function() {
       this.className = this.className.replace('modal-hidden', '').trim() + ' modal-flex';
+      // Semantic open state for drink modal
+      if (this.id === 'drink-options-modal' || this.classList.contains('drink-modal')) {
+        this.classList.add('is-open');
+      }
     };
     
     // Force add hide method (always override)
     modal.hide = function() {
       this.className = this.className.replace('modal-flex', '').trim() + ' modal-hidden';
+      // Clear semantic open state for drink modal
+      if (this.id === 'drink-options-modal' || this.classList.contains('drink-modal')) {
+        this.classList.remove('is-open');
+      }
     };
     
     // Also use global enhancement if available as backup

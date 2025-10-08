@@ -1,4 +1,6 @@
 import TranslationService from './TranslationService.js';
+
+
 import Logger from '../utils/logger.js';
 
 /**
@@ -83,6 +85,15 @@ class DOMTranslator {
           return;
         }
 
+        // Avoid translating containers that have translatable descendants
+        // or critical dynamic children with IDs (to preserve inner markup)
+        const hasTranslatableDescendants = element.querySelector('[data-translate]') !== null;
+        const hasCriticalTotalSpan = element.querySelector('#order-total-amount') !== null;
+        const hasChildWithId = Array.from(element.children || []).some(child => !!child.id);
+        if (hasTranslatableDescendants || hasCriticalTotalSpan || hasChildWithId) {
+          return;
+        }
+
         // Skip if element has no meaningful text content
         const textContent = element.textContent.trim();
         if (!textContent || textContent.length < 2) {
@@ -138,6 +149,15 @@ class DOMTranslator {
 
     // Skip if text is only numbers or symbols
     if (/^[\d\s\$\€\£\¥\₹\.\,\-\+\(\)]+$/.test(textContent)) {
+      return;
+    }
+
+    // Avoid translating containers that have translatable descendants
+    // or critical dynamic children with IDs (to preserve inner markup)
+    const hasTranslatableDescendants = element.querySelector('[data-translate]') !== null;
+    const hasCriticalTotalSpan = element.querySelector('#order-total-amount') !== null;
+    const hasChildWithId = Array.from(element.children || []).some(child => !!child.id);
+    if (hasTranslatableDescendants || hasCriticalTotalSpan || hasChildWithId) {
       return;
     }
 
