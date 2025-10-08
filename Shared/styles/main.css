@@ -3784,6 +3784,31 @@ textarea:focus {
 
   /* Configuración de #app ya manejada en la media query principal */
   
+  /* ===== LIQUOR TABLE (modo tabla) - landscape tablet: evitar saltos ===== */
+  .liquor-table {
+    table-layout: fixed; /* columnas estables */
+    width: 100%;
+    max-width: 100%;
+  }
+  .liquor-table tr { display: table-row !important; }
+  .liquor-table th, .liquor-table td { display: table-cell !important; vertical-align: middle; box-sizing: border-box; }
+  /* Proporciones por columna (nombre, imagen, botella, litro, copa) */
+  .liquor-table th:nth-child(1), .liquor-table td:nth-child(1) { width: 25%; }
+  .liquor-table th:nth-child(2), .liquor-table td:nth-child(2) { width: 20%; }
+  .liquor-table th:nth-child(3), .liquor-table td:nth-child(3) { width: 18%; }
+  .liquor-table th:nth-child(4), .liquor-table td:nth-child(4) { width: 18%; }
+  .liquor-table th:nth-child(5), .liquor-table td:nth-child(5) { width: 19%; }
+  /* Mantener precios en una línea sin truncar */
+  .liquor-table td.product-price,
+  .liquor-table th:nth-child(3), .liquor-table th:nth-child(4), .liquor-table th:nth-child(5) {
+    white-space: nowrap; word-break: keep-all; hyphens: none;
+  }
+  .liquor-table .price-button {
+    width: auto; min-width: unset; max-width: none;
+    overflow: visible; text-overflow: clip; white-space: nowrap; /* sin (…) */
+    display: inline-block;
+  }
+  
   /* Modales más pequeños para landscape móvil */
   .modal-content.image-modal {
     max-width: 280px;
@@ -4537,6 +4562,18 @@ textarea:focus {
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
+  }
+
+  /* Override específico para .liquor-table: mantener celdas como table-cell y evitar recortes */
+  .liquor-table td.product-price {
+    display: table-cell !important;
+    vertical-align: middle !important;
+    text-align: center !important;
+  }
+  .liquor-table .price-button {
+    overflow: visible !important;
+    text-overflow: clip !important;
+    white-space: nowrap !important;
   }
   
   #order-sidebar h3 {
@@ -5460,6 +5497,23 @@ body.order-mode-active #app {
     hyphens: none;
     min-width: 0;
   }
+
+  /* Layout y anchos consolidados para .liquor-table (5 columnas) */
+  .liquor-table {
+    table-layout: fixed;
+    width: 100%;
+    border-collapse: collapse;
+  }
+  .liquor-table th:nth-child(1),
+  .liquor-table td:nth-child(1) { width: 27%; }
+  .liquor-table th:nth-child(2),
+  .liquor-table td:nth-child(2) { width: 18%; }
+  .liquor-table th:nth-child(3),
+  .liquor-table td:nth-child(3) { width: 18%; }
+  .liquor-table th:nth-child(4),
+  .liquor-table td:nth-child(4) { width: 18%; }
+  .liquor-table th:nth-child(5),
+  .liquor-table td:nth-child(5) { width: 19%; }
 }
 
 /* ===== MÓVIL LANDSCAPE (max-width: 768px) ===== */
