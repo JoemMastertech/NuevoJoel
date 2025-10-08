@@ -7,6 +7,17 @@ import { calculateTotalDrinkCount, calculateTotalJuiceCount, calculateTotalJager
 import Logger from './../../../../Shared/utils/logger.js';
 import { OrderSystemValidations } from './order-system-validations.js';
 
+// Simple hash to generate stable keys per text (match product-table)
+function simpleHash(str) {
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    const char = str.charCodeAt(i);
+    hash = ((hash << 5) - hash) + char;
+    hash = hash & hash;
+  }
+  return Math.abs(hash).toString(36);
+}
+
 // Constants
 const CONSTANTS = {
   MAX_DRINK_COUNT: 5,
@@ -416,7 +427,7 @@ class OrderSystem {
     this._updateHamburgerMenuButton(isActive);
   }
 
-  _updateHamburgerMenuButton(isActive) {
+  async _updateHamburgerMenuButton(isActive) {
     // Find the "Crear orden" button in the hamburger menu
     const hamburgerButtons = document.querySelectorAll('#drawer-menu .nav-button');
     const createOrderBtn = Array.from(hamburgerButtons).find(btn => 
@@ -424,7 +435,35 @@ class OrderSystem {
     );
     
     if (createOrderBtn) {
-      createOrderBtn.textContent = isActive ? 'CANCELAR ORDEN' : 'Crear orden';
+      // Set stable translation keys and original text
+      if (isActive) {
+        createOrderBtn.setAttribute('data-translate', 'menu.cancel_order');
+        createOrderBtn.setAttribute('data-namespace', 'menu');
+        createOrderBtn.setAttribute('data-original-text', 'CANCELAR ORDEN');
+        createOrderBtn.textContent = 'CANCELAR ORDEN';
+      } else {
+        createOrderBtn.setAttribute('data-translate', 'menu.create_order');
+        createOrderBtn.setAttribute('data-namespace', 'menu');
+        createOrderBtn.setAttribute('data-original-text', 'Crear orden');
+        createOrderBtn.textContent = 'Crear orden';
+      }
+
+      // Translate immediately if current language is not Spanish
+      try {
+        const TranslationService = (await import('../../../../Shared/services/TranslationService.js')).default;
+        const currentLang = TranslationService.getCurrentLanguage();
+        if (currentLang && currentLang !== 'es') {
+          const textKey = createOrderBtn.getAttribute('data-translate');
+          const originalText = createOrderBtn.getAttribute('data-original-text') || createOrderBtn.textContent.trim();
+          const translated = await TranslationService.getTranslation(textKey, originalText, currentLang, 'menu');
+          if (translated) {
+            createOrderBtn.textContent = translated;
+          }
+        }
+      } catch (e) {
+        // If TranslationService is not available yet, keep original text
+        Logger.warn('TranslationService not ready in _updateHamburgerMenuButton', e);
+      }
     }
   }
 
@@ -1763,6 +1802,10 @@ class OrderSystem {
       const itemName = document.createElement('div');
       itemName.className = 'order-item-name';
       itemName.textContent = item.name;
+      const nameKey = `product-name_${simpleHash((item.name || '').trim())}`;
+      itemName.setAttribute('data-translate', nameKey);
+      itemName.setAttribute('data-namespace', 'products');
+      itemName.setAttribute('data-original-text', item.name || '');
 
       const removeButton = document.createElement('button');
       removeButton.className = 'remove-order-item';
@@ -1786,6 +1829,10 @@ class OrderSystem {
           const customElem = document.createElement('div');
           customElem.className = 'order-item-customization';
           customElem.textContent = customization;
+          const optKey = `product-option_${simpleHash((customization || '').trim())}`;
+          customElem.setAttribute('data-translate', optKey);
+          customElem.setAttribute('data-namespace', 'products');
+          customElem.setAttribute('data-original-text', customization || '');
           itemElement.appendChild(customElem);
         });
       }
@@ -2367,7 +2414,15 @@ class OrderSystem {
     orderElement.className = 'saved-order';
 
     const orderHeader = document.createElement('h3');
-    orderHeader.textContent = `ORDEN ${index + 1} - ${order.date}`;
+    const headerLabel = document.createElement('span');
+    headerLabel.className = 'title-text';
+    headerLabel.textContent = 'ORDEN';
+    const headerKey = `ui-label_${simpleHash('ORDEN')}`;
+    headerLabel.setAttribute('data-translate', headerKey);
+    headerLabel.setAttribute('data-namespace', 'ui');
+    headerLabel.setAttribute('data-original-text', 'ORDEN');
+    orderHeader.appendChild(headerLabel);
+    orderHeader.appendChild(document.createTextNode(` ${index + 1} - ${order.date}`));
     orderElement.appendChild(orderHeader);
 
     const orderItemsList = document.createElement('div');
@@ -2380,6 +2435,10 @@ class OrderSystem {
       const itemName = document.createElement('div');
       itemName.className = 'saved-order-item-name';
       itemName.textContent = item.name;
+      const savedNameKey = `product-name_${simpleHash((item.name || '').trim())}`;
+      itemName.setAttribute('data-translate', savedNameKey);
+      itemName.setAttribute('data-namespace', 'products');
+      itemName.setAttribute('data-original-text', item.name || '');
 
       const itemPrice = document.createElement('div');
       itemPrice.className = 'saved-order-item-price';
@@ -2393,6 +2452,10 @@ class OrderSystem {
           const customElem = document.createElement('div');
           customElem.className = 'saved-order-item-customization';
           customElem.textContent = customization;
+          const savedOptKey = `product-option_${simpleHash((customization || '').trim())}`;
+          customElem.setAttribute('data-translate', savedOptKey);
+          customElem.setAttribute('data-namespace', 'products');
+          customElem.setAttribute('data-original-text', customization || '');
           itemElement.appendChild(customElem);
         });
       }
@@ -2402,7 +2465,15 @@ class OrderSystem {
 
     const orderTotal = document.createElement('div');
     orderTotal.className = 'saved-order-total';
-    orderTotal.textContent = `Total: ${formatPrice(order.total)}`;
+    const totalLabel = document.createElement('span');
+    totalLabel.className = 'title-text';
+    totalLabel.textContent = 'Total:';
+    const totalKey = `ui-label_${simpleHash('Total:')}`;
+    totalLabel.setAttribute('data-translate', totalKey);
+    totalLabel.setAttribute('data-namespace', 'ui');
+    totalLabel.setAttribute('data-original-text', 'Total:');
+    orderTotal.appendChild(totalLabel);
+    orderTotal.appendChild(document.createTextNode(` ${formatPrice(order.total)}`));
     orderElement.appendChild(orderTotal);
 
     if (includeDeleteButton) {

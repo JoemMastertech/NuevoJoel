@@ -36,6 +36,7 @@ import { ErrorHandler, logError, logWarning } from '../utils/errorHandler.js';
 import Logger from '../utils/logger.js';
 import SimpleCache from '../utils/simpleCache.js';
 import { DEBUG, UI, PERFORMANCE, CACHE_KEYS } from './constants.js';
+import TranslationService from '../services/TranslationService.js';
 
 /* initial view timing in milliseconds */
 const INITIAL_DELAY = 100;
@@ -547,20 +548,49 @@ const AppInit = {
       { label: 'Crear orden', action: 'createOrder' }
     ];
     
-    // Create menu items
+    // Create menu items with translation attributes
     navigationItems.forEach(item => {
       const button = document.createElement('button');
       button.className = 'nav-button';
       button.textContent = item.label;
-      
+
       if (item.target) {
         button.setAttribute('data-target', item.target);
       }
-      
+
       if (item.action) {
         button.setAttribute('data-action', item.action);
       }
-      
+
+      // Define a stable translation key based on target/action
+      const keySuffix = item.action
+        ? (item.action === 'createOrder' ? 'create_order' : item.action)
+        : item.target;
+      const textKey = `menu.${keySuffix}`;
+
+      // Set translation attributes so DOMTranslator respects them
+      button.setAttribute('data-translate', textKey);
+      button.setAttribute('data-namespace', 'menu');
+      button.setAttribute('data-original-text', item.label);
+
+      // Translate immediately if current language is not Spanish
+      try {
+        const currentLang = TranslationService.getCurrentLanguage();
+        if (currentLang && currentLang !== 'es') {
+          // Use TranslationService directly for immediate translation
+          TranslationService.getTranslation(textKey, item.label, currentLang, 'menu')
+            .then(translated => {
+              button.textContent = translated || item.label;
+            })
+            .catch(() => {
+              // Fallback: keep original
+              button.textContent = item.label;
+            });
+        }
+      } catch (e) {
+        Logger.warn('TranslationService not ready; using original text for menu button', e);
+      }
+
       drawerContent.appendChild(button);
     });
     

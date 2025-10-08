@@ -40,7 +40,10 @@ class AppConfig {
         drinkCustomization: true,
         meatCustomization: true,
         orderHistory: true,
-        realTimeSync: false
+        realTimeSync: false,
+        // Enable/disable Google Translate runtime calls
+        // Controlled via env var VITE_GOOGLE_TRANSLATE_ENABLED (default: false)
+        googleTranslateEnabled: this.getBooleanEnv('VITE_GOOGLE_TRANSLATE_ENABLED', false)
       },
 
       // Business rules and validations
@@ -161,7 +164,22 @@ class AppConfig {
    */
   getBooleanEnv(key, defaultValue = false) {
     const value = this.getEnvVar(key);
-    return value === 'true' || value === '1' || value === true || defaultValue;
+    // If not provided, return the default
+    if (value === undefined || value === null) {
+      return defaultValue;
+    }
+    // Handle boolean directly
+    if (typeof value === 'boolean') {
+      return value;
+    }
+    // Normalize strings like 'true', '1', 'false', '0'
+    if (typeof value === 'string') {
+      const normalized = value.trim().toLowerCase();
+      if (normalized === 'true' || normalized === '1') return true;
+      if (normalized === 'false' || normalized === '0') return false;
+    }
+    // Fallback to default if value is an unexpected type
+    return defaultValue;
   }
 
   /**

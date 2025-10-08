@@ -43,6 +43,12 @@
       }
     }
   </script>
+  <!-- Runtime feature flags -->
+  <script>
+    window.env = Object.assign({}, window.env, {
+      VITE_GOOGLE_TRANSLATE_ENABLED: 'true'
+    });
+  </script>
   <script src="Shared/libs/purify.min.js"></script>
   <script type="module" src="Shared/config/settings-manager.js"></script>
 </head>
@@ -81,7 +87,7 @@
           <button class="nav-button language-btn" data-lang="en" data-translate="languages.english">Inglés</button>
           <button class="nav-button language-btn" data-lang="fr" data-translate="languages.french">Francés</button>
           <button class="nav-button language-btn" data-lang="it" data-translate="languages.italian">Italiano</button>
-          <button class="nav-button language-btn" data-lang="cn" data-translate="languages.chinese">Chino</button>
+          <button class="nav-button language-btn" data-lang="zh" data-translate="languages.chinese">Chino</button>
         </div>
         
         <!-- Dark Mode Panel -->

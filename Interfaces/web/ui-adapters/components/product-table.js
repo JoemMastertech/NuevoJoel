@@ -4,6 +4,8 @@ import { getProductRepository } from '../../../../Shared/utils/diUtils.js';
 import { setSafeInnerHTML } from '../../../../Shared/utils/domUtils.js';
 import { logError, logWarning } from '../../../../Shared/utils/errorHandler.js';
 import Logger from '../../../../Shared/utils/logger.js';
+import TranslationService from '../../../../Shared/services/TranslationService.js';
+import DOMTranslator from '../../../../Shared/services/DOMTranslator.js';
 
 const ProductRenderer = {
   // Current view mode: 'table' or 'grid'
@@ -29,6 +31,8 @@ const ProductRenderer = {
     const container = document.getElementById('content-container');
     if (container) {
       await this.refreshCurrentView(container);
+      // Ensure new view content is translated according to current language
+      this._retranslateIfNeeded(container);
     }
     
     return this.currentViewMode;
@@ -159,6 +163,8 @@ const ProductRenderer = {
     const backButtonHTML = this._preserveBackButton(container);
     const targetContainer = this._clearAndRestoreContainer(container, backButtonHTML);
     await this._renderCategoryView(targetContainer, viewData.category);
+    // Re-translate newly rendered content if needed
+    this._retranslateIfNeeded(targetContainer);
   },
 
   _extractViewData: function(container) {
@@ -418,6 +424,8 @@ const ProductRenderer = {
     
     if (renderer) {
       await renderer(container);
+      // Translate after category renderer completes
+      this._retranslateIfNeeded(container);
     } else {
       Logger.warn('Unknown category for refresh:', category);
     }
@@ -457,6 +465,8 @@ const ProductRenderer = {
     table.appendChild(tableHead);
     table.appendChild(tbody);
     container.appendChild(table);
+    // Ensure table content is translated if a non-Spanish language is active
+    this._retranslateIfNeeded(container);
   },
 
   _createTableElement: function(tableClass, categoryTitle) {
@@ -571,11 +581,21 @@ const ProductRenderer = {
   _createNameCell: function(td, nombre) {
     td.className = 'product-name';
     td.textContent = nombre;
+    const key = `product-name_${this.simpleHash((nombre || '').trim())}`;
+    td.setAttribute('data-translate', key);
+    td.setAttribute('data-namespace', 'products');
+    td.setAttribute('data-original-text', nombre || '');
   },
 
   _createIngredientsCell: function(td, ingredientes) {
     td.className = 'product-ingredients';
     td.textContent = ingredientes || '';
+    if (ingredientes) {
+      const key = `product-ingredients_${this.simpleHash((ingredientes || '').trim())}`;
+      td.setAttribute('data-translate', key);
+      td.setAttribute('data-namespace', 'products');
+      td.setAttribute('data-original-text', ingredientes || '');
+    }
   },
 
   _isPriceField: function(field) {
@@ -699,6 +719,10 @@ const ProductRenderer = {
       const nameElement = document.createElement('div');
       nameElement.className = 'product-name';
       nameElement.textContent = item.nombre;
+      const nameKey = `product-name_${this.simpleHash((item.nombre || '').trim())}`;
+      nameElement.setAttribute('data-translate', nameKey);
+      nameElement.setAttribute('data-namespace', 'products');
+      nameElement.setAttribute('data-original-text', item.nombre || '');
       card.appendChild(nameElement);
       
       // Product ingredients (if available)
@@ -706,6 +730,10 @@ const ProductRenderer = {
         const ingredientsElement = document.createElement('div');
         ingredientsElement.className = 'product-ingredients';
         ingredientsElement.textContent = item.ingredientes;
+        const ingKey = `product-ingredients_${this.simpleHash((item.ingredientes || '').trim())}`;
+        ingredientsElement.setAttribute('data-translate', ingKey);
+        ingredientsElement.setAttribute('data-namespace', 'products');
+        ingredientsElement.setAttribute('data-original-text', item.ingredientes || '');
         card.appendChild(ingredientsElement);
       }
       
@@ -767,6 +795,10 @@ const ProductRenderer = {
               const priceLabel = document.createElement('span');
               priceLabel.className = 'price-label';
               priceLabel.textContent = priceLabels[field] + ':';
+              const plKey = `price-label_${this.simpleHash((priceLabels[field] + ':').trim())}`;
+              priceLabel.setAttribute('data-translate', plKey);
+              priceLabel.setAttribute('data-namespace', 'products');
+              priceLabel.setAttribute('data-original-text', (priceLabels[field] + ':'));
               priceItem.appendChild(priceLabel);
               
               // Create price button
@@ -808,6 +840,19 @@ const ProductRenderer = {
     
     // Apply intelligent text truncation after grid is rendered
     this.applyIntelligentTruncation(grid);
+    // Ensure grid content is translated if a non-Spanish language is active
+    this._retranslateIfNeeded(container);
+  },
+
+  // Simple hash to generate stable keys per text
+  simpleHash: function(str) {
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+      const char = str.charCodeAt(i);
+      hash = ((hash << 5) - hash) + char;
+      hash = hash & hash;
+    }
+    return Math.abs(hash).toString(36);
   },
   
   // Apply intelligent text truncation to product cards
@@ -1067,6 +1112,8 @@ const ProductRenderer = {
     // Contenido dinámico: HTML generado con datos de Supabase
     // Se usa sanitización como medida preventiva
     setSafeInnerHTML(targetContainer, licoresHTML);
+    // Translate newly injected liquor category content if a language is active
+    this._retranslateIfNeeded(targetContainer);
     
     // No individual event listeners needed - handled by delegation
     // Category cards will be handled by the centralized event system
@@ -1226,6 +1273,8 @@ const ProductRenderer = {
         // Asignación segura: cadena estática sin riesgo XSS
         targetContainer.innerHTML += '<p>Categoría no disponible</p>';
     }
+    // Translate subcategory content after rendering
+    this._retranslateIfNeeded(targetContainer);
     
     // Log DOM state after rendering subcategory
     setTimeout(() => {
@@ -1244,6 +1293,24 @@ const ProductRenderer = {
       
       Logger.info(`✅ Subcategoría ${category} renderizada completamente`);
     }, 100);
+  },
+
+  // Helper: translate newly rendered content when language is not Spanish
+  _retranslateIfNeeded: function(scopeElement) {
+    try {
+      const currentLang = TranslationService.getCurrentLanguage();
+      if (currentLang && currentLang !== 'es') {
+        // Prefer translating only marked elements to avoid re-identification overhead
+        if (typeof DOMTranslator.translateAll === 'function') {
+          DOMTranslator.translateAll(currentLang);
+        } else if (typeof TranslationService.translatePage === 'function') {
+          // Fallback to full page translation
+          TranslationService.translatePage(currentLang);
+        }
+      }
+    } catch (err) {
+      Logger.warn('Translation reapply failed after view change:', err);
+    }
   },
 
   // Generic liquor renderer - eliminates code duplication

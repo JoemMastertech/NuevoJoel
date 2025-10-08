@@ -66,7 +66,14 @@ class TranslationService {
         return existingTranslation;
       }
 
-      // If not found, request new translation from Google Translate API
+      // If not found, respect feature flag for Google Translate
+      const googleEnabled = this.config.isFeatureEnabled('googleTranslateEnabled');
+      if (!googleEnabled) {
+        Logger.info('Google Translate disabled by config; returning source text');
+        return sourceText;
+      }
+
+      // If not found and enabled, request new translation from Google Translate API
       const newTranslation = await this.requestTranslation(sourceText, targetLanguage);
       
       // Save to Supabase for future use
@@ -94,18 +101,26 @@ class TranslationService {
    */
   async getFromSupabase(textKey, targetLanguage, namespace) {
     try {
-      const { data, error } = await this.supabase
+      const query = this.supabase
         .from('translations')
         .select('translated_text')
         .eq('text_key', textKey)
         .eq('target_language', targetLanguage)
-        .eq('namespace', namespace)
-        .single();
+        .eq('namespace', namespace);
+
+      // Prefer .maybeSingle() to avoid 406 when no rows exist
+      const result = (typeof query.maybeSingle === 'function')
+        ? await query.maybeSingle()
+        : await query.single();
+
+      const { data, error, status } = result;
 
       if (error) {
-        if (error.code !== 'PGRST116') { // Not found error
-          Logger.error('Supabase translation query error:', error);
+        // Treat 406 (no rows) or PGRST116 as 'not found' without logging noise
+        if (status === 406 || error.code === 'PGRST116') {
+          return null;
         }
+        Logger.error('Supabase translation query error:', error);
         return null;
       }
 
@@ -128,14 +143,14 @@ class TranslationService {
     try {
       const { error } = await this.supabase
         .from('translations')
-        .insert({
+        .upsert({
           text_key: textKey,
           namespace: namespace,
           source_language: 'es',
           target_language: targetLanguage,
           source_text: sourceText,
           translated_text: translatedText
-        });
+        }, { onConflict: 'text_key,namespace,target_language' });
 
       if (error) {
         Logger.error('Error saving translation to Supabase:', error);
@@ -155,6 +170,12 @@ class TranslationService {
    */
   async requestTranslation(text, targetLanguage) {
     try {
+      // Respect feature flag to avoid calling external API when disabled
+      const googleEnabled = this.config.isFeatureEnabled('googleTranslateEnabled');
+      if (!googleEnabled) {
+        return text;
+      }
+
       // This will be implemented as a secure API endpoint
       // For now, we'll create a placeholder that calls our translation API
       const response = await fetch('/api/translate', {

@@ -58,10 +58,16 @@ class DOMTranslator {
       'label:not([data-translate])',
       '.language-btn:not([data-translate])',
       '.nav-btn:not([data-translate])',
+      '.drawer-menu .nav-button:not([data-translate])',
       '.product-name:not([data-translate])',
       '.product-description:not([data-translate])',
+      '.product-ingredients:not([data-translate])',
+      '.order-item-name:not([data-translate])',
+      '.saved-order-item-name:not([data-translate])',
       '.price-label:not([data-translate])',
-      '.category-title:not([data-translate])'
+      '.category-title:not([data-translate])',
+      '.welcome-text:not([data-translate])',
+      '.title-text:not([data-translate])'
     ];
 
     // Elements to exclude from translation
@@ -152,6 +158,11 @@ class DOMTranslator {
       return;
     }
 
+    // Respect existing explicit translation attributes
+    if (element.hasAttribute('data-translate')) {
+      return;
+    }
+
     // Avoid translating containers that have translatable descendants
     // or critical dynamic children with IDs (to preserve inner markup)
     const hasTranslatableDescendants = element.querySelector('[data-translate]') !== null;
@@ -163,7 +174,7 @@ class DOMTranslator {
 
     // Check if element matches translatable criteria
     const translatableTypes = ['BUTTON', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'P', 'SPAN', 'LABEL'];
-    const translatableClasses = ['menu-text', 'category-name', 'language-btn', 'nav-btn', 'product-name', 'product-description', 'price-label', 'category-title'];
+    const translatableClasses = ['menu-text', 'category-name', 'language-btn', 'nav-btn', 'nav-button', 'product-name', 'product-description', 'product-ingredients', 'order-item-name', 'saved-order-item-name', 'price-label', 'category-title', 'welcome-text', 'title-text'];
     
     const isTranslatableType = translatableTypes.includes(element.tagName);
     const hasTranslatableClass = translatableClasses.some(cls => element.classList.contains(cls));
@@ -173,11 +184,12 @@ class DOMTranslator {
       const textKey = this.generateTextKey(element, textContent);
       const namespace = this.determineNamespace(element);
       
-      // Set data-translate attribute
-      element.setAttribute('data-translate', `${namespace}.${textKey}`);
+      // Set translation attributes consistently
+      element.setAttribute('data-translate', textKey);
+      element.setAttribute('data-namespace', namespace);
       element.setAttribute('data-original-text', textContent);
-      
-      Logger.debug(`DOMTranslator: Marked element for translation: ${namespace}.${textKey}`);
+
+      Logger.debug(`DOMTranslator: Marked element for translation: ${textKey} (${namespace})`);
     }
   }
 
