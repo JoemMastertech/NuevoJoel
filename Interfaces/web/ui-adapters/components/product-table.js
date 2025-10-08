@@ -511,6 +511,13 @@ const ProductRenderer = {
     const titleElement = document.createElement('h2');
     titleElement.className = 'page-title';
     titleElement.textContent = categoryTitle;
+    // Marcar título para traducción
+    if (categoryTitle) {
+      const key = `category-title_${this.simpleHash((categoryTitle || '').trim())}`;
+      titleElement.setAttribute('data-translate', key);
+      titleElement.setAttribute('data-original-text', categoryTitle);
+      titleElement.setAttribute('data-namespace', 'category.title');
+    }
     titleCell.appendChild(titleElement);
     titleRow.appendChild(titleCell);
     return titleRow;
@@ -526,6 +533,13 @@ const ProductRenderer = {
     headers.forEach(header => {
       const th = document.createElement('th');
       th.textContent = header;
+      // Marcar encabezado para traducción
+      if (header) {
+        const key = `table-header_${this.simpleHash((header || '').trim())}`;
+        th.setAttribute('data-translate', key);
+        th.setAttribute('data-original-text', header);
+        th.setAttribute('data-namespace', 'table.header');
+      }
       if (header === 'NOMBRE') {
         th.setAttribute('data-nombre-header', 'true');
       }
@@ -708,6 +722,12 @@ const ProductRenderer = {
     const titleElement = document.createElement('h2');
     titleElement.className = 'page-title';
     titleElement.textContent = categoryTitle;
+    // Marcar título para traducción en grid
+    if (categoryTitle) {
+      titleElement.setAttribute('data-translate', categoryTitle);
+      titleElement.setAttribute('data-original-text', categoryTitle);
+      titleElement.setAttribute('data-namespace', 'category.title');
+    }
     grid.appendChild(titleElement);
     
     // Create product cards

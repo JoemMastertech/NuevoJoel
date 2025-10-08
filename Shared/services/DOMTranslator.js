@@ -70,6 +70,12 @@ class DOMTranslator {
       '.title-text:not([data-translate])'
     ];
 
+    // Inputs/textareas with placeholders should also be translated
+    const placeholderSelectors = [
+      'input[placeholder]:not([data-translate-placeholder])',
+      'textarea[placeholder]:not([data-translate-placeholder])'
+    ];
+
     // Elements to exclude from translation
     const excludeSelectors = [
       'script',
@@ -82,6 +88,7 @@ class DOMTranslator {
       '[contenteditable="true"]' // Editable content
     ];
 
+    // Mark textual elements
     translatableSelectors.forEach(selector => {
       const elements = document.querySelectorAll(selector);
       
@@ -123,6 +130,23 @@ class DOMTranslator {
         Logger.debug(`Marked for translation: ${textKey} (${namespace})`);
       });
     });
+
+    // Mark placeholders on inputs/textareas
+    placeholderSelectors.forEach(selector => {
+      const elements = document.querySelectorAll(selector);
+
+      elements.forEach(element => {
+        if (this.isExcluded(element, excludeSelectors)) return;
+        const ph = (element.getAttribute('placeholder') || '').trim();
+        if (!ph || ph.length < 2) return;
+        const namespace = this.determineNamespace(element) || 'inputs';
+        const key = this.generatePlaceholderKey(element, ph);
+        element.setAttribute('data-translate-placeholder', key);
+        element.setAttribute('data-namespace', namespace);
+        element.setAttribute('data-original-placeholder', ph);
+        Logger.debug(`Marked placeholder for translation: ${key} (${namespace})`);
+      });
+    });
   }
 
   /**
@@ -145,6 +169,20 @@ class DOMTranslator {
     // Skip if element is excluded
     if (this.isExcluded(element, excludeSelectors)) {
       return;
+    }
+
+    // Handle placeholders for inputs/textareas first (they may have empty textContent)
+    if ((element.tagName === 'INPUT' || element.tagName === 'TEXTAREA') && !element.hasAttribute('data-translate-placeholder')) {
+      const ph = (element.getAttribute('placeholder') || '').trim();
+      if (ph && ph.length > 1) {
+        const namespace = this.determineNamespace(element) || 'inputs';
+        const key = this.generatePlaceholderKey(element, ph);
+        element.setAttribute('data-translate-placeholder', key);
+        element.setAttribute('data-namespace', namespace);
+        element.setAttribute('data-original-placeholder', ph);
+        Logger.debug(`DOMTranslator: Marked placeholder for translation: ${key} (${namespace})`);
+        // Do not return; element might also have visible text to translate
+      }
     }
 
     // Skip if element has no meaningful text content
@@ -253,6 +291,30 @@ class DOMTranslator {
     // Generate hash from text content for uniqueness
     const textHash = this.simpleHash(element.textContent.trim());
     return `${parentContext}${element.tagName.toLowerCase()}_${textHash}`;
+  }
+
+  /**
+   * Generate key for translating placeholders
+   * @param {Element} element
+   * @param {string} placeholderText
+   * @returns {string}
+   */
+  generatePlaceholderKey(element, placeholderText) {
+    if (element.id) {
+      return `placeholder_${element.id}`;
+    }
+    if (element.className) {
+      const clean = element.className.replace(/\s+/g, '_').replace(/[^a-zA-Z0-9_]/g, '');
+      if (clean) return `placeholder_${clean}`;
+    }
+    const parent = element.parentElement;
+    let parentContext = '';
+    if (parent) {
+      if (parent.id) parentContext = `${parent.id}_`;
+      else if (parent.className) parentContext = `${parent.className.split(' ')[0]}_`;
+    }
+    const hash = this.simpleHash((placeholderText || '').trim());
+    return `${parentContext}placeholder_${hash}`;
   }
 
   /**
@@ -394,6 +456,23 @@ class DOMTranslator {
     } catch (error) {
       Logger.error(`Error translating element ${textKey}:`, error);
     }
+
+    // Translate placeholder if present
+    const phKey = element.getAttribute('data-translate-placeholder');
+    const originalPh = element.getAttribute('data-original-placeholder');
+    if (phKey && originalPh) {
+      try {
+        const phTranslated = await this.translationService.getTranslation(
+          phKey,
+          originalPh,
+          targetLanguage,
+          element.getAttribute('data-namespace') || 'inputs'
+        );
+        element.setAttribute('placeholder', phTranslated);
+      } catch (err) {
+        Logger.error(`Error translating placeholder ${phKey}:`, err);
+      }
+    }
   }
 
   /**
@@ -401,13 +480,11 @@ class DOMTranslator {
    * @param {string} targetLanguage - Target language code
    */
   async translateAll(targetLanguage) {
-    const elements = document.querySelectorAll('[data-translate]');
-    const translationPromises = Array.from(elements).map(element => 
-      this.translateElement(element, targetLanguage)
-    );
+    const elements = document.querySelectorAll('[data-translate], [data-translate-placeholder]');
+    const translationPromises = Array.from(elements).map(element => this.translateElement(element, targetLanguage));
 
     await Promise.all(translationPromises);
-    Logger.info(`Translated ${elements.length} elements to ${targetLanguage}`);
+    Logger.info(`Translated ${elements.length} elements (including placeholders) to ${targetLanguage}`);
   }
 
   /**
