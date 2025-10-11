@@ -59,7 +59,7 @@ class TranslationService {
       }
 
       // Check Supabase for existing translation
-      const existingTranslation = await this.getFromSupabase(textKey, targetLanguage, namespace);
+      const existingTranslation = await this.getFromSupabase(textKey, targetLanguage, namespace, sourceText);
       if (existingTranslation) {
         this.translationCache.set(cacheKey, existingTranslation);
         Logger.debug(`Translation loaded from Supabase: ${textKey} -> ${targetLanguage}`);
@@ -99,7 +99,7 @@ class TranslationService {
    * @param {string} namespace - Context namespace
    * @returns {Promise<string|null>} Translated text or null if not found
    */
-  async getFromSupabase(textKey, targetLanguage, namespace) {
+  async getFromSupabase(textKey, targetLanguage, namespace, sourceText = null) {
     try {
       const query = this.supabase
         .from('translations')
@@ -118,13 +118,47 @@ class TranslationService {
       if (error) {
         // Treat 406 (no rows) or PGRST116 as 'not found' without logging noise
         if (status === 406 || error.code === 'PGRST116') {
+          // Intentionally continue to fallback below
+        } else {
+          Logger.error('Supabase translation query error:', error);
           return null;
         }
-        Logger.error('Supabase translation query error:', error);
-        return null;
       }
 
-      return data?.translated_text || null;
+      // Primary lookup by key succeeded
+      if (data?.translated_text) {
+        return data.translated_text;
+      }
+
+      // Fallback: lookup by source_text regardless of namespace (helps reuse existing translations)
+      if (sourceText) {
+        try {
+          const altQuery = this.supabase
+            .from('translations')
+            .select('translated_text')
+            .eq('source_text', sourceText)
+            .eq('target_language', targetLanguage)
+            .limit(1);
+
+          const altResult = (typeof altQuery.maybeSingle === 'function')
+            ? await altQuery.maybeSingle()
+            : await altQuery.single();
+
+          const { data: altData, error: altError, status: altStatus } = altResult;
+          if (altError) {
+            if (altStatus === 406 || altError.code === 'PGRST116') {
+              return null;
+            }
+            Logger.debug('Supabase fallback by source_text returned error (non-fatal):', altError);
+            return null;
+          }
+          return altData?.translated_text || null;
+        } catch (fallbackErr) {
+          Logger.debug('Supabase fallback by source_text failed:', fallbackErr);
+          return null;
+        }
+      }
+      return null;
     } catch (error) {
       Logger.error('Error fetching translation from Supabase:', error);
       return null;

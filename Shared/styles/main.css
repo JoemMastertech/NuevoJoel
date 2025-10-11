@@ -1199,8 +1199,8 @@ body.order-mode-active #app {
   text-transform: none;
   transition: all 0.3s ease;
   border: 1.4px solid var(--border-color);
-  box-shadow: 0 0 10px var(--border-color);
-  background: rgba(0, 247, 255, 0.02);
+  box-shadow: var(--glow-shadow);
+  background: transparent;
   border-radius: 5px;
 }
 
@@ -1208,9 +1208,9 @@ body.order-mode-active #app {
 .drawer-menu .nav-button.active {
   background-color: transparent;
   transform: scale(1.02);
-  border-color: #85C7FF;
-  color: #85C7FF;
-  box-shadow: 0 0 15px #85C7FF;
+  border-color: var(--price-color);
+  color: var(--price-color);
+  box-shadow: var(--glow-shadow-hover);
 }
 
 .drawer-footer {
@@ -1467,7 +1467,7 @@ body.order-mode-active #order-sidebar {
 .back-button:hover {
   background-color: var(--primary-color);
   color: var(--background-color);
-  box-shadow: 0 0 10px var(--primary-color);
+  box-shadow: var(--glow-shadow-hover);
 }
 
 /* Theme and language buttons */
@@ -1480,8 +1480,8 @@ body.order-mode-active #order-sidebar {
   text-transform: none;
   transition: all 0.3s ease;
   border: 1.4px solid var(--border-color);
-  box-shadow: 0 0 10px var(--border-color);
-  background: rgba(0, 247, 255, 0.02);
+  box-shadow: var(--glow-shadow);
+  background: transparent;
   border-radius: 5px;
   margin-bottom: 8px;
 }
@@ -1490,17 +1490,17 @@ body.order-mode-active #order-sidebar {
 .theme-btn:hover {
   transform: translateX(5px);
   background-color: transparent;
-  border-color: #85C7FF;
-  color: #85C7FF;
-  box-shadow: 0 0 15px #85C7FF;
+  border-color: var(--price-color);
+  color: var(--price-color);
+  box-shadow: var(--glow-shadow-hover);
 }
 
 .language-btn.active,
 .theme-btn.active {
-  background-color: rgba(0, 247, 255, 0.1);
-  border-color: var(--primary-color);
-  color: var(--primary-color);
-  box-shadow: 0 0 20px var(--primary-color);
+  background-color: transparent;
+  border-color: var(--price-color);
+  color: var(--price-color);
+  box-shadow: var(--glow-shadow-hover);
 }
 
 /* Responsive settings menu */
@@ -2745,8 +2745,9 @@ body.order-mode-active #order-sidebar {
 
 
 .drink-option {
-  background: rgba(0, 247, 255, 0.1);
-  border: 2px solid var(--price-color);
+  /* Alinear con estilo del sidebar: fondo del contenedor y contorno glow */
+  background: transparent;
+  border: 1.4px solid var(--border-color);
   border-radius: 6px;
   padding: 11px 8px;
   color: var(--text-color);
@@ -2755,24 +2756,69 @@ body.order-mode-active #order-sidebar {
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all var(--transition-time) ease;
   min-height: 60px;
   text-align: center;
   word-break: break-word;
   font-size: 0.9rem;
+  /* Glow base por tema */
+  box-shadow: var(--glow-shadow);
 }
 
 .drink-option:hover {
-  background: rgba(0, 247, 255, 0.2);
-  transform: translateY(-3px);
-  box-shadow: 0 5px 15px rgba(0, 247, 255, 0.3);
+  background-color: transparent;
+  transform: scale(1.02);
+  border-color: var(--price-color);
+  color: var(--price-color);
+  box-shadow: 0 0 15px var(--price-color);
 }
 
 .drink-option.selected {
-  background: rgba(0, 247, 255, 0.3);
-  border-color: white;
-  box-shadow: 0 0 20px var(--price-color);
-  transform: scale(1.05);
+  background-color: transparent;
+  border-color: var(--price-color);
+  color: var(--price-color);
+  box-shadow: 0 0 15px var(--price-color);
+  transform: scale(1.02);
+}
+
+/* Tema blanco: replicar overrides del sidebar */
+[data-theme="light-white"] #drink-options-modal .drink-option {
+  background: rgba(30, 64, 175, 0.05);
+  border: 1.4px solid var(--border-color);
+  color: var(--text-color);
+  box-shadow: var(--glow-shadow);
+}
+
+[data-theme="light-white"] #drink-options-modal .drink-option:hover,
+[data-theme="light-white"] #drink-options-modal .drink-option.selected {
+  background-color: rgba(133, 199, 255, 0.1);
+  border-color: var(--price-color);
+  color: var(--price-color);
+  box-shadow: var(--glow-shadow-hover);
+}
+
+/* Tema blanco: modal en estilo claro */
+[data-theme="light-white"] .modal-backdrop,
+[data-theme="light-white"] .modal {
+  background: rgba(255, 255, 255, 0.82);
+}
+
+[data-theme="light-white"] .modal-content {
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid var(--border-color);
+  box-shadow: 0 0 30px var(--price-color);
+}
+
+[data-theme="light-white"] .modal-content .modal-actions {
+  background: rgba(255, 255, 255, 0.95);
+  border-top: 1px solid var(--border-color);
+}
+
+/* Tema blanco: sidebar de ajustes estilo claro */
+[data-theme="light-white"] #settings-menu {
+  background: rgba(255, 255, 255, 0.95);
+  border-left: 1px solid var(--border-color);
+  backdrop-filter: blur(10px);
 }
 
 .drink-option-name {
@@ -2894,9 +2940,11 @@ textarea:focus {
 }
 
 .drink-option-container.selected {
-  background-color: rgba(0, 247, 255, 0.2);
+  background-color: var(--primary-color);
+  color: var(--background-color);
+  border-color: var(--primary-color);
   transform: translateY(-2px);
-  box-shadow: 0 2px 8px rgba(0, 247, 255, 0.3);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
 .drink-option-name {
@@ -5672,15 +5720,15 @@ body.order-mode-active #app {
   background: rgba(30, 64, 175, 0.05);
   border: 1.4px solid var(--border-color);
   color: var(--text-color);
-  box-shadow: 0 0 10px var(--border-color);
+  box-shadow: var(--glow-shadow);
 }
 
 [data-theme="light-white"] .drawer-menu .nav-button:hover,
 [data-theme="light-white"] .drawer-menu .nav-button.active {
-  background-color: rgba(133, 199, 255, 0.1);
-  border-color: #85C7FF;
-  color: #85C7FF;
-  box-shadow: 0 0 15px #85C7FF;
+  background-color: transparent;
+  border-color: var(--price-color);
+  color: var(--price-color);
+  box-shadow: var(--glow-shadow-hover);
 }
 
 [data-theme="light-white"] .back-button {

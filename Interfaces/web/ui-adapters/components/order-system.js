@@ -232,15 +232,18 @@ class OrderSystem {
       return;
     }
     
-    // Handle price buttons: if order mode is off, activate it and proceed
+    // Handle price buttons: solo permitir si el modo orden está activo
     if (target && target.classList && target.classList.contains('price-button')) {
-      // Auto-activate order mode to ensure adding products works from price click
-      if (!this.isOrderMode) {
-        this.toggleOrderMode();
-      }
       // Check if ProductRenderer is already handling price button events
       if (window.ProductRenderer && window.ProductRenderer.eventDelegationInitialized) {
         // ProductRenderer is handling price buttons, so we don't need to
+        return;
+      }
+
+      // Bloquear selección si el modo orden no está activo y mostrar aviso
+      if (!this.isOrderMode) {
+        event.preventDefault();
+        this._showValidationModal('Para agregar productos, primero presiona “Crear orden” en el menú.');
         return;
       }
 
@@ -595,7 +598,10 @@ class OrderSystem {
   }
 
   handleProductSelection(productName, priceText, row, event) {
-    if (!this._validateSelection(event)) return;
+    if (!this._validateSelection(event)) {
+      this._showValidationModal('Activa el modo de orden desde “Crear orden” para seleccionar productos.');
+      return;
+    }
     
     this._resetSelectionState();
     
@@ -697,7 +703,9 @@ class OrderSystem {
       return null;
     }
     
+    // Prefer explicit dataset attributes set on the button
     if (clickedElement.dataset.field) return clickedElement.dataset.field;
+    if (clickedElement.dataset.priceType) return clickedElement.dataset.priceType;
     
     const currentTable = row.closest('table');
     if (!currentTable) {
@@ -713,7 +721,9 @@ class OrderSystem {
       return null;
     }
     
-    const headerText = tableHeaders[cellIndex]?.textContent.trim().toUpperCase() || '';
+    const headerEl = tableHeaders[cellIndex];
+    const originalText = (headerEl.dataset && headerEl.dataset.originalText) ? headerEl.dataset.originalText : '';
+    const headerText = (originalText || headerEl.textContent || '').trim().toUpperCase();
     
     if (headerText.includes('BOTELLA')) return CONSTANTS.PRICE_TYPES.BOTTLE;
     if (headerText.includes('LITRO')) return CONSTANTS.PRICE_TYPES.LITER;
@@ -763,6 +773,8 @@ class OrderSystem {
     } else {
       this._setupRegularDrinkOptions(optionsContainer);
     }
+    // Re-aplicar traducción para contenido dinámico del modal
+    setTimeout(() => this._retranslateIfNeeded(document.getElementById('drink-options-modal')), 0);
   }
 
   _initializeDrinkModal() {
@@ -867,6 +879,40 @@ class OrderSystem {
       modalTitle.innerHTML = `${baseTitle}${styleSpan}Puedes elegir 5 refrescos</span>`;
     } else {
       modalTitle.innerHTML = `${baseTitle}${styleSpan}${message}</span>`;
+    }
+    // Re-aplicar traducción al actualizar el título
+    this._retranslateIfNeeded(document.getElementById('drink-options-modal'));
+  }
+
+  // Re-traduce contenido nuevo del modal si el idioma actual no es español
+  async _retranslateIfNeeded(scopeElement) {
+    try {
+      const TranslationServiceModule = await import('../../../../Shared/services/TranslationService.js');
+      const TranslationService = TranslationServiceModule.default || TranslationServiceModule;
+      const currentLang = typeof TranslationService.getCurrentLanguage === 'function'
+        ? TranslationService.getCurrentLanguage()
+        : 'es';
+      if (currentLang && currentLang !== 'es') {
+        try {
+          const DOMTranslatorModule = await import('../../../../Shared/services/DOMTranslator.js');
+          const DOMTranslator = DOMTranslatorModule.default || DOMTranslatorModule;
+          if (DOMTranslator && typeof DOMTranslator.translateElement === 'function') {
+            const root = scopeElement || document;
+            const elements = root.querySelectorAll('[data-translate], [data-translate-placeholder]');
+            await Promise.all(Array.from(elements).map(el => DOMTranslator.translateElement(el, currentLang)));
+          } else if (typeof TranslationService.translatePage === 'function') {
+            // Fallback: traducir toda la página solo si no hay capacidad de traducción por elemento
+            TranslationService.translatePage(currentLang);
+          }
+        } catch (err) {
+          Logger && Logger.warn ? Logger.warn('DOMTranslator no disponible, usando translatePage', err) : null;
+          if (typeof TranslationService.translatePage === 'function') {
+            TranslationService.translatePage(currentLang);
+          }
+        }
+      }
+    } catch (error) {
+      Logger && Logger.warn ? Logger.warn('Fallo al re-aplicar traducción en OrderSystem', error) : null;
     }
   }
 
@@ -1005,6 +1051,10 @@ class OrderSystem {
   _createNoneOption(option) {
     const noneOption = this._createElement('button', 'drink-option');
     noneOption.textContent = option;
+    // Estabilizar traducción y preservar texto original
+    noneOption.setAttribute('data-original-text', option);
+    noneOption.setAttribute('data-translate', `drinks.option.${simpleHash(option)}`);
+    noneOption.setAttribute('data-namespace', 'drinks');
     // Phase 3: No individual event listener - handled by delegation
     return noneOption;
   }
@@ -1013,6 +1063,10 @@ class OrderSystem {
     const optionContainer = this._createElement('div', 'drink-option-container');
     const optionName = this._createElement('span', 'drink-option-name');
     optionName.textContent = option;
+    // Estabilizar traducción y preservar texto original para la lógica
+    optionName.setAttribute('data-original-text', option);
+    optionName.setAttribute('data-translate', `drinks.option.${simpleHash(option)}`);
+    optionName.setAttribute('data-namespace', 'drinks');
     const counterContainer = this._createElement('div', 'counter-container');
     
     const countDisplay = this._createElement('span', 'count-display', '0');
@@ -1103,7 +1157,8 @@ class OrderSystem {
       const optionNameElement = optionContainer?.querySelector('.drink-option-name');
       if (!optionNameElement) return;
 
-      const optionName = optionNameElement.textContent;
+      // Usar el texto original (no traducido) para la lógica de negocio
+      const optionName = optionNameElement.getAttribute('data-original-text') || optionNameElement.textContent;
       const isJuice = isJuiceOption(optionName);
       const [totalJuices, totalRefrescos] = this._getDrinkCounts();
 
@@ -1283,15 +1338,9 @@ class OrderSystem {
 
     const { prefix, name, customization } = this._buildProductInfo();
     
-    // Ensure we're in order mode before adding to order
+    // Requerir modo orden activo antes de confirmar acompañamientos
     if (!this.isOrderMode) {
-      console.warn('Attempting to add product when not in order mode, activating order mode');
-      this.toggleOrderMode();
-      
-      // Wait for order mode to be fully activated and sidebar to be visible
-      setTimeout(() => {
-        this._addConfirmedProduct(prefix, name, customization);
-      }, 300);
+      this._showValidationModal('Para confirmar acompañamientos, primero activa “Crear orden”.');
       return;
     }
     
@@ -1360,6 +1409,8 @@ class OrderSystem {
       const modalTitle = document.querySelector('#drink-options-modal h3');
       if (modalTitle) {
         modalTitle.innerHTML = '¿Con qué desea acompañar su bebida?<span class="modal-subtitle">Cada litro se sirve con 6 oz del destilado que elija.</span>';
+        // Re-aplicar traducción tras actualizar el título
+        this._retranslateIfNeeded(document.getElementById('drink-options-modal'));
       }
     }, 10);
     
@@ -1376,6 +1427,8 @@ class OrderSystem {
       const modalTitle = document.querySelector('#drink-options-modal h3');
       if (modalTitle) {
         modalTitle.innerHTML = '¿Con qué desea acompañar su bebida?<span class="modal-subtitle">Cada copa se sirve con 1 ½ oz del destilado que elija.</span>';
+        // Re-aplicar traducción tras actualizar el título
+        this._retranslateIfNeeded(document.getElementById('drink-options-modal'));
       }
     }, 10);
     this._setupOptionsModal('cup');
@@ -1480,6 +1533,8 @@ class OrderSystem {
     this._renderOptionsGrid(options, optionsContainer);
     this._attachModalEventListeners();
     this._showModal('drink-options-modal');
+    // Retraducción para contenido renderizado dinámicamente
+    setTimeout(() => this._retranslateIfNeeded(document.getElementById('drink-options-modal')), 0);
   }
 
   _getOptionsForModalType(type) {
@@ -1509,8 +1564,20 @@ class OrderSystem {
     options.forEach(option => {
       const optionButton = document.createElement('button');
       // Keep existing class and add BEM class
-      optionButton.className = 'drink-option drink-modal__option';
+      optionButton.className = 'drink-option drink-modal__option nav-button';
       optionButton.textContent = option;
+
+      // Translation attributes to ensure DOMTranslator picks them up
+      try {
+        const key = `drink_options.${simpleHash(option)}`;
+        optionButton.setAttribute('data-translate', key);
+        optionButton.setAttribute('data-namespace', 'menu');
+        optionButton.setAttribute('data-original-text', option);
+      } catch (e) {
+        // If hashing fails for any reason, still set original text attr
+        optionButton.setAttribute('data-original-text', option);
+      }
+
       optionButton.addEventListener('click', () => {
         document.querySelectorAll('.drink-option').forEach(btn => {
           btn.classList.remove('selected');
@@ -1679,34 +1746,10 @@ class OrderSystem {
   }
 
   addProductToOrder(orderItem) {
-    // Ensure we're in order mode before adding to order
+    // Requerir modo orden activo antes de agregar productos
     if (!this.isOrderMode) {
-      console.warn('Attempting to add product when not in order mode, activating order mode');
-      this.toggleOrderMode();
-    }
-    
-    // Ensure sidebar is visible before adding product
-    const sidebar = document.getElementById(CONSTANTS.SELECTORS.SIDEBAR);
-    if (sidebar) {
-      if (sidebar.classList.contains('sidebar-hidden')) {
-        sidebar.classList.remove('sidebar-hidden');
-        sidebar.classList.add('sidebar-visible');
-        sidebar.classList.add('is-open');
-        
-        // Add 'with-sidebar' class to content wrapper for mobile landscape mode
-        const contentWrapper = document.querySelector('.content-wrapper');
-        if (contentWrapper) {
-          contentWrapper.classList.add('with-sidebar');
-        }
-        
-        // Wait a bit for the sidebar to become visible before updating display
-        setTimeout(() => {
-          this.core.addProduct(orderItem);
-          this.updateOrderDisplay();
-          this.currentProduct = null;
-        }, 100);
-        return;
-      }
+      this._showValidationModal('Para agregar productos, primero activa “Crear orden”.');
+      return;
     }
     
     this.core.addProduct(orderItem); 

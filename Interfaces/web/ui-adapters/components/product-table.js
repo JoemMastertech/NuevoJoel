@@ -10,7 +10,6 @@ import DOMTranslator from '../../../../Shared/services/DOMTranslator.js';
 const ProductRenderer = {
   // Current view mode: 'table' or 'grid'
   currentViewMode: 'table',
-  
   // Phase 3: Event delegation system
   eventDelegationInitialized: false,
   boundDelegatedHandler: null,
@@ -275,6 +274,15 @@ const ProductRenderer = {
   
   handlePriceButtonClick: function(target, event) {
     if (target.disabled || (target.classList && target.classList.contains('non-selectable'))) {
+      return;
+    }
+
+    // Si el modo de orden no está activo, mostrar un único modal y no delegar más
+    if (!window.OrderSystem?.isOrderMode) {
+      event.preventDefault();
+      if (window.OrderSystem && typeof window.OrderSystem._showValidationModal === 'function') {
+        window.OrderSystem._showValidationModal('Para agregar productos, primero presiona “Crear orden” en el menú.');
+      }
       return;
     }
     
@@ -642,6 +650,8 @@ const ProductRenderer = {
       priceButton.textContent = formattedPrice;
       priceButton.dataset.productName = item.nombre;
       priceButton.dataset.priceType = field;
+      // Provide a unified attribute used by OrderSystem for grid/table views
+      priceButton.dataset.field = field;
     }
     
     td.appendChild(priceButton);
@@ -1119,12 +1129,12 @@ const ProductRenderer = {
     
     const licoresCategoriesHTML = await this.createLicoresCategories();
     
-    const licoresHTML = `
+  const licoresHTML = `
       <div class="category-grid" data-product-type="liquor" data-category="licores">
-        <h2 class="page-title">Licores</h2>
+        <h2 class="page-title" data-translate="category.title.licores" data-original-text="Licores" data-namespace="categories">Licores</h2>
         ${licoresCategoriesHTML}
         <div class="subcategory-prompt">
-          <h3>Elige una categoría</h3>
+          <h3 data-translate="category.prompt.choose" data-original-text="Elige una categoría" data-namespace="categories">Elige una categoría</h3>
         </div>
       </div>
     `;
@@ -1143,12 +1153,16 @@ const ProductRenderer = {
     const productRepository = getProductRepository();
     const licoresCategories = await productRepository.getLicoresCategories();
     
-    const html = licoresCategories.map(category => `
-      <div class="category-card" data-category="${category.nombre.toLowerCase()}">
-        <img src="${category.icono || category.imagen}" alt="${category.nombre}" class="category-image">
-        <h3 class="category-name">${category.nombre}</h3>
-      </div>
-    `).join('');
+    const html = licoresCategories.map(category => {
+      const name = (category.nombre || '').trim();
+      const key = `liquor-category_${ProductRenderer.simpleHash(name)}`;
+      return `
+        <div class="category-card" data-category="${name.toLowerCase()}">
+          <img src="${category.icono || category.imagen}" alt="${name}" class="category-image">
+          <h3 class="category-name" data-translate="${key}" data-original-text="${name}" data-namespace="liquors">${name}</h3>
+        </div>
+      `;
+    }).join('');
     
     return html;
   },
@@ -1320,11 +1334,12 @@ const ProductRenderer = {
     try {
       const currentLang = TranslationService.getCurrentLanguage();
       if (currentLang && currentLang !== 'es') {
-        // Prefer translating only marked elements to avoid re-identification overhead
-        if (typeof DOMTranslator.translateAll === 'function') {
-          DOMTranslator.translateAll(currentLang);
+        const root = scopeElement || document;
+        if (typeof DOMTranslator.translateElement === 'function') {
+          const elements = root.querySelectorAll('[data-translate], [data-translate-placeholder]');
+          elements.forEach(el => DOMTranslator.translateElement(el, currentLang));
         } else if (typeof TranslationService.translatePage === 'function') {
-          // Fallback to full page translation
+          // Fallback: traducir toda la página solo si no hay capacidad por elemento
           TranslationService.translatePage(currentLang);
         }
       }

@@ -245,13 +245,22 @@ class SettingsManager {
     }
     
     // Handle white theme which doesn't have a video
-    if (theme === 'light-white' && this.backgroundVideo) {
-      // Pause and hide the video
-      this.backgroundVideo.pause();
-      this.backgroundVideo.style.display = 'none';
-    } else if (this.backgroundVideo) {
-      // Show the video for other themes
-      this.backgroundVideo.style.display = 'block';
+    if (this.backgroundVideo) {
+      if (theme === 'light-white') {
+        // For white theme: use video if provided; otherwise hide
+        if (videoUrl) {
+          this.backgroundVideo.style.display = 'block';
+          // Try to play the video; ignore autoplay errors
+          this.backgroundVideo.play().catch(() => {});
+        } else {
+          this.backgroundVideo.pause();
+          this.backgroundVideo.style.display = 'none';
+        }
+      } else {
+        // For other themes always show video
+        this.backgroundVideo.style.display = 'block';
+        this.backgroundVideo.play().catch(() => {});
+      }
     }
     
     // Remove inline background color to allow CSS variables to take effect
