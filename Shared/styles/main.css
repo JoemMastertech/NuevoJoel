@@ -1768,6 +1768,16 @@ body.order-mode-active #order-sidebar {
   to { transform: translateX(0); opacity: 1; }
 }
 
+/* ================================================================
+   Light-white: textos y bordes al azul del glow
+   ================================================================ */
+[data-theme="light-white"] .settings-title { color: var(--price-color); }
+[data-theme="light-white"] .category-name { color: var(--price-color); }
+[data-theme="light-white"] .top-nav-btn { border-color: var(--price-color); color: var(--price-color); }
+[data-theme="light-white"] .theme-btn { color: var(--price-color); border: 1.4px solid var(--price-color); }
+[data-theme="light-white"] .back-button { border-color: var(--price-color); color: var(--price-color); }
+[data-theme="light-white"] .u-text-white { color: var(--price-color); }
+
 @keyframes pulse {
   0%, 100% { transform: scale(1); }
   50% { transform: scale(1.05); }
@@ -2412,8 +2422,8 @@ body.order-mode-active #order-sidebar {
 }
 
 @keyframes modalGlow {
-  0%, 100% { box-shadow: 0 0 10px rgba(0, 247, 255, 0.3); }
-  50% { box-shadow: 0 0 30px rgba(0, 247, 255, 0.5); }
+  0%, 100% { box-shadow: var(--glow-shadow); }
+  50% { box-shadow: var(--glow-shadow-hover); }
 }
 
 /* Product table and image styles */
