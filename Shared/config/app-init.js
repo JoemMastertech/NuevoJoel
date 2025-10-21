@@ -525,7 +525,7 @@ const AppInit = {
     const logoContainer = document.createElement('div');
     logoContainer.className = 'drawer-logo-container';
     const logoImage = document.createElement('img');
-    logoImage.src = 'https://udtlqjmrtbcpdqknwuro.supabase.co/storage/v1/object/public/productos/recursos/logos/Logo5.webp';
+    logoImage.src = 'https://udtlqjmrtbcpdqknwuro.supabase.co/storage/v1/object/public/productos/recursos/logos/Logo%203.jpeg';
     logoImage.alt = 'Master Technology Bar Logo';
     logoImage.className = 'drawer-logo';
     logoContainer.appendChild(logoImage);

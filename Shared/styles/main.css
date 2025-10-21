@@ -209,6 +209,15 @@ body.order-mode-active #app {
   transition: all var(--transition-time) ease;
 }
 
+/* Responsive: reducir 25% el tamaño del logo en móviles */
+@media (max-width: 768px) {
+  .logo,
+  .drawer-logo {
+    transform: scale(0.75);
+    transform-origin: center;
+  }
+}
+
 /* .logo:hover {
   transform: scale(1.05);
   filter: drop-shadow(0 0 20px rgba(0, 247, 255, 0.6));
