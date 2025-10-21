@@ -369,7 +369,7 @@ const AppInit = {
    */
   initializeEnhancedUI() {
     // Apply theme from configuration
-    const theme = AppConfig.get('ui.theme') || 'light';
+    const theme = AppConfig.get('ui.theme') || 'light-blue';
     document.documentElement.setAttribute('data-theme', theme);
     
     // Enable animations if configured

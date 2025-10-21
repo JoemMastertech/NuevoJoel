@@ -58,7 +58,7 @@ class AppConfig {
 
       // UI configuration
       ui: {
-        theme: 'dark',
+        theme: 'light-blue',
         animations: {
           enabled: true,
           duration: {

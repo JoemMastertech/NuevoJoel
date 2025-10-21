@@ -158,6 +158,12 @@ Archivo CSS funcional optimizado con mejoras organizacionales:
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body { font-family: 'Montserrat', sans-serif; color: var(--text); background: var(--background-color); min-height: 100vh; overflow-y: auto; }
+
+/* Ocultar barras de scroll durante transiciones (logo + categoría) */
+html.no-scrollbars,
+body.no-scrollbars {
+  overflow: hidden !important;
+}
 #app { 
   width: 100%; 
   max-width: var(--table-max-width);
@@ -6063,5 +6069,22 @@ body.order-mode-active #app {
   /* Reducir el ancho del sidebar de órdenes en 5% específico de esta resolución */
   #order-sidebar {
     width: var(--order-sidebar-width-tl-reduced);
+  }
+}
+
+/* Responsive logos: solo móviles ≤480px */
+@media (max-width: 480px) {
+  .logo,
+  .drawer-logo {
+    transform: scale(0.75);
+    transform-origin: center;
+  }
+}
+
+/* Reset en ≥481px para evitar escala en tablet/escritorio */
+@media (min-width: 481px) {
+  .logo,
+  .drawer-logo {
+    transform: none !important;
   }
 }

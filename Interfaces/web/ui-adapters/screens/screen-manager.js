@@ -139,6 +139,9 @@ const ScreenManager = {
       Logger.info('Showing welcome screen for', DURATIONS.WELCOME, 'ms');
       await this.delay(DURATIONS.WELCOME);
 
+      // Hide scrollbars during transitions (logo + category)
+      document.body.classList.add('no-scrollbars');
+
       // Step 2: Transition to logo screen
       await this.transitionScreen(
         welcomeScreen, 
@@ -166,6 +169,9 @@ const ScreenManager = {
         '🔄 Transitioning to main content screen'
       );
 
+      // Restore scrollbars after transitions complete
+      document.body.classList.remove('no-scrollbars');
+
       // Show hamburger menu and load content
       if (hamburgerBtn) {
         hamburgerBtn.className = 'hamburger-btn hamburger-visible';
@@ -182,6 +188,8 @@ const ScreenManager = {
       
     } catch (error) {
       Logger.error('Error in welcome sequence:', error);
+      // Ensure scrollbars are restored in case of error
+      document.body.classList.remove('no-scrollbars');
       this.showErrorFallback(error);
     }
   },

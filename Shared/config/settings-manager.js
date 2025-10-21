@@ -389,18 +389,14 @@ class SettingsManager {
       }
     } else {
       // Set default theme if none is saved
-      document.body.setAttribute('data-theme', 'dark-blue');
-      this.updateLogosForTheme('dark-blue');
+      document.body.setAttribute('data-theme', 'light-blue');
+      this.updateLogosForTheme('light-blue');
     }
     } catch (error) {
       console.error('Error applying saved preferences:', error);
     }
   }
-  /**
-   * Get logo URL by theme
-   * @param {string} theme
-   * @returns {string} logo URL
-   */
+
   getLogoUrl(theme) {
     const isWhite = theme === 'light-white';
     return isWhite
@@ -408,35 +404,21 @@ class SettingsManager {
       : 'https://udtlqjmrtbcpdqknwuro.supabase.co/storage/v1/object/public/productos/recursos/logos/Logo%203.jpeg';
   }
 
-  /**
-   * Update logo images across UI according to theme
-   * - Second transition (logo-screen)
-   * - Drawer menu logo (thumbnail)
-   * - Meta images (opcional)
-   * @param {string} theme
-   */
   updateLogosForTheme(theme) {
     const url = this.getLogoUrl(theme);
 
-    // Second transition logo
     const logoScreenImg = document.querySelector('.logo-screen .logo-container img.logo');
-    if (logoScreenImg) {
-      logoScreenImg.src = url;
-    }
+    if (logoScreenImg) { logoScreenImg.src = url; }
 
-    // Drawer menu thumbnail logo
     const drawerLogoImg = document.querySelector('.drawer-logo');
-    if (drawerLogoImg) {
-      drawerLogoImg.src = url;
-    }
+    if (drawerLogoImg) { drawerLogoImg.src = url; }
 
-    // Sync Open Graph/Twitter preview images (optional)
     const ogImage = document.querySelector('meta[property="og:image"]');
     const twImage = document.querySelector('meta[property="twitter:image"]');
     if (ogImage) ogImage.setAttribute('content', url);
     if (twImage) twImage.setAttribute('content', url);
   }
-}
+  }
 
 // Initialize the SettingsManager when the DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
@@ -453,45 +435,3 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log('✅ SettingsManager initialized with translation support');
   }, 100);
 });
-
-
-/**
-   * Get logo URL by theme
-   * @param {string} theme
-   * @returns {string} logo URL
-   */
-  getLogoUrl(theme) {
-    const isWhite = theme === 'light-white';
-    return isWhite
-      ? 'https://udtlqjmrtbcpdqknwuro.supabase.co/storage/v1/object/public/productos/recursos/logos/Logo%201.png'
-      : 'https://udtlqjmrtbcpdqknwuro.supabase.co/storage/v1/object/public/productos/recursos/logos/Logo%203.jpeg';
-  }
-
-  /**
-   * Update logo images across UI according to theme
-   * - Second transition (logo-screen)
-   * - Drawer menu logo (thumbnail)
-   * - Meta images (opcional)
-   * @param {string} theme
-   */
-  updateLogosForTheme(theme) {
-    const url = this.getLogoUrl(theme);
-
-    // Second transition logo
-    const logoScreenImg = document.querySelector('.logo-screen .logo-container img.logo');
-    if (logoScreenImg) {
-      logoScreenImg.src = url;
-    }
-
-    // Drawer menu thumbnail logo
-    const drawerLogoImg = document.querySelector('.drawer-logo');
-    if (drawerLogoImg) {
-      drawerLogoImg.src = url;
-    }
-
-    // Sync Open Graph/Twitter preview images (optional)
-    const ogImage = document.querySelector('meta[property="og:image"]');
-    const twImage = document.querySelector('meta[property="twitter:image"]');
-    if (ogImage) ogImage.setAttribute('content', url);
-    if (twImage) twImage.setAttribute('content', url);
-  }
