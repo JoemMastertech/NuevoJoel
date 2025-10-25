@@ -995,15 +995,22 @@ const ProductRenderer = {
     const videoFilename = videoUrl.split('/').pop().replace('.mp4', '');
     
     // Special cases mapping for incorrect thumbnail URLs
-    const specialCases = {
-      'bufanda-negra': 'bufanda',
-      'cantarito-fresa': 'Cantarito fresa',
-      'martini-bealys': 'martini-baileys',
-      'mojito-frutos-rojos': 'mojito-frutos-rojo',
-      'alitas- habanero': 'alitas-habanero',
-      'cafe-express': 'cafe-expess',
-      'ensalada-mixta-con-pollo-parrilla': 'ensalada-mixta-con-pollo'
-    };
+   const specialCases = {
+  'bufanda-negra': 'bufanda',
+  'cantarito-fresa': 'Cantarito fresa',
+  'martini-bealys': 'martini-baileys',
+  'mojito-frutos-rojos': 'mojito-frutos-rojo',
+  'alitas- habanero': 'alitas-habanero',
+  'cafe-express': 'cafe-expess',
+  'ensalada-mixta-con-pollo-parrilla': 'ensalada-mixta-con-pollo',
+  'carajillo 1': 'mini-carajillo',
+  'cosmopolitan 1': 'mini-cosmopolitan',
+  'mojito 1': 'mini-mojito',
+  'pina colada 1': 'mini-colada',
+  'negroni 1': 'mini-negroni',
+  'mint julep 1': 'mini-mint-julep',
+  'margarita 1': 'mini-margarita'
+};
     
     // Use special case mapping if available, otherwise use the original filename
     const thumbnailFilename = specialCases[videoFilename] || videoFilename;
